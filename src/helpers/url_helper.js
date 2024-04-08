@@ -1,8 +1,8 @@
 let url = "http://192.168.0.54:82/api/";
-// let url_online = "https://bw309ph2-5290.inc1.devtunnels.ms";
-// export const BACKEND_SPRING = false;
-let url_online = "http://192.168.0.184:8080";
-export const BACKEND_SPRING = true;
+let url_online = "http://16.171.29.26";
+export const BACKEND_SPRING = false;
+// let url_online = "http://192.168.0.184:8080";
+// export const BACKEND_SPRING = true;
 
 
 

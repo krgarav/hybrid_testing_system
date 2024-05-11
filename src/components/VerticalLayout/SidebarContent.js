@@ -178,7 +178,7 @@ const SidebarContent = props => {
 
   return (
     <React.Fragment>
-      <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
+      <SimpleBar  ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
 

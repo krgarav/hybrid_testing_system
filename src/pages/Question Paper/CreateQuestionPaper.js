@@ -498,18 +498,20 @@ const CreateQuestionPaper = (props) => {
                                     <div className="col-md-10">
                                         <div className="mb-5">
                                             <div className="form-check form-inline d-block mb-2 p-0">
-                                            
-                                                <label className="form-check-label d-inline col-lg-8" htmlFor="exampleRadios2">
+
+                                                <label className="form-check-label d-inline " htmlFor="exampleRadios2">
                                                     Short
                                                 </label>
+
                                                 <input
-                                                    className="form-control d-inline ms-3 col-lg-8"
+                                                    className="form-control d-inline ms-3"
                                                     type="number"
                                                     name="type"
                                                     value={shortValue}
                                                     onChange={(e) => setShortValue(e.target.value)}
                                                     style={{ width: "4rem" }}
                                                 />
+
 
                                             </div>
                                             <div className="col-md-4" style={{ display: `${shortDisplay}` }}>
@@ -558,7 +560,7 @@ const CreateQuestionPaper = (props) => {
                                         <div className="mb-5">
                                             <div className="form-check form-inline d-block mb-2 p-0">
                                                 <label className="form-check-label d-inline" htmlFor="exampleRadios2">
-                                                    True False
+                                                    True/False
                                                 </label>
                                                 <input
                                                     className="form-control d-inline ms-3"

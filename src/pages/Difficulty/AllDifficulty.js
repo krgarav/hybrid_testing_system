@@ -126,16 +126,14 @@ const AllDifficultys = (props) => {
     return (
         <React.Fragment>
 
-            <Row >
+            <Row  >
                 <Col className="col-12">
                     <Card>
-                        <div className="col-6">
+                        <CardBody className="col-lg-6 col-sm-12 col-xs-12"   >
+                            <CardTitle className="h4">All Difficulties </CardTitle>
+                            <MDBDataTable responsive bordered data={data} />
+                        </CardBody>
 
-                            <CardBody>
-                                <CardTitle className="h4">All Difficulties </CardTitle>
-                                <MDBDataTable responsive bordered data={data} />
-                            </CardBody>
-                        </div>
                     </Card>
                 </Col>
             </Row>

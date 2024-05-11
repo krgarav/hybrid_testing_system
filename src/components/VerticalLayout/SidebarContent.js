@@ -197,6 +197,7 @@ const SidebarContent = props => {
                 <i className="mdi mdi-calendar-check"></i>
                 <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Class")}</span>
               </Link>
+              
               <ul className="sub-menu" >
                 <li>
                   <Link to="/create-class">{props.t("Create Class")}</Link>

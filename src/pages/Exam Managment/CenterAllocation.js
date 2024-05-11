@@ -121,7 +121,7 @@ const CenteAllocation = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody style={{ width: "60%", }}>
+                        <CardBody className="col-lg-6 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Allocate Center and Roll no.</CardTitle>
                             <form onSubmit={handleSubmit}>
                                 <Row className="mb-3">

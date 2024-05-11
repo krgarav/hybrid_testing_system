@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { connect } from "react-redux"
 
 import { Link } from "react-router-dom"
+import { useWindowSize } from 'react-use';
 
 // Reactstrap
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap"
@@ -33,7 +34,7 @@ const Header = props => {
   const [search, setsearch] = useState(false)
   const [createmenu, setCreateMenu] = useState(false)
   const [logoHeight, setLogoHeight] = useState(40);
-
+  const { width } = useWindowSize();
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
   function toggleFullscreen() {
@@ -82,8 +83,11 @@ const Header = props => {
       <header id="page-topbar">
         <div className="navbar-header">
           <div className="d-flex">
-            <div className="navbar-brand-box">
-              <Link to="/" className="logo logo-dark">
+            <div className="navbar-brand-box" style={{ backgroundColor: width <= 998 && "white" }}>
+              <Link to="/"
+                className="logo logo-dark"
+
+              >
                 <img src={ios} alt="" height="40" />
               </Link>
 

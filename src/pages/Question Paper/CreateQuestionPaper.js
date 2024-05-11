@@ -319,7 +319,7 @@ const CreateQuestionPaper = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody style={{ width: "60%", }}>
+                        <CardBody className="col-lg10 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Create QuestionPaper</CardTitle>
                             <form onSubmit={handleSubmit}>
 
@@ -498,11 +498,12 @@ const CreateQuestionPaper = (props) => {
                                     <div className="col-md-10">
                                         <div className="mb-5">
                                             <div className="form-check form-inline d-block mb-2 p-0">
-                                                <label className="form-check-label d-inline" htmlFor="exampleRadios2">
+                                            
+                                                <label className="form-check-label d-inline col-lg-8" htmlFor="exampleRadios2">
                                                     Short
                                                 </label>
                                                 <input
-                                                    className="form-control d-inline ms-3"
+                                                    className="form-control d-inline ms-3 col-lg-8"
                                                     type="number"
                                                     name="type"
                                                     value={shortValue}
@@ -527,11 +528,11 @@ const CreateQuestionPaper = (props) => {
                                         </div>
                                         <div className="mb-5">
                                             <div className="form-check form-inline d-block mb-2 p-0">
-                                                <label className="form-check-label d-inline" htmlFor="exampleRadios2">
+                                                <label className="form-check-label d-inline col-lg-8" htmlFor="exampleRadios2">
                                                     Mcq
                                                 </label>
                                                 <input
-                                                    className="form-control d-inline ms-3"
+                                                    className="form-control d-inline ms-3 col-lg-8"
                                                     type="number"
                                                     name="type"
                                                     value={mcqValue}

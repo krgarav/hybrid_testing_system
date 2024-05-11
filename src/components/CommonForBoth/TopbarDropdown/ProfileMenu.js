@@ -41,7 +41,7 @@ const ProfileMenu = props => {
           /> */}
           <i className="fas fa-user h1"></i>
         </DropdownToggle>
-        <DropdownMenu className="dropdown-menu-end">
+        <DropdownMenu className="dropdown-menu-end" style={{ marginLeft: "25px" }}>
           {/* <DropdownItem tag="a" href="/profile">
             {" "}
             <i className="mdi mdi-account-circle font-size-17 text-muted align-middle me-1" />
@@ -57,10 +57,9 @@ const ProfileMenu = props => {
             {props.t("Lock screen")}
           </DropdownItem> */}
 
-          <div className="dropdown-divider" />
-          <Link to="/logout" className="dropdown-item text-danger">
+          <Link to="/logout" className="dropdown-item text-danger" style={{ display: "flex" }}>
             <i className="mdi mdi-power font-size-17 text-muted align-middle me-1 text-danger" />
-            <span>{props.t("Logout")}</span>
+            <span style={{ display: "flex", alignSelf: "center", alignItems: "center",fontWeight:"bold" , fontSize:"0.9rem" }} >{props.t("Logout")}</span>
           </Link>
         </DropdownMenu>
       </Dropdown>

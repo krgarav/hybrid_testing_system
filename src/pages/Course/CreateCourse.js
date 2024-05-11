@@ -86,7 +86,7 @@ const CreateCourse = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody style={{ width: "60%", }}>
+                        <CardBody className="col-lg-6 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Create Course</CardTitle>
                             <form onSubmit={handleSubmit}>
 

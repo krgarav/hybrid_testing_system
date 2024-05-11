@@ -32,6 +32,7 @@ import {
 const Header = props => {
   const [search, setsearch] = useState(false)
   const [createmenu, setCreateMenu] = useState(false)
+  const [logoHeight, setLogoHeight] = useState(40);
 
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
@@ -63,9 +64,18 @@ const Header = props => {
   }
 
   function tToggle() {
+
+    if (logoHeight == 40) {
+      setLogoHeight(20)
+    }
+    else {
+      setLogoHeight(40)
+    }
     var body = document.body;
     body.classList.toggle("vertical-collpsed");
     body.classList.toggle("sidebar-enable");
+
+
   }
   return (
     <React.Fragment>
@@ -78,7 +88,7 @@ const Header = props => {
               </Link>
 
               <Link to="/" className="logo logo-light">
-                <img src={ios} alt="" height="40" />
+                <img src={ios} alt="" height={logoHeight} />
               </Link>
             </div>
 

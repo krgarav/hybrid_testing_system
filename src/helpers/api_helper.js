@@ -33,7 +33,7 @@ export async function postWithFormData(url, data, config = {}) {
   return axiosApi
     .post(url, data, { ...config })
     .then((response) => response.data).catch((error) => {
-      toast.error(error.response.data.message)
+      toast.error(error?.response?.data.message)
     });
 }
 export async function post(url, data, config = {}) {
@@ -41,7 +41,7 @@ export async function post(url, data, config = {}) {
   return axiosApi
     .post(url, data, { ...config })
     .then((response) => response.data).catch((error) => {
-      toast.error(error.response.data.message)
+      toast.error(error?.response?.data.message)
     });
 }
 
@@ -49,14 +49,14 @@ export async function putWithFormData(url, data, config = {}) {
   return axiosApi
     .put(url, data, { ...config })
     .then((response) => response.data).catch((error) => {
-      toast.error(error.response.data.message)
+      toast.error(error?.response?.data.message)
     });
 }
 export async function put(url, data, config = {}) {
   return axiosApi
     .put(url, { ...data }, { ...config })
     .then((response) => response.data).catch((error) => {
-      toast.error(error.response.data.message)
+      toast.error(error?.response?.data.message)
     });
 }
 
@@ -65,6 +65,6 @@ export async function del(url, config = {}) {
   return await axiosApi
     .delete(url, { ...config })
     .then((response) => response.data).catch((error) => {
-      toast.error(error.response.data.message)
+      toast.error(error?.response?.data.message)
     });
 }

@@ -1,5 +1,5 @@
 let url = "http://192.168.0.54:82/api/";
-let url_online = "http://16.171.29.26";
+let url_online = "https://2zrl7bwf-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
 // let url_online = "http://192.168.0.184:8080";
 // export const BACKEND_SPRING = true;
@@ -108,7 +108,7 @@ export const IMAGE_FETCH = url_online + "/GetImage?imageName=";
 
 // Question Paper
 export const CREATE_QUESTIONPAPER = url_online + "/CreateQuestionPaper";
-export const UPDATE_QUESTIONPAPER = url_online + "/CreateExamPaper";
+export const UPDATE_QUESTIONPAPER = url_online + "/UpdateQuestionPaper";
 export const DELETE_QUESTIONPAPER = url_online + "/DeleteExamPaper?Id=";
 export const FETCH_ALL_QUESTIONPAPERS = url_online + "/GetExamPapers";
 export const FETCH_EXAM_PAPER = url_online + "/GetExamPapersById?Id=";

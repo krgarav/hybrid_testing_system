@@ -10,7 +10,7 @@ import store from "./store"
 import { AuthProvider } from "context/authContext";
 import { registerLicense } from '@syncfusion/ej2-base';
 
-registerLicense("Ngo9BigBOggjHTQxAR8/V1NAaF1cWGhKYVppR2Nbe052flRFalxZVAciSV9jS3pTdERnWXxbeHFSRGhbVQ==")
+registerLicense("Ngo9BigBOggjHTQxAR8/V1NHaF5cXmVCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdgWH5feXRTRGNZU0F0W0E=")
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

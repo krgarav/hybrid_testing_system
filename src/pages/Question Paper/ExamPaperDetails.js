@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 
 import TimeAgo from "HelperComponent/TimeAgo";
 import { useLocation, useParams } from "react-router-dom";
-import { addQuestionToPaper, deleteQuestionFromPaper, fetchAllQuestionOfPaper, fetchFilterQuestions } from "helpers/questionPaper_helper";
+import { addQuestionToPaper, deleteQuestionFromPaper, fetchAllQuestionOfPaper, fetchFilterQuestions, updateQuestionPaper } from "helpers/questionPaper_helper";
 import { MDBDataTable } from "mdbreact";
 import { fetchAllCoursesByClass } from "helpers/course_helper";
 import { fetchAllSectionsByCourse } from "helpers/section_helper";
@@ -175,7 +175,7 @@ const ExamPaperDetails = (props) => {
 
 
 
-
+    const [marks, setMarks] = useState([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
 
 
@@ -207,6 +207,12 @@ const ExamPaperDetails = (props) => {
             },
             // New column for delete button
             {
+                label: "Marks",
+                field: "mark",
+                width: 100,
+                btn: true, // Indicate that the content should be treated as a button
+            },
+            {
                 label: "Actions",
                 field: "actions",
                 width: 100,
@@ -216,6 +222,16 @@ const ExamPaperDetails = (props) => {
         rows: questionPaper?.map((row, index) => ({
             ...row,
             serialNo: index + 1,
+            mark: (
+                <>
+                    <input
+                        type="number"
+                        style={{ width: "2rem" }}
+                        value={row.questionMarks}
+                        onChange={(e) => handleInputChange(e, row.questionId)} // Pass the row's id to the handler
+                    />
+                </>
+            ),
             actions: (
                 <Button color="danger" onClick={() => handleRemoveClick(row)}>
                     Remove
@@ -223,6 +239,20 @@ const ExamPaperDetails = (props) => {
             ),
         })),
     };
+    const handleInputChange = (e, id) => {
+        const newValue = e.target.value; // Get the new value from the input
+
+        // Update the questionPaper array
+        setQuestionPaper(prevQuestionPaper => {
+            return prevQuestionPaper.map(prevRow => {
+                if (prevRow.questionId === id) {
+                    return { ...prevRow, questionMarks: newValue };
+                }
+                return prevRow;
+            });
+        });
+    };
+
 
     const FilterQuestionData = {
         columns: [
@@ -346,6 +376,35 @@ const ExamPaperDetails = (props) => {
 
 
 
+    const handleUpdateMarks = async () => {
+        try {
+            let paperId = questionPaper[0].paperId;
+            let questionId = [];
+            let questionMarks = [];
+
+            questionPaper?.map((d, i) => {
+                // console.log(i)
+                questionId.push(d.questionId);
+                questionMarks.push(d.questionMarks);
+            })
+            console.log(paperId)
+            console.log(questionId)
+            console.log(questionMarks)
+            // let {data} = await axios.post("")
+            let result = await updateQuestionPaper({ paperId, questionId, questionMarks })
+            if (result?.success) {
+                toast.success(result?.message);
+            }
+            else {
+                toast.error(result?.message)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong");
+        }
+    }
+
+
 
     return (
         <React.Fragment>
@@ -357,7 +416,10 @@ const ExamPaperDetails = (props) => {
                         <CardBody>
                             <div className="d-flex justify-content-between">
                                 <CardTitle className="h4">All Questions</CardTitle>
-                                <Button type="button" color="info" className="waves-effect waves-light mb-2" onClick={() => setModalForAddQuestion(true)}>Add Question</Button>
+                                <div className="">
+                                    <Button type="button" color="warning" className="waves-effect waves-light mb-2 me-3" onClick={handleUpdateMarks}>Update Marks</Button>
+                                    <Button type="button" color="info" className="waves-effect waves-light mb-2" onClick={() => setModalForAddQuestion(true)}>Add Question</Button>
+                                </div>
                             </div>
                             <MDBDataTable responsive bordered data={data} />
                         </CardBody>

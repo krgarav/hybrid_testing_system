@@ -78,7 +78,9 @@ const Header = props => {
     var body = document.body;
     body.classList.toggle("vertical-collpsed");
     body.classList.toggle("sidebar-enable");
-    body.classList.toggle(classes.sidebar);
+    // if (body.classList.contains("right-bar-enabled") && body.classList.length === 1) {
+    //   body.classList.toggle(classes.sidebar);
+    // }
     // var pageBody = document.querySelector(".page-content");
     // if (pageBody && width <= 998) {
     //   pageBody.classList.toggle(classes.mainpage);
@@ -87,8 +89,6 @@ const Header = props => {
     var bodyHeight = document.body.scrollHeight;
 
     if (blurDiv && width <= 998) {
-
-      // blurDiv.style.height = bodyHeight + "px";
       var isDivPageActive = blurDiv.classList.toggle(classes.divPage);
       if (isDivPageActive) {
         blurDiv.style.height = bodyHeight + "px"; // Set blur div height to body height
@@ -97,17 +97,26 @@ const Header = props => {
       }
 
     }
+
     var navBar = document.querySelector(".navbar-brand-box");
     if (navBar && width <= 998) {
       if (navBar.style.backgroundColor === "white") {
         navBar.style.backgroundColor = ""; // Reset to default value
+        // Reset to default value
+        navBar.style.padding = "2px";
       } else {
         navBar.style.backgroundColor = "white";
+        navBar.style.padding = "";
       }
     }
+    if (navBar) {
+      if (navBar.style.padding === "") {
+        navBar.style.padding = "2px";
+      } else {
+        navBar.style.padding = "";
+      }
 
-    // document.body.style.overflow = "hidden";
-
+    }
   }
   return (
     <React.Fragment>
@@ -122,7 +131,7 @@ const Header = props => {
                 <img src={ios} alt="" height="40" />
               </Link>
 
-              <Link to="/" className="logo logo-light">
+              <Link to="/" className="logo logo-light" >
                 <img src={ios} alt="" height={logoHeight} />
               </Link>
             </div>

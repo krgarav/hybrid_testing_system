@@ -1,0 +1,34 @@
+.sidebar {
+  /* z-index: 999; */
+  /* height: 60vh; */
+  /* position: absolute; */
+  /* width: 20vh;
+  overflow-y: auto; */
+}
+.mainpage { 
+  background-color: rgba(33, 33, 33, 0.8);
+  backdrop-filter: blur(10px);
+  backface-visibility: hidden;
+  filter: blur(5px);
+  pointer-events: none;
+  overflow-y: hidden;
+  height: 100vh;
+
+}
+.divPage{
+    position: absolute;
+    background-color: rgba(33, 33, 33, 0.8);
+    backdrop-filter: blur(10px);
+    backface-visibility: hidden;
+    filter: blur(5px);
+    pointer-events: none;
+    overflow-y: hidden;
+    height: 100vh;
+    /* opacity: 0; */
+    z-index: 1;
+    width: 100dvw;
+    height: 100dvh;
+}
+.icon{
+    background-color: white;
+}

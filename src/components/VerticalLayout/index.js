@@ -26,6 +26,9 @@ import Rightbar from "../CommonForBoth/Rightbar"
 //Import Breadcrumb
 import Breadcrumb from "../../components/Common/Breadcrumb"
 
+//
+import classes from "./Header.module.css";
+// import "./Header.module.css";
 const Layout = (props) => {
 
   const dispatch = useDispatch();
@@ -39,7 +42,7 @@ const Layout = (props) => {
       leftSideBarType: layout.leftSideBarType,
       topbarTheme: layout.topbarTheme,
       layoutColor: layout.layoutColor,
-      layoutMode:layout.layoutMode
+      layoutMode: layout.layoutMode
     }));
 
   const {
@@ -62,15 +65,15 @@ const Layout = (props) => {
         dispatch(showRightSidebarAction(false));
       }
     };
-  
+
     //init body click event fot toggle rightbar
     document.body.addEventListener("click", hideRightbar, true);
-  
+
     // Cleanup the event listener on component unmount
     return () => {
       document.body.removeEventListener("click", hideRightbar, true);
     };
-  }, [dispatch]); 
+  }, [dispatch]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -117,7 +120,7 @@ const Layout = (props) => {
   }, [layoutColor, dispatch]);
 
 
-  
+
 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -145,15 +148,17 @@ const Layout = (props) => {
         </div>
       </div> */}
 
-      <div id="layout-wrapper">
+      <div id={`layout-wrapper `}>
         <Header toggleMenuCallback={toggleMenuCallback} />
         <Sidebar
           theme={props.leftSideBarTheme}
           type={props.leftSideBarType}
           isMobile={props.isMobile}
         />
-        <div className="main-content">
-          <div className="page-content">
+        
+        <div className={`main-content `}>
+        <div id='blur'>h1</div>
+          <div className={`page-content `}>
             <Container fluid>
               <Breadcrumb />
               {props.children}
@@ -173,7 +178,7 @@ const Layout = (props) => {
 Layout.propTypes = {
   changeLayoutWidth: PropTypes.func,
   changeColor: PropTypes.func,
-  changeMode:PropTypes.func,
+  changeMode: PropTypes.func,
   changeSidebarTheme: PropTypes.func,
   changeSidebarType: PropTypes.func,
   changeTopbarTheme: PropTypes.func,

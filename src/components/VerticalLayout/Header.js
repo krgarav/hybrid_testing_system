@@ -30,6 +30,9 @@ import {
   changeSidebarType,
 } from "../../store/actions"
 
+//css import
+import classes from "./Header.module.css";
+
 const Header = props => {
   const [search, setsearch] = useState(false)
   const [createmenu, setCreateMenu] = useState(false)
@@ -75,7 +78,24 @@ const Header = props => {
     var body = document.body;
     body.classList.toggle("vertical-collpsed");
     body.classList.toggle("sidebar-enable");
-
+    body.classList.toggle(classes.sidebar);
+    // var pageBody = document.querySelector(".page-content");
+    // if (pageBody && width <= 998) {
+    //   pageBody.classList.toggle(classes.mainpage);
+    // }
+    var blurDiv = document.getElementById("blur");
+    console.log(blurDiv)
+    if(blurDiv && width <= 998){
+      blurDiv.classList.toggle(classes.divPage);
+    }
+    var navBar = document.querySelector(".navbar-brand-box");
+    if (navBar && width <= 998) {
+      if (navBar.style.backgroundColor === "white") {
+        navBar.style.backgroundColor = ""; // Reset to default value
+      } else {
+        navBar.style.backgroundColor = "white";
+      }
+    }
 
   }
   return (

@@ -84,9 +84,18 @@ const Header = props => {
     //   pageBody.classList.toggle(classes.mainpage);
     // }
     var blurDiv = document.getElementById("blur");
-    console.log(blurDiv)
-    if(blurDiv && width <= 998){
-      blurDiv.classList.toggle(classes.divPage);
+    var bodyHeight = document.body.scrollHeight;
+
+    if (blurDiv && width <= 998) {
+
+      // blurDiv.style.height = bodyHeight + "px";
+      var isDivPageActive = blurDiv.classList.toggle(classes.divPage);
+      if (isDivPageActive) {
+        blurDiv.style.height = bodyHeight + "px"; // Set blur div height to body height
+      } else {
+        blurDiv.style.height = ""; // Reset height to its default value
+      }
+
     }
     var navBar = document.querySelector(".navbar-brand-box");
     if (navBar && width <= 998) {
@@ -96,6 +105,8 @@ const Header = props => {
         navBar.style.backgroundColor = "white";
       }
     }
+
+    // document.body.style.overflow = "hidden";
 
   }
   return (

@@ -132,6 +132,10 @@ const Layout = (props) => {
     }
   };
 
+  const blurHandler = () => {
+    const btn = document.getElementById("vertical-menu-btn");
+    btn.click()
+  }
 
   return (
     <React.Fragment>
@@ -155,9 +159,9 @@ const Layout = (props) => {
           type={props.leftSideBarType}
           isMobile={props.isMobile}
         />
-        
+
         <div className={`main-content `}>
-        <div id='blur'>h1</div>
+          <div id='blur' onClick={blurHandler} >h1</div>
           <div className={`page-content `}>
             <Container fluid>
               <Breadcrumb />

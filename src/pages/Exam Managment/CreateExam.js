@@ -42,6 +42,13 @@ const CreateExam = (props) => {
         { title: "Create Exam", link: "#" },
     ]
 
+   useEffect(() => {
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
     useEffect(() => {
         props.setBreadcrumbItems('Create Exam', breadcrumbItems)
     })
@@ -175,7 +182,7 @@ const CreateExam = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody className="col-lg-8 col-md-10 col-sm-12 col-xs-12">
+                        <CardBody className="col-xl-6 col-lg-10 col-md-10 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Create Exam</CardTitle>
                             <form onSubmit={handleSubmit}>
 

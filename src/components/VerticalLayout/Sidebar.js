@@ -11,7 +11,7 @@ import classes from "./Header.module.css";
 const Sidebar = props => {
   return (
     <React.Fragment>
-      <div className={`vertical-menu ${classes.sidebar}`}>
+      <div id="verticalDiv" className={`vertical-menu custom-scrollbar`} >
         <div data-simplebar className="">
           {props.type !== "condensed" ? <SidebarContent /> : <SidebarContent />}
         </div>

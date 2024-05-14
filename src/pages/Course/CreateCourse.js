@@ -50,7 +50,13 @@ const CreateCourse = (props) => {
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
 
-
+    useEffect(() => {           /* For closing the sidebar if opened */
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
 
     useEffect(() => {
         if (classes?.classes.length == 0) {
@@ -86,7 +92,7 @@ const CreateCourse = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody className="col-lg-6 col-sm-12 col-xs-12">
+                        <CardBody className="col-xl-6 col-lg-10 col-md-10 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Create Course</CardTitle>
                             <form onSubmit={handleSubmit}>
 

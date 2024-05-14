@@ -28,6 +28,13 @@ const CenteAllocation = (props) => {
         { title: "Exam Managment", link: "#" },
         { title: "Center and Roll no. Allocation", link: "#" },
     ]
+   useEffect(() => {
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
 
     useEffect(() => {
         props.setBreadcrumbItems('Allocate of Center and Roll no.', breadcrumbItems)
@@ -121,7 +128,7 @@ const CenteAllocation = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody className="col-lg-6 col-sm-12 col-xs-12">
+                        <CardBody className="col-xl-6 col-lg-10 col-md-10 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Allocate Center and Roll no.</CardTitle>
                             <form onSubmit={handleSubmit}>
                                 <Row className="mb-3">

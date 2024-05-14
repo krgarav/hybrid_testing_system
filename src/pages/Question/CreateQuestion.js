@@ -76,6 +76,14 @@ const CreateQuestion = (props) => {
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
 
+   useEffect(() => {
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
+
     useEffect(() => {
         if (classes?.classes.length == 0) {
             dispatch(fetchClass());
@@ -354,7 +362,7 @@ const CreateQuestion = (props) => {
                             <CardTitle className="h4">Create Question</CardTitle>
                             <form onSubmit={handleSubmit}>
 
-                                <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -376,7 +384,7 @@ const CreateQuestion = (props) => {
 
                                 </Row>
 
-                                {courses && <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                {courses && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -399,7 +407,7 @@ const CreateQuestion = (props) => {
 
                                 </Row>}
 
-                                {sections && <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                {sections && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -421,7 +429,7 @@ const CreateQuestion = (props) => {
 
                                 </Row>}
 
-                                {subSections && <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                {subSections && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -443,7 +451,7 @@ const CreateQuestion = (props) => {
 
                                 </Row>}
 
-                                {difficultys && <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                {difficultys && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -465,7 +473,7 @@ const CreateQuestion = (props) => {
 
                                 </Row>}
 
-                                <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label htmlFor="example-text-input" className="col-md-2 col-form-label">
                                         Question Type
                                     </label>
@@ -530,7 +538,7 @@ const CreateQuestion = (props) => {
                                     </div>
                                 </Row>
 
-                                <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -546,7 +554,7 @@ const CreateQuestion = (props) => {
                                         </div>
                                     </div>
                                 </Row>
-                                {type === "short" && <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                {type === "short" && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -565,7 +573,7 @@ const CreateQuestion = (props) => {
                                 {type === "mcq" &&
                                     <>
 
-                                        <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                        <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                             <label
                                                 htmlFor="example-text-input"
                                                 className="col-md-2 col-form-label"
@@ -583,7 +591,7 @@ const CreateQuestion = (props) => {
                                                 <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick} >{editOptionText}</button>
                                             </div>
                                         </Row>
-                                        <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                        <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                             <label
                                                 htmlFor="example-text-input"
                                                 className="col-md-2 col-form-label"
@@ -621,7 +629,7 @@ const CreateQuestion = (props) => {
                                         </Row>
                                     </>
                                 }
-                                {type === "true false" && <Row className="mb-3" style={{width: width <= 998 ? "95%" : "85%" }}>
+                                {type === "true false" && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label htmlFor="example-text-input" className="col-md-2 col-form-label">
                                         Answer
                                     </label>

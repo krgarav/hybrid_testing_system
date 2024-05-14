@@ -31,6 +31,14 @@ const AllQuestionPapers = (props) => {
         { title: "Question Papers", link: "#" },
         { title: "All Questions Papers", link: "#" },
     ]
+    
+    useEffect(() => {           /* For closing the sidebar if opened */
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
 
     useEffect(() => {
         props.setBreadcrumbItems('All Questions Papers', breadcrumbItems)

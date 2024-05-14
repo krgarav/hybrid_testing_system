@@ -58,6 +58,13 @@ const AllQuestions = (props) => {
         { title: "All Questions", link: "#" },
     ]
 
+   useEffect(() => {
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
     useEffect(() => {
         props.setBreadcrumbItems('All Questions', breadcrumbItems)
     })

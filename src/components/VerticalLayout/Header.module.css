@@ -1,8 +1,7 @@
 .sidebar {
-  /* z-index: 999; */
-  /* height: 100vh; */
-  /* position: fixed; */
-  /* overflow-y: auto; */
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: scroll;
 }
 .mainpage {
   background-color: rgba(33, 33, 33, 0.8);

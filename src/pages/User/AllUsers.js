@@ -62,6 +62,13 @@ const AllUsers = (props) => {
 
     })
 
+    useEffect(() => {           /* For closing the sidebar if opened */
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
 
     useEffect(() => {
         if (users?.length == 0) {

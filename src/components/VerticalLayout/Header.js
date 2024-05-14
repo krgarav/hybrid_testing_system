@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { connect } from "react-redux"
 
@@ -39,7 +39,15 @@ const Header = props => {
   const [logoHeight, setLogoHeight] = useState(40);
   const { width } = useWindowSize();
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-
+  useEffect(() => {
+    var body = document.body;
+    var verticalBody = document.getElementById("verticalDiv");
+    if (!body.classList.contains("vertical-collapsed") && width >= 998) {
+      verticalBody.style.overflowY = "auto"; // Show vertical scrollbar
+    } else {
+      verticalBody.style.overflowY = "";
+    }
+  }, [width])
   function toggleFullscreen() {
     if (
       !document.fullscreenElement &&
@@ -78,9 +86,7 @@ const Header = props => {
     var body = document.body;
     body.classList.toggle("vertical-collpsed");
     body.classList.toggle("sidebar-enable");
-    // if (body.classList.contains("right-bar-enabled") && body.classList.length === 1) {
-    //   body.classList.toggle(classes.sidebar);
-    // }
+
     // var pageBody = document.querySelector(".page-content");
     // if (pageBody && width <= 998) {
     //   pageBody.classList.toggle(classes.mainpage);
@@ -103,10 +109,10 @@ const Header = props => {
       if (navBar.style.backgroundColor === "white") {
         navBar.style.backgroundColor = ""; // Reset to default value
         // Reset to default value
-        navBar.style.padding = "2px";
+        // navBar.style.padding = "2px";
       } else {
         navBar.style.backgroundColor = "white";
-        navBar.style.padding = "";
+        // navBar.style.padding = "";
       }
     }
     if (navBar) {

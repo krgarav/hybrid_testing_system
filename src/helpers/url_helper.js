@@ -1,5 +1,5 @@
 let url = "http://192.168.0.54:82/api/";
-let url_online = "https://2zrl7bwf-5290.inc1.devtunnels.ms";
+export let url_online = "https://2zrl7bwf-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
 // let url_online = "http://192.168.0.184:8080";
 // export const BACKEND_SPRING = true;
@@ -86,7 +86,7 @@ export const UPDATE_DIFFICULTY = url_online + "/UpdateDifficulty"
 export const FETCH_ALL_DIFFICULTYS = url_online + "/GetDifficulty"
 
 
-export const CREATE_LANGUAGE = url_online + "/AddLanguage"
+export const CREATE_LANGUAGE = url_online + "/AddzLanguage"
 export const DELETE_LANGUAGE = url_online + "/RemoveLanguage?Id="
 export const UPDATE_LANGUAGE = url_online + "/UpdateLanguage"
 export const FETCH_ALL_LANGUAGES = url_online + "/GetLanguages"
@@ -145,7 +145,11 @@ export const FETCH_ALL_SCHOOL = url_online + "/GetAllSchools"
 export const FETCHS_SCHOOL_TYPES = url_online + "/GetSchoolTypes"
 
 export const UPLOAD_STUDENTS = url_online + "/BulkStudentUpload";
+export const LOGIN_STUDENT = url_online + "/StudentLogin";
 
+
+//Exam
+export const SAVE_EXAM_ANSWERS = url_online + "/saveExamAnswers"
 
 // exam managment
 export const FETCH_ALL_CENTERS = url_online + "/GetAllCenters";

@@ -47,6 +47,8 @@ import userReducer from "./user/reducer";
 
 import schoolReducer from "./school/reducer";
 
+import test from "./test/test"
+
 const rootReducer = combineReducers({
   // public
   Layout,
@@ -68,7 +70,9 @@ const rootReducer = combineReducers({
   questionsReducer,
   questionPapersReducer,
   userReducer,
-  schoolReducer
+  schoolReducer,
+  test
+
 
 })
 

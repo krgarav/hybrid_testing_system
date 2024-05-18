@@ -27,6 +27,10 @@ import 'react-toastify/dist/ReactToastify.css';
 // import { initFirebaseBackend } from "./helpers/firebase_helper"
 
 import fakeBackend from "./helpers/AuthType/fakeBackend"
+import Instructions from 'pages/student/Instructions'
+import TestScreen from 'pages/student/testScreen'
+import TestSubmitted from 'pages/student/FinalSubmit'
+import Pages404 from 'pages/Extra Pages/pages-404'
 
 
 // Activating fake backend
@@ -95,6 +99,11 @@ const App = props => {
             }
           />
         ))}
+
+        <Route exact path='/Instructions' element={<Instructions />} />
+        <Route exact path='/test' element={<TestScreen />} />
+        <Route exact path='/finalSubmit/:submit/:visit/:unAttempt' element={<TestSubmitted />} />
+        <Route exact path='*' element={<Pages404 />} />
       </Routes>
       <ToastContainer />
     </React.Fragment>

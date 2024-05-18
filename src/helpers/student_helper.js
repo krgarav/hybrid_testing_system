@@ -4,3 +4,4 @@ import * as url from "./url_helper"
 
 // Create School
 export const uploadStudents = data => postWithFormData(url.UPLOAD_STUDENTS, data);
+export const loginStudentWithCred = data => post(url.LOGIN_STUDENT, data);

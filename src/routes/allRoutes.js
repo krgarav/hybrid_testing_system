@@ -131,6 +131,7 @@ import AllExams from "pages/Exam Managment/AllExams"
 import StudentRegister from "pages/Authentication/StudentRegister"
 import CreateLanguage from "pages/language/CreateLanguage"
 import AllLanguage from "pages/language/AllLanguage"
+import StudentLogin from "pages/student/StudentLogin"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -277,6 +278,7 @@ const authRoutes = [
   { path: "/logout", component: <Logout /> },
 
   { path: "/login", component: <Login /> },
+  { path: "/student-login", component: <StudentLogin /> },
   { path: "/forgot-password", component: <ForgetPwd /> },
   { path: "/register", component: <Register /> },
   { path: "/student-register", component: <StudentRegister /> },

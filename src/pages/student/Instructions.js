@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { MdOutlineIntegrationInstructions } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import classes from "./instruction.module.css";
 const Instructions = () => {
 
     const navigate = useNavigate();
@@ -47,7 +48,7 @@ const Instructions = () => {
     return (
         <>
 
-            <div className="container border h-100 animate__animated animate__fadeInRight mt-4 bg-white">
+            <div className={`container border h-100 animate__animated animate__fadeInRight mt-4 bg-white mb-4 ${classes["instruction-container"]} `}    >
                 <div className="row">
                     <div className="col d-flex justify-content-center mt-4">
                         <div className="fw-bolder">

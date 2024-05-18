@@ -13,6 +13,36 @@ const Instructions = () => {
     const startTestHandler = () => {
         navigate("/test");
     };
+    useEffect(() => {
+
+
+        let mediaRecorder;
+
+
+
+
+        const setupMediaRecorder = () => {
+            // Request access to the webcam
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .catch(error => {
+                    console.log("kdjfkdjfkd----->", error.name)
+                    console.error('Error accessing the webcam', error.name);
+                    // If permission denied, show alert message and blur/disable the page
+                    if (error instanceof DOMException || error.name === 'NotAllowedError') {
+                        alert('Please allow access to the camera for continue to the test.');
+                        document.body.style.filter = 'blur(5px)';
+                        document.body.style.pointerEvents = 'none';
+                    }
+                });
+        };
+
+        setupMediaRecorder();
+
+
+
+        // Cleanup function
+
+    }, []);
 
     return (
         <>

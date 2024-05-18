@@ -33,6 +33,7 @@ const TestScreen = () => {
   const [student] = useAuth();
   const [mediaStream, setMediaStream] = useState(null);
   const [recorder, setRecorder] = useState(null);
+  const [timeFinish, setTimeFinish] = useState(false);
   const socket = useRef(null);
   let isAlertShown = false;
 
@@ -206,7 +207,7 @@ const TestScreen = () => {
   };
 
   const handleWindowBlur = () => {
-    if (warningCount1 + warningCount2 === 2000) {
+    if (warningCount1 + warningCount2 === 2) {
       let a = Object.keys(answers).length;
       let v = Object.keys(visited).length;
       let s = Object.keys(submit).length;
@@ -225,57 +226,57 @@ const TestScreen = () => {
     }
   };
 
-  // useEffect(() => {
-  //   document.addEventListener('visibilitychange', handleVisibilityChange);
-  //   window.addEventListener('blur', handleWindowBlur);
+  useEffect(() => {
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleWindowBlur);
 
-  //   return () => {
-  //     document.removeEventListener('visibilitychange', handleVisibilityChange);
-  //     window.removeEventListener('blur', handleWindowBlur);
-  //   };
-  // }, []);
-
-
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleWindowBlur);
+    };
+  }, []);
 
 
 
-  // useEffect(() => {
-  //   const handleKeyDown = (event) => {
-  //     // Define an array of key combinations to block
 
-  //     const blockedKeyCombinations = [
-  //       'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'Escape', 'Meta', 'ContextMenu', 'PrintScreen',
-  //       'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Control', 'Alt',
-  //       'Control+KeyC', 'Control+KeyV', 'Control+KeyX', 'Control+KeyA', 'Control+Shift+KeyJ', 'Control+Shift+KeyI', 'Alt+ArrowLeft', 'Alt+ArrowRight', 'Backspace',
-  //       'MediaPlayPause', 'MediaStop', 'MediaTrackNext', 'MediaTrackPrevious', 'VolumeUp', 'VolumeDown', 'VolumeMute'
-  //     ];
 
-  //     const keyCombination =
-  //       (event.ctrlKey ? 'Control+' : '') +
-  //       (event.shiftKey ? 'Shift+' : '') +
-  //       (event.altKey ? 'Alt+' : '') +
-  //       event.code;
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // Define an array of key combinations to block
 
-  //     if (blockedKeyCombinations.includes(keyCombination)) {
-  //       event.preventDefault();
-  //       console.log(`${keyCombination} key combination is blocked.`);
-  //     }
-  //   };
+      const blockedKeyCombinations = [
+        'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'Escape', 'Meta', 'ContextMenu', 'PrintScreen',
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Control', 'Alt',
+        'Control+KeyC', 'Control+KeyV', 'Control+KeyX', 'Control+KeyA', 'Control+Shift+KeyJ', 'Control+Shift+KeyI', 'Alt+ArrowLeft', 'Alt+ArrowRight', 'Backspace',
+        'MediaPlayPause', 'MediaStop', 'MediaTrackNext', 'MediaTrackPrevious', 'VolumeUp', 'VolumeDown', 'VolumeMute'
+      ];
 
-  //   const blockContextMenu = (event) => {
-  //     event.preventDefault();
-  //   };
+      const keyCombination =
+        (event.ctrlKey ? 'Control+' : '') +
+        (event.shiftKey ? 'Shift+' : '') +
+        (event.altKey ? 'Alt+' : '') +
+        event.code;
 
-  //   // Add event listener for keydown when component mounts
-  //   document.addEventListener('keydown', handleKeyDown);
-  //   document.addEventListener('contextmenu', blockContextMenu);
+      if (blockedKeyCombinations.includes(keyCombination)) {
+        event.preventDefault();
+        console.log(`${keyCombination} key combination is blocked.`);
+      }
+    };
 
-  //   // Cleanup function to remove event listener when component unmounts
-  //   return () => {
-  //     document.removeEventListener('keydown', handleKeyDown);
-  //     document.removeEventListener('contextmenu', blockContextMenu);
-  //   };
-  // }, []);
+    const blockContextMenu = (event) => {
+      event.preventDefault();
+    };
+
+    // Add event listener for keydown when component mounts
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('contextmenu', blockContextMenu);
+
+    // Cleanup function to remove event listener when component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('contextmenu', blockContextMenu);
+    };
+  }, []);
 
 
 
@@ -394,7 +395,6 @@ const TestScreen = () => {
     };
 
     const setupMediaRecorder = () => {
-      console.log("kkkk")
       // Request access to the webcam
       navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
@@ -480,6 +480,12 @@ const TestScreen = () => {
 
 
 
+  useEffect(() => {
+    if (timeFinish) {
+      toast.success("Time Finish")
+      submigNavigate();
+    }
+  }, [timeFinish]);
 
 
 
@@ -520,7 +526,7 @@ const TestScreen = () => {
                     }}
                   >
                     {question?.length > 0 &&
-                      <Timer time={question[0]?.time}></Timer>}
+                      <Timer time={question[0]?.time} setTimeFinish={setTimeFinish}></Timer>}
                   </div>
                 </div>
                 <button

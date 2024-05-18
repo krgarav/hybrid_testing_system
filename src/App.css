@@ -185,3 +185,40 @@ div[style="display: none; position: fixed; top: 10px; left: 10px; right: 10px; f
         font-size: 12px !important;
     }
 }
+
+
+
+/* Custom scrollbar style for specific div */
+.custom-scrollbar {
+    /* Adjust scrollbar width as desired */
+    /* scrollbar-width: d; Firefox */
+    /* scrollbar-color:#000 ; */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 7px; /* Width of the scrollbar */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #899bae; /* Color of the thumb */
+    border-radius: 10px; /* Roundness of the thumb */
+  }
+  .custom-scrollbar {
+    -ms-overflow-style: none; /* Hide scrollbar */
+  }
+  
+  .custom-scrollbar:hover {
+    -ms-overflow-style: auto; /* Show scrollbar on hover */
+  }
+  /* .custom-scrollbar::-webkit-scrollbar {
+    display: none;
+  } */
+  
+  /* Show scrollbar on hover */
+  .custom-scrollbar:hover::-webkit-scrollbar {
+    display: auto;
+  }
+  .dropdown-menu {
+    left: 0;
+    right: auto;
+  }

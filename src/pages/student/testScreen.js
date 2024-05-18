@@ -19,7 +19,7 @@ import axios from "axios";
 import { saveExamAnswers } from "helpers/test_helper";
 import { success } from "toastr";
 import io from 'socket.io-client';
-
+import classes from "./testscreen.module.css"
 
 
 
@@ -155,9 +155,6 @@ const TestScreen = () => {
       navigate(`/finalsubmit/${s}/${v}/${ua}`);
     }
   }
-
-
-
 
 
 
@@ -495,22 +492,20 @@ const TestScreen = () => {
 
 
   return (
-
-
     <>
       <div className="" ref={fullScreenRef} style={{ height: "100vh", backgroundColor: "white" }}>
-        <div className="container-fluid d-flex justify-content-between pt-2" style={{ backgroundColor: "rgb(129 207 118)" }} >
+        <div className={`container-fluid d-flex justify-content-between  py-3 px-4 ${classes.headbar}`} style={{ backgroundColor: "rgb(129 207 118)" }}  >
           <div className="">
             <img src={ios} alt="" height="30" className="auth-logo-dark " />
           </div>
           <div className="text-white text-center fw-bold">
-            <h2>Exam Name: {question?.[0]?.examName}</h2>
+            <h2>Exam Name : {question?.[0]?.examName}</h2>
           </div>
           <div className="text-white text-center fw-bold">
 
           </div>
         </div>
-        <div className="container-fluid bg-white">
+        <div className="container-fluid bg-white px-4 py-2">
           <div className="row pt-4 test_screen_main">
             <div className="col-8 mx-3 shadow animate__animated animate__fadeInLeft test_screen_left">
               <div className="row d-flex justify-content-center align-item-center pt-3 ">
@@ -570,13 +565,14 @@ const TestScreen = () => {
               </Modal>
               <hr></hr>
               <div className="container">
+                <br />
                 <div className="ms-5">
                   <h4>
                     <span className="" key={question?.[currentQuestionIndex]?.description}>
                       Q {currentQuestionIndex + 1} :
                     </span>
                     <span className="">
-                      {question?.[currentQuestionIndex]?.description}
+                      &nbsp; {question?.[currentQuestionIndex]?.description}
                     </span>
                     <div>
                       {question?.[currentQuestionIndex]?.imagePaths.map((path) => (
@@ -585,6 +581,7 @@ const TestScreen = () => {
 
                     </div>
                   </h4>
+                  <br />
                   <div className="row p-2">
                     {question?.[currentQuestionIndex]?.type === "mcq"
                       ? question?.[currentQuestionIndex]?.optionNames.map((o, i) => (
@@ -602,7 +599,7 @@ const TestScreen = () => {
                             />
                             <label
                               className="form-check-label"
-                              htmlFor="exampleRadios1"
+                              htmlFor={i}
                             >
                               {o}
                             </label>

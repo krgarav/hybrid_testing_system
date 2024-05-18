@@ -19,7 +19,7 @@ import { fetchAllSubSectionsBySection } from "helpers/subSection_helper";
 import { fetchSingleQuestion } from "helpers/question_helper";
 import { BACKEND_SPRING, IMAGE_FETCH } from "helpers/url_helper";
 import DOMPurify from 'dompurify';
-
+import { useWindowSize } from 'react-use';
 const AllQuestions = (props) => {
     document.title = "Question Bank | All Questions";
     const [modalShow, setModalShow] = useState(false);
@@ -53,20 +53,33 @@ const AllQuestions = (props) => {
     // const subSections = useSelector(state => state.subSectionsReducer);
     const difficultys = useSelector(state => state.difficultysReducer)
     const languages = useSelector(state => state.languagesReducer);
-
+    const { width } = useWindowSize();
 
     const breadcrumbItems = [
         { title: "Question", link: "#" },
         { title: "All Questions", link: "#" },
     ]
 
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
             blurDiv.click()
         }
     }, [])
+
+    useEffect(() => {
+        const paginationSection = document.querySelector(".dataTables_paginate");
+        const MBDTableDiv = document.querySelector("#MBDTableDiv");
+        if (width <= 480) {
+            paginationSection.style.width = "290px"
+            MBDTableDiv.style.overflowX = "auto";
+        } else {
+            paginationSection.style.width = ""
+            MBDTableDiv.style.overflowX = "";
+        }
+    }, [width]);
+
     useEffect(() => {
         props.setBreadcrumbItems('All Questions', breadcrumbItems)
     })
@@ -505,7 +518,10 @@ const AllQuestions = (props) => {
                         <CardBody>
                             <CardTitle className="h4">All Questions </CardTitle>
                             {questions?.questions?.result?.length}
-                            <MDBDataTable responsive bordered data={data} />
+                            <div id="MBDTableDiv" >
+                                <MDBDataTable responsive bordered data={data} />
+
+                            </div>
                         </CardBody>
                     </Card>
                 </Col>

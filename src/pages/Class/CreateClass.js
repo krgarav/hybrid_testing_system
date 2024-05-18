@@ -32,7 +32,13 @@ const CreateClass = (props) => {
         { title: "Class", link: "#" },
         { title: "Create Class", link: "#" },
     ]
-
+    useEffect(() => {
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
     useEffect(() => {
         props.setBreadcrumbItems('Create Class', breadcrumbItems)
     })
@@ -70,7 +76,7 @@ const CreateClass = (props) => {
             <Row >
                 <Col>
                     <Card>
-                        <CardBody style={{ width: "60%", }}>
+                        <CardBody className="col-lg-10 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Create Class</CardTitle>
                             <form onSubmit={handleSubmit}>
 

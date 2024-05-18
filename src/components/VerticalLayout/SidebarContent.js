@@ -178,9 +178,9 @@ const SidebarContent = props => {
 
   return (
     <React.Fragment>
-      <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
-        <div id="sidebar-menu">
-          <ul className="metismenu list-unstyled" id="side-menu">
+      <SimpleBar ref={ref}>
+        <div id="sidebar-menu" >
+          <ul className="metismenu list-unstyled" id="side-menu" >
 
             <li>
               <Link to="/dashboard" className="waves-effect">
@@ -197,6 +197,7 @@ const SidebarContent = props => {
                 <i className="mdi mdi-calendar-check"></i>
                 <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Class")}</span>
               </Link>
+
               <ul className="sub-menu" >
                 <li>
                   <Link to="/create-class">{props.t("Create Class")}</Link>
@@ -288,17 +289,20 @@ const SidebarContent = props => {
             </li>
 
             <li style={{ "display": display.question === true ? "block" : "none " }}>
-              <Link to="/#" className="has-arrow waves-effect">
+              <Link to="/#" className="has-arrow waves-effect"  >
 
                 <i className="fas fa-dice-d6"></i>
+
                 <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Question")}</span>
+
+
               </Link>
               <ul className="sub-menu" >
                 <li>
                   <Link to="/create-question">{props.t("Create Question")}</Link>
                 </li>
                 <li>
-                  <Link to="/create-question-using-csv">{props.t("Create Question Using CSV")}</Link>
+                  <Link to="/create-question-using-csv" style={{fontSize:"calc(0.7rem + 0.05rem)"}}>{props.t("Create Question Using CSV")}</Link>
                 </li>
                 <li>
                   <Link to="/all-questions">{props.t("All Questions")} </Link>
@@ -314,7 +318,7 @@ const SidebarContent = props => {
                 <i className="fas fa-dice-d6"></i>
                 <span style={{ fontSize: ".9rem", color: "#09f3df" }}>{props.t("Question Paper")}</span>
               </Link>
-              <ul className="sub-menu" >
+              <ul className="sub-menu"  >
                 <li>
                   <Link to="/create-question-paper">{props.t("Create Question Paper")}</Link>
                 </li>

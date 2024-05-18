@@ -47,6 +47,14 @@ const CreateQuestionPaper = (props) => {
         { title: "Create Question Paper", link: "#" },
     ]
 
+    useEffect(() => {           /* For closing the sidebar if opened */
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
+
     useEffect(() => {
         props.setBreadcrumbItems('Create QuestionPaper', breadcrumbItems)
     })
@@ -332,7 +340,7 @@ const CreateQuestionPaper = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody style={{ width: "60%", }}>
+                        <CardBody className="col-xl-6 col-lg-10 col-md-10 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Create QuestionPaper</CardTitle>
                             <form onSubmit={handleSubmit}>
 
@@ -532,9 +540,11 @@ const CreateQuestionPaper = (props) => {
                                     <div className="col-md-10">
                                         <div className="mb-5">
                                             <div className="form-check form-inline d-block mb-2 p-0">
-                                                <label className="form-check-label d-inline" htmlFor="exampleRadios2">
+
+                                                <label className="form-check-label d-inline " htmlFor="exampleRadios2">
                                                     Short
                                                 </label>
+
                                                 <input
                                                     className="form-control d-inline ms-3"
                                                     type="number"
@@ -543,6 +553,7 @@ const CreateQuestionPaper = (props) => {
                                                     onChange={(e) => setShortValue(e.target.value)}
                                                     style={{ width: "4rem" }}
                                                 />
+
 
                                             </div>
                                             <div className="col-md-4" style={{ display: `${shortDisplay}` }}>
@@ -561,11 +572,11 @@ const CreateQuestionPaper = (props) => {
                                         </div>
                                         <div className="mb-5">
                                             <div className="form-check form-inline d-block mb-2 p-0">
-                                                <label className="form-check-label d-inline" htmlFor="exampleRadios2">
+                                                <label className="form-check-label d-inline col-lg-8" htmlFor="exampleRadios2">
                                                     Mcq
                                                 </label>
                                                 <input
-                                                    className="form-control d-inline ms-3"
+                                                    className="form-control d-inline ms-3 col-lg-8"
                                                     type="number"
                                                     name="type"
                                                     value={mcqValue}
@@ -591,7 +602,7 @@ const CreateQuestionPaper = (props) => {
                                         <div className="mb-5">
                                             <div className="form-check form-inline d-block mb-2 p-0">
                                                 <label className="form-check-label d-inline" htmlFor="exampleRadios2">
-                                                    True False
+                                                    True/False
                                                 </label>
                                                 <input
                                                     className="form-control d-inline ms-3"

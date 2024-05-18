@@ -59,7 +59,7 @@ const Header = props => {
         <Container fluid>
           <div className="float-start">
             <div className="navbar-brand-box">
-              <Link to="/" className="logo logo-dark">
+              <Link to="/" >
                 <span className="logo-sm">
                   <img src={logo} alt="" height="22" />
                 </span>

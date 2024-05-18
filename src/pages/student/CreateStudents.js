@@ -33,6 +33,13 @@ const CreateStudents = (props) => {
         { title: "Students", link: "#" },
         { title: "Create Students", link: "#" },
     ]
+    useEffect(() => {           /* For closing the sidebar if opened */
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
 
     useEffect(() => {
         props.setBreadcrumbItems('Create Students', breadcrumbItems)
@@ -104,7 +111,7 @@ const CreateStudents = (props) => {
             <Row>
                 <Col>
                     <Card>
-                        <CardBody style={{ width: "60%", }}>
+                        <CardBody className="col-xl-6 col-lg-10 col-md-10 col-sm-12 col-xs-12">
                             <CardTitle className="h4">Upldoad Student File</CardTitle>
                             <form onSubmit={handleSubmit}>
                                 <Row className="mb-3">

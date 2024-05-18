@@ -7,11 +7,12 @@ import withRouter from "components/Common/withRouter"
 import { withTranslation } from "react-i18next"
 import SidebarContent from "./SidebarContent"
 
+import classes from "./Header.module.css";
 const Sidebar = props => {
   return (
     <React.Fragment>
-      <div className="vertical-menu">
-        <div data-simplebar className="h-100">
+      <div id="verticalDiv" className={`vertical-menu custom-scrollbar`} >
+        <div data-simplebar className="">
           {props.type !== "condensed" ? <SidebarContent /> : <SidebarContent />}
         </div>
       </div>

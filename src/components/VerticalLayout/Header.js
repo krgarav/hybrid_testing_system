@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types'
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { connect } from "react-redux"
 
 import { Link } from "react-router-dom"
+import { useWindowSize } from 'react-use';
 
 // Reactstrap
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap"
@@ -29,13 +30,24 @@ import {
   changeSidebarType,
 } from "../../store/actions"
 
+//css import
+import classes from "./Header.module.css";
+
 const Header = props => {
   const [search, setsearch] = useState(false)
   const [createmenu, setCreateMenu] = useState(false)
   const [logoHeight, setLogoHeight] = useState(40);
-
+  const { width } = useWindowSize();
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-
+  useEffect(() => {
+    var body = document.body;
+    var verticalBody = document.getElementById("verticalDiv");
+    if (!body.classList.contains("vertical-collapsed") && width >= 998) {
+      verticalBody.style.overflowY = "auto"; // Show vertical scrollbar
+    } else {
+      verticalBody.style.overflowY = "";
+    }
+  }, [width])
   function toggleFullscreen() {
     if (
       !document.fullscreenElement &&
@@ -75,19 +87,57 @@ const Header = props => {
     body.classList.toggle("vertical-collpsed");
     body.classList.toggle("sidebar-enable");
 
+    // var pageBody = document.querySelector(".page-content");
+    // if (pageBody && width <= 998) {
+    //   pageBody.classList.toggle(classes.mainpage);
+    // }
+    var blurDiv = document.getElementById("blur");
+    var bodyHeight = document.body.scrollHeight;
 
+    if (blurDiv && width <= 998) {
+      var isDivPageActive = blurDiv.classList.toggle(classes.divPage);
+      if (isDivPageActive) {
+        blurDiv.style.height = bodyHeight + "px"; // Set blur div height to body height
+      } else {
+        blurDiv.style.height = ""; // Reset height to its default value
+      }
+
+    }
+
+    var navBar = document.querySelector(".navbar-brand-box");
+    if (navBar && width <= 998) {
+      if (navBar.style.backgroundColor === "white") {
+        navBar.style.backgroundColor = ""; // Reset to default value
+        // Reset to default value
+        // navBar.style.padding = "2px";
+      } else {
+        navBar.style.backgroundColor = "white";
+        // navBar.style.padding = "";
+      }
+    }
+    if (navBar) {
+      if (navBar.style.padding === "") {
+        navBar.style.padding = "2px";
+      } else {
+        navBar.style.padding = "";
+      }
+
+    }
   }
   return (
     <React.Fragment>
       <header id="page-topbar">
         <div className="navbar-header">
           <div className="d-flex">
-            <div className="navbar-brand-box">
-              <Link to="/" className="logo logo-dark">
+            <div className="navbar-brand-box" style={{ backgroundColor: width <= 998 && "white" }}>
+              <Link to="/"
+                className="logo logo-dark"
+
+              >
                 <img src={ios} alt="" height="40" />
               </Link>
 
-              <Link to="/" className="logo logo-light">
+              <Link to="/" className="logo logo-light" >
                 <img src={ios} alt="" height={logoHeight} />
               </Link>
             </div>

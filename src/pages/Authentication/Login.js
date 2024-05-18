@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, CardBody, Label, Form, Alert, Input, FormFeedback } from 'reactstrap';
 import logoDark from "../../assets/images/logo-dark.png";
 import logoLight from "../../assets/images/logo-dark.png";
@@ -15,6 +15,7 @@ import withRouter from 'components/Common/withRouter';
 
 // actions
 import { loginUser, socialLogin } from "../../store/actions";
+
 
 const Login = props => {
   document.title = "Login | Lexa - Responsive Bootstrap 5 Admin Dashboard";
@@ -34,6 +35,8 @@ const Login = props => {
       password: Yup.string().required("Please Enter Your Password"),
     }),
     onSubmit: (values) => {
+      console.log(values)
+      // navigate("/dashboard")
       dispatch(loginUser(values, props.router.navigate));
     }
   });

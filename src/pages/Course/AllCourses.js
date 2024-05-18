@@ -36,8 +36,13 @@ const AllCourses = (props) => {
     useEffect(() => {
         props.setBreadcrumbItems('All Courses', breadcrumbItems)
     })
-
-
+   useEffect(() => {
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
     useEffect(() => {
         if (classes?.classes.length == 0) {
             dispatch(fetchClass());

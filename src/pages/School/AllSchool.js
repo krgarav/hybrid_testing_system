@@ -35,7 +35,13 @@ const AllSchool = (props) => {
     const dispatch = useDispatch();
     const result = useSelector(state => state.schoolReducer)
 
-
+    useEffect(() => {           /* For closing the sidebar if opened */
+        const blurDiv = document.getElementById("blur");
+        var width = window.innerWidth;
+        if (width <= 994) {
+            blurDiv.click()
+        }
+    }, [])
 
     useEffect(() => {
         fetchAllSchoolTypes();

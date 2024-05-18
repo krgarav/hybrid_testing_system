@@ -19,7 +19,7 @@ const SidebarContent = props => {
   const [questionBankDisplay, setQuestionBankDisplay] = useState("none")
   const [examSystemDisplay, setExamSystemDisplay] = useState("none")
   const [administrationDisplay, setAdministrationDisplay] = useState("none")
-  const [display, setDisplay] = useState({ classs: "", course: "", section: "", subSection: "", difficulty: "", question: "", questionPaper: "", schoolManagment: "", userManagment: "", studentManagment: "", centerManagment: "", });
+  const [display, setDisplay] = useState({ classs: "", course: "", section: "", subSection: "", difficulty: "", question: "", questionPaper: "", schoolManagment: "", userManagment: "", studentManagment: "", centerManagment: "", language: "" });
 
 
 
@@ -32,7 +32,7 @@ const SidebarContent = props => {
   useEffect(() => {
     setDisplay({
       ...display, ["classs"]: access?.classAccess, ["course"]: access?.courseAccess, ["section"]: access?.sectionAccess, ["subSection"]: access?.subSectionAccess,
-      ["difficulty"]: access?.difficultyAccess, ["question"]: access?.questionAccess, ["questionPaper"]: access?.questionPaperAccess, ["schoolManagment"]: access?.
+      ["difficulty"]: access?.difficultyAccess, ["language"]: access?.languageAccess, ["question"]: access?.questionAccess, ["questionPaper"]: access?.questionPaperAccess, ["schoolManagment"]: access?.
         schoolAccess, ["userManagment"]: access?.userManagementAccess, ["studentManagment"]: access?.studentManagementAccess, ["centerManagment"]: access?.examCenterAccess,
     })
 
@@ -267,6 +267,22 @@ const SidebarContent = props => {
                 </li>
                 <li>
                   <Link to="/all-difficultys">{props.t("All Difficulties")} </Link>
+                </li>
+              </ul>
+            </li>
+
+            <li style={{ "display": display.language === true ? "block" : "none " }}>
+              <Link to="/#" className="has-arrow waves-effect">
+
+                <i className="fas fa-book"></i>
+                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Language")}</span>
+              </Link>
+              <ul className="sub-menu" >
+                <li>
+                  <Link to="/create-language">{props.t("Create Language")}</Link>
+                </li>
+                <li>
+                  <Link to="/all-languages">{props.t("All Languages")} </Link>
                 </li>
               </ul>
             </li>

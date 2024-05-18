@@ -44,6 +44,7 @@ const AllUsers = (props) => {
     const [schoolManagementAccess, setSchoolManagementAccess] = useState(false);
     const [examCenterManagementAccess, setExamCenterManagementAccess] = useState(false);
     const [studentManagementAccess, setStudentManagementAccess] = useState(false);
+    const [languageAccess, setLanguageAccess] = useState(false);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [id, setId] = useState({});
     const dispatch = useDispatch();
@@ -144,6 +145,7 @@ const AllUsers = (props) => {
         setSchoolManagementAccess(row.schoolManagementAccess);
         setExamCenterManagementAccess(row.examCenterManagementAccess);
         setSchoolManagementAccess(row.studentManagementAccess);
+        setLanguageAccess(row.languageAccess);
 
 
     }
@@ -155,7 +157,7 @@ const AllUsers = (props) => {
         }
         else {
             let userType = type.typeName
-            dispatch(updateUser({ id, position, userType, classAccess, courseAccess, sectionAccess, subSectionAccess, difficultyAccess, questionAccess, questionBulkAccess, questionPaperAccess, userManagementAccess, schoolManagementAccess, examCenterManagementAccess, studentManagementAccess }))
+            dispatch(updateUser({ id, position, userType, classAccess, courseAccess, sectionAccess, subSectionAccess, difficultyAccess, languageAccess, questionAccess, questionBulkAccess, questionPaperAccess, userManagementAccess, schoolManagementAccess, examCenterManagementAccess, studentManagementAccess }))
             setModalShow(false);
         }
     };
@@ -191,6 +193,7 @@ const AllUsers = (props) => {
     const handleSchoolManagementRights = (e) => { schoolManagementAccess === false ? setSchoolManagementAccess(true) : setSchoolManagementAccess(false) }
     const handleExamCenterManagementRights = (e) => { examCenterManagementAccess === false ? setExamCenterManagementAccess(true) : setExamCenterManagementAccess(false) }
     const handleStudentManagementRights = (e) => { studentManagementAccess === false ? setStudentManagementAccess(true) : setStudentManagementAccess(false) }
+    const handleLanguageRights = (e) => { languageAccess === false ? setLanguageAccess(true) : setLanguageAccess(false) }
 
 
     return (
@@ -415,6 +418,21 @@ const AllUsers = (props) => {
                                     value={1}
                                     onChange={handleDifficultyRights}
                                     checked={difficultyAccess ? 'checked' : ''}
+                                />
+                            </div>
+                        </div>
+                        <div className="mb-3 col-md-4 col-12 d-flex align-items-center">
+                            <label htmlFor="language_access" className="col-md-6 col-form-label">
+                                Language Access
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    type="checkbox"
+                                    id="language_access"
+                                    name="language_access"
+                                    value={1}
+                                    onChange={handleLanguageRights}
+                                    checked={languageAccess ? 'checked' : ''}
                                 />
                             </div>
                         </div>

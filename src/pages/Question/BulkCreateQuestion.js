@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 // import { addClass, updateClass } from './actions';
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { fetchDifficulty, setBreadcrumbItems } from "../../store/actions";
+import { fetchDifficulty, fetchLanguage, setBreadcrumbItems } from "../../store/actions";
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 
@@ -67,10 +67,13 @@ const CreateQuestion = (props) => {
     const [optionsEditDisplay, setOptionsEditDisplay] = useState("none");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [auth, setAuth] = useAuth();
+    const [language, setLanguage] = useState(null);
+    const [difficulty, setDifficulty] = useState(null);
 
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
+    const languages = useSelector(state => state.languagesReducer);
 
     useEffect(() => {
         if (classes?.classes.length == 0) {
@@ -81,6 +84,12 @@ const CreateQuestion = (props) => {
     useEffect(() => {
         if (difficultys?.difficultys.length == 0) {
             dispatch(fetchDifficulty());
+        }
+
+    })
+    useEffect(() => {
+        if (languages?.languages.length == 0) {
+            dispatch(fetchLanguage());
         }
 
     })
@@ -134,7 +143,7 @@ const CreateQuestion = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!classs || !course || !section || !subSection || !file || !difficulty || !type) {
+        if (!classs || !course || !section || !subSection || !file || !difficulty || !language || !type) {
             setSpanDisplay("inline")
 
         }
@@ -152,6 +161,7 @@ const CreateQuestion = (props) => {
             formData.append('SubSectionId', subSection.id);
             formData.append('SubSection', JSON.stringify(subSection));
             formData.append('DifficultyId', difficulty.id);
+            formData.append('languageId', language.id);
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
             const result = await bulkCreateQuestion(formData);
@@ -172,6 +182,8 @@ const CreateQuestion = (props) => {
         setSections([]);
         setCourse(null);
         setSection(null);
+        setSubSections([]);
+        setSubSection(null);
     };
 
     const handleSelectCourse = selectedOption => {
@@ -194,12 +206,16 @@ const CreateQuestion = (props) => {
         setDifficulty(selectedOption);
     };
 
+    const handleSelectLanguage = selectedOption => {
+        setLanguage(selectedOption);
+    };
+
 
     const checkResult = () => {
 
     }
 
-    const [difficulty, setDifficulty] = useState('easy');
+
     const handleDifficultyChange = (event) => {
         setDifficulty(event.target.value);
     };
@@ -346,6 +362,28 @@ const CreateQuestion = (props) => {
                                             classNamePrefix="select2-selection"
                                         />
                                         {!difficulty && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+
+                                </Row>}
+
+                                {languages && <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Language Name
+                                    </label>
+                                    <div className="col-md-10">
+                                        <Select
+
+                                            value={language}
+                                            onChange={handleSelectLanguage}
+                                            options={languages?.languages?.result}
+                                            getOptionLabel={option => option.languageName}
+                                            getOptionValue={option => option.id.toString()}
+                                            classNamePrefix="select2-selection"
+                                        />
+                                        {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
 
                                 </Row>}

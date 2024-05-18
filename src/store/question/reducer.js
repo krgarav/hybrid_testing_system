@@ -28,7 +28,7 @@ function questionsReducer(state = initialState, action) {
             //     ),
             //     error: null
             // };
-            return { questions: [], error: null };
+            return { ...state, error: null };
 
         case DELETE_QUESTION_SUCCESS:
             // return {

@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 // import { addClass, updateClass } from './actions';
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { fetchDifficulty, setBreadcrumbItems } from "../../store/actions";
+import { fetchDifficulty, fetchLanguage, setBreadcrumbItems } from "../../store/actions";
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
@@ -62,6 +62,7 @@ const CreateQuestion = (props) => {
     const [subSections, setSubSections] = useState([]);
     const [answer, setAnswer] = useState("");
     const [difficulty, setDifficulty] = useState(null);
+    const [language, setLanguage] = useState(null);
     const [text, setText] = useState("");
     const [option, setOption] = useState("");
     const [options, setOptions] = useState([]);
@@ -73,6 +74,7 @@ const CreateQuestion = (props) => {
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
+    const languages = useSelector(state => state.languagesReducer);
 
     useEffect(() => {
         if (classes?.classes.length == 0) {
@@ -83,6 +85,12 @@ const CreateQuestion = (props) => {
     useEffect(() => {
         if (difficultys?.difficultys.length == 0) {
             dispatch(fetchDifficulty());
+        }
+
+    })
+    useEffect(() => {
+        if (languages?.languages.length == 0) {
+            dispatch(fetchLanguage());
         }
 
     })
@@ -211,7 +219,7 @@ const CreateQuestion = (props) => {
         tempElement.innerHTML = res.outerHTML;
         let textContent = tempElement.textContent || tempElement.innerText;
 
-        if (!classs || !course || !section || !subSection || !desc || !difficulty || !type || !answer) {
+        if (!classs || !course || !section || !subSection || !desc || !difficulty || !language || !type || !answer) {
             setSpanDisplay("inline")
 
         }
@@ -236,6 +244,7 @@ const CreateQuestion = (props) => {
             formData.append('Description', removeImgTag(desc));
             formData.append('ContentText', textContent);
             formData.append('DifficultyId', difficulty.id);
+            formData.append('languageId', language.id);
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
             formData.append('Answer', answer);
@@ -253,6 +262,8 @@ const CreateQuestion = (props) => {
         setSections([]);
         setCourse(null);
         setSection(null);
+        setSubSections([]);
+        setSubSection(null);
     };
 
     const handleSelectCourse = selectedOption => {
@@ -273,6 +284,9 @@ const CreateQuestion = (props) => {
     };
     const handleSelectDifficulty = selectedOption => {
         setDifficulty(selectedOption);
+    };
+    const handleSelectLanguage = selectedOption => {
+        setLanguage(selectedOption);
     };
 
 
@@ -459,6 +473,27 @@ const CreateQuestion = (props) => {
                                             classNamePrefix="select2-selection"
                                         />
                                         {!difficulty && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+
+                                </Row>}
+                                {languages && <Row className="mb-3" style={{ width: "85%", }}>
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Language Name
+                                    </label>
+                                    <div className="col-md-10">
+                                        <Select
+
+                                            value={language}
+                                            onChange={handleSelectLanguage}
+                                            options={languages?.languages?.result}
+                                            getOptionLabel={option => option.languageName}
+                                            getOptionValue={option => option.id.toString()}
+                                            classNamePrefix="select2-selection"
+                                        />
+                                        {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
 
                                 </Row>}

@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteQuestion, fetchClass, fetchCourse, fetchDifficulty, fetchQuestion, fetchSection, fetchSubSection, setBreadcrumbItems, updateQuestion } from "../../store/actions";
+import { deleteQuestion, fetchClass, fetchCourse, fetchDifficulty, fetchLanguage, fetchQuestion, fetchSection, fetchSubSection, setBreadcrumbItems, updateQuestion } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -30,6 +30,7 @@ const AllQuestions = (props) => {
     const [classs, setClasss] = useState(null);
     const [type, setType] = useState('short');
     const [difficulty, setDifficulty] = useState(null);
+    const [language, setLanguage] = useState(null);
     const [answer, setAnswer] = useState("");
     const [course, setCourse] = useState(null);
     const [courses, setCourses] = useState([]);
@@ -51,6 +52,7 @@ const AllQuestions = (props) => {
     // const sections = useSelector(state => state.sectionsReducer);
     // const subSections = useSelector(state => state.subSectionsReducer);
     const difficultys = useSelector(state => state.difficultysReducer)
+    const languages = useSelector(state => state.languagesReducer);
 
 
     const breadcrumbItems = [
@@ -72,6 +74,9 @@ const AllQuestions = (props) => {
         }
         if (difficultys?.difficultys.length == 0) {
             dispatch(fetchDifficulty());
+        }
+        if (languages?.languages.length == 0) {
+            dispatch(fetchLanguage());
         }
 
     }, [])
@@ -248,6 +253,7 @@ const AllQuestions = (props) => {
         setSection(result?.result[0].section);
         setSubSection(result?.result[0].subSection);
         setDifficulty(result?.result[0].difficulty);
+        setLanguage(result?.result[0].language);
 
         let imagesHTML;
         if (BACKEND_SPRING) {
@@ -349,7 +355,7 @@ const AllQuestions = (props) => {
         let tempElement = document.createElement('div');
         tempElement.innerHTML = res.outerHTML;
         let textContent = tempElement.textContent || tempElement.innerText;
-        if (!classs || !course || !section || !subSection || !desc || !difficulty || !type || !answer) {
+        if (!classs || !course || !section || !subSection || !desc || !difficulty || !language || !type || !answer) {
             setSpanDisplay("inline")
 
         }
@@ -375,13 +381,20 @@ const AllQuestions = (props) => {
             formData.append('Description', removeImgTag(desc));
             formData.append('ContentText', textContent);
             formData.append('DifficultyId', difficulty.id);
+            formData.append('languageId', language.id);
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
             formData.append('Answer', answer);
             dispatch(updateQuestion(formData));
+            dispatch(fetchQuestion());
             setModalShow(false);
+            console.log(questions)
         }
     }
+
+    useEffect(() => {
+        console.log(questions)
+    }, [questions]);
     const handleDelete = () => {
         setModalShow(false);
         setDeleteModalShow(false);
@@ -415,6 +428,9 @@ const AllQuestions = (props) => {
     };
     const handleSelectDifficulty = selectedOption => {
         setDifficulty(selectedOption);
+    };
+    const handleSelectLanguage = selectedOption => {
+        setLanguage(selectedOption);
     };
     const handleTypeChange = (event) => {
         setType(event.target.value);
@@ -474,19 +490,14 @@ const AllQuestions = (props) => {
     let items = ['Bold', 'Italic', 'Underline', '|', 'Formats', 'Alignments', 'OrderedList',
         'UnorderedList', '|', 'CreateLink', 'Image', '|', 'SourceCode', '|', 'Undo', 'Redo'
     ];
-
-
-    // const htmlString = '<div class="e-rte-content" id="defaultRTErte-view" style="height: auto; margin-top: 0px; border-bottom: none;"><div class="e-content e-lib e-keyboard" id="defaultRTE_rte-edit-view" contenteditable="true" tabindex="0"><div style="display:block;"><p></p><p style="margin-right: 10px; text-align: center;"><span style="font-size: 14pt;"><span style="font-family: &quot;Times New Roman&quot;, Times, serif;"><strong><span style="text-decoration: underline;"><span style="text-decoration: line-through;">dfkfdlfkdlkfdlfkdkfjdkf</span></span> fkdjfkdfjkdjfkdjfkoeiroeiroeiorieorioeiroeivm,cvmc,vmc,vmc,mv,cmv,c</strong></span></span></p><p style="margin-right:10px"> </p><ul><li style="margin-right:10px"><span style="font-family: Roboto, &quot;Segoe UI&quot;, GeezaPro, &quot;DejaVu Serif&quot;, &quot;sans-serif&quot;, -apple-system, BlinkMacSystemFont; background-color: unset; text-align: inherit;">dfkfdlfkdlkfdlfkdkfjdkf fkdjfkdfjkdjfkdjfkoeiroeiroeiorieorioeiroeivm,cvmc,vmc,vmc,mv,cmv,ewewew</span></li></ul><span style="font-family: Roboto, &quot;Segoe UI&quot;, GeezaPro, &quot;DejaVu Serif&quot;, &quot;sans-serif&quot;, -apple-system, BlinkMacSystemFont;">dfkfdlfkdlkfdlfkdkfjdkf fkdjfkdfjkdjfkdjfkoeiroeiroeiorieorioeiroeivm,cvmc,vmc,vmc,mv,cmv</span></div><ul><li style="display:block;"><span style="font-family: Roboto, &quot;Segoe UI&quot;, GeezaPro, &quot;DejaVu Serif&quot;, &quot;sans-serif&quot;, -apple-system, BlinkMacSystemFont;">dfkfdlfkdlkfdlfkdkfjdkf fkdjfkdfjkdjfkdjfkoeiroeiroeiorieorioeiroeivm,cvmc,vmc,vmc,mv,cmv,c klklk</span><p style="margin-right: 10px; cursor: auto;"><img src="blob:http://localhost:3000/5a96c08a-fe90-4ee0-9d74-83bb7376a00e" class="e-rte-image e-imginline" alt="Screenshot (648).png" width="126" height="auto" style="min-width: 20px; min-height: 0px;"> </p><ul><li style="list-style-type: none;"><ul><li style="list-style-type: none;"><ul><li><span style="font-family: Roboto, &quot;Segoe UI&quot;, GeezaPro, &quot;DejaVu Serif&quot;, &quot;sans-serif&quot;, -apple-system, BlinkMacSystemFont;">dfkfdlfkdlkfdlfkdkfjdkf fkdjfkdfjkdjfkdjfkoeiroeiroeiorieorioeiroeivm,cvmc,vmc,vmc,mv,cmv,c</span><span style="font-family: Roboto, &quot;Segoe UI&quot;, GeezaPro, &quot;DejaVu Serif&quot;, &quot;sans-serif&quot;, -apple-system, BlinkMacSystemFont; background-color: unset; text-align: inherit;"></span></li></ul></li></ul></li></ul></li></ul></div></div>';
-
-    // const htmlContent = { __html: htmlString };
     return (
         <React.Fragment>
-
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Questions </CardTitle>
+                            {questions?.questions?.result?.length}
                             <MDBDataTable responsive bordered data={data} />
                         </CardBody>
                     </Card>
@@ -613,6 +624,27 @@ const AllQuestions = (props) => {
                                 classNamePrefix="select2-selection"
                             />
                             {!difficulty && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                        </div>
+
+                    </Row>}
+                    {languages && <Row className="mb-3">
+                        <label
+                            htmlFor="example-text-input"
+                            className="col-md-2 col-form-label"
+                        >
+                            Language Name
+                        </label>
+                        <div className="col-md-10">
+                            <Select
+
+                                value={language}
+                                onChange={handleSelectLanguage}
+                                options={languages?.languages?.result}
+                                getOptionLabel={option => option.languageName}
+                                getOptionValue={option => option.id.toString()}
+                                classNamePrefix="select2-selection"
+                            />
+                            {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                         </div>
 
                     </Row>}
@@ -847,35 +879,3 @@ const AllQuestions = (props) => {
 export default connect(null, { setBreadcrumbItems })(AllQuestions);
 
 
-
-
-//  <div class="e-rte-content" id="defaultRTErte-view" style="height: auto; margin-top: 0px;">
-//     <div class="e-content e-lib e-keyboard" id="defaultRTE_rte-edit-view" contenteditable="true" tabindex="0">
-//         <p>what is the main features of the linkedlist</p>
-//     </div>
-// </div>
-
-
-// <div class="e-rte-content" id="defaultRTErte-view" style="height: auto; margin-top: 0px;">
-//     <div class="e-content e-lib e-keyboard" id="defaultRTE_rte-edit-view" contenteditable="true" tabindex="0">
-//         <div class="e-rte-content" id="defaultRTErte-view" style="height: auto; margin-top: 0px;">
-//             <div class="e-content e-lib e-keyboard" id="defaultRTE_rte-edit-view" contenteditable="true" tabindex="0">
-//                 <p>
-//                     <span style="font-family: Georgia, serif;">
-//                         <span style="background-color: rgb(255, 255, 128);">
-//                             <span style="color: rgb(255, 0, 0); text-decoration: inherit;">
-//                                 <strong>
-//                                     <em>
-//                                         <span style="text-decoration: underline;">
-//                                             what is the main features of the linkedlist
-//                                         </span>
-//                                     </em>
-//                                 </strong>
-//                             </span>
-//                         </span>
-//                     </span>
-//                 </p>
-//             </div>
-//         </div>
-//     </div>
-// </div> 

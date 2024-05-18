@@ -34,6 +34,9 @@ import subSectionsReducer from "./subSection/reducer";
 //  difficulty
 import difficultysReducer from "./difficulty/reducer";
 
+// language
+import languagesReducer from "./language/reducer";
+
 // question
 import questionsReducer from "./question/reducer";
 
@@ -61,6 +64,7 @@ const rootReducer = combineReducers({
   sectionsReducer,
   subSectionsReducer,
   difficultysReducer,
+  languagesReducer,
   questionsReducer,
   questionPapersReducer,
   userReducer,

@@ -129,6 +129,8 @@ import CenterAllocation from "pages/Exam Managment/CenterAllocation"
 import CreateExam from "pages/Exam Managment/CreateExam"
 import AllExams from "pages/Exam Managment/AllExams"
 import StudentRegister from "pages/Authentication/StudentRegister"
+import CreateLanguage from "pages/language/CreateLanguage"
+import AllLanguage from "pages/language/AllLanguage"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -149,9 +151,13 @@ const userRoutes = [
   { path: "/create-subSection", component: <CreateSubSection /> },
   { path: "/all-subSections", component: <AllSubSection /> },
 
-  // sub section
+  // difficulty
   { path: "/create-difficulty", component: <CreateDifficulty /> },
   { path: "/all-difficultys", component: <AllDifficulty /> },
+
+  // language
+  { path: "/create-language", component: <CreateLanguage /> },
+  { path: "/all-languages", component: <AllLanguage /> },
 
   // question
   { path: "/create-question", component: <CreateQuestion /> },

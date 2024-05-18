@@ -37,6 +37,9 @@ export * from "./subSection/action";
 // difficulty
 export * from "./difficulty/action";
 
+// language
+export * from "./language/action";
+
 
 // question
 export * from "./question/action";

@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 // import { addClass, updateClass } from './actions';
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { addQuestionPaper, fetchDifficulty, setBreadcrumbItems } from "../../store/actions";
+import { addQuestionPaper, fetchDifficulty, fetchLanguage, setBreadcrumbItems } from "../../store/actions";
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
@@ -58,6 +58,7 @@ const CreateQuestionPaper = (props) => {
     const [selectedSectionIds, setSelectedSectionIds] = useState(null);
     const [selectedSubSectionIds, setSelectedSubSectionIds] = useState(null);
     const [selectedDifficultys, setSelectedDifficultys] = useState(null);
+    const [language, setLanguage] = useState(null);
     const [course, setCourse] = useState(null);
     const [section, setSection] = useState(null);
     const [subSection, setSubSection] = useState(null);
@@ -95,6 +96,7 @@ const CreateQuestionPaper = (props) => {
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
+    const languages = useSelector(state => state.languagesReducer);
 
     useEffect(() => {
         if (classes?.classes.length == 0) {
@@ -105,6 +107,12 @@ const CreateQuestionPaper = (props) => {
     useEffect(() => {
         if (difficultys?.difficultys.length == 0) {
             dispatch(fetchDifficulty());
+        }
+
+    })
+    useEffect(() => {
+        if (languages?.languages.length == 0) {
+            dispatch(fetchLanguage());
         }
 
     })
@@ -187,26 +195,27 @@ const CreateQuestionPaper = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!examName || !totalQuestions || !totalMarks || !classs || !courses || !sections || !subSections || !shortValues || !mcqValues || !tfValues || !essayValues) {
+        if (!examName || !totalQuestions || !totalMarks || !classs || !courses || !sections || !subSections || !language || !shortValues || !mcqValues || !tfValues || !essayValues) {
             setSpanDisplay("inline")
 
         }
         else {
 
-            if (Number(totalQuestions) !== Number(mcqValue) + Number(shortValue) + Number(tfValue) + Number(essayValue)) {
+            if (Number(totalQuestions) && Number(totalQuestions) !== Number(mcqValue) + Number(shortValue) + Number(tfValue) + Number(essayValue)) {
 
                 toast.error("Total Questions and the count of types of question are not match")
             }
-            else if (Number(mcqValue) !== calculateTotal(mcqValues)) {
+            else if (Number(mcqValue) && Number(mcqValue) !== calculateTotal(mcqValues)) {
                 toast.error("count of mcq questions and the difficulties count are not match")
             }
-            else if (Number(shortValue) !== calculateTotal(shortValues)) {
+            else if (Number(shortValue) && Number(shortValue) !== calculateTotal(shortValues)) {
+                console.log(Number(shortValue));
                 toast.error("count of short questions and the difficulties count are not match")
             }
-            else if (Number(tfValue) !== calculateTotal(tfValues)) {
+            else if (Number(tfValue) && Number(tfValue) !== calculateTotal(tfValues)) {
                 toast.error("count of true/false questions and the difficulties count are not match")
             }
-            else if (Number(essayValue) !== calculateTotal(essayValues)) {
+            else if (Number(essayValue) && Number(essayValue) !== calculateTotal(essayValues)) {
                 toast.error("count of essay questions and the difficulties count are not match")
             }
             else {
@@ -233,8 +242,9 @@ const CreateQuestionPaper = (props) => {
                 console.log(totalQuestions)
                 console.log(Number(mcqValue) + Number(shortValue) + Number(tfValue) + Number(essayValue))
                 console.log(calculateTotal(mcqValues))
+                let languageId = language?.id;
                 // let result = await createQuestionPaper({ examName, totalQuestions, totalMarks, totalTime, classId, courseIds, sectionIds, subSectionIds, shortValues, mcqValues, tfValues, essayValues });
-                dispatch(addQuestionPaper({ examName, totalQuestions, totalMarks, classs, course, section, subSection, classId, courseIds, sectionIds, subSectionIds, shortValues, mcqValues, tfValues, essayValues }));
+                dispatch(addQuestionPaper({ examName, totalQuestions, totalMarks, classs, course, section, languageId, subSection, classId, courseIds, sectionIds, subSectionIds, shortValues, mcqValues, tfValues, essayValues }));
             }
         }
     };
@@ -279,6 +289,9 @@ const CreateQuestionPaper = (props) => {
     };
     const handleSelectDifficulty = selectedOption => {
         setSelectedDifficultys(selectedOption);
+    };
+    const handleSelectLanguage = selectedOption => {
+        setLanguage(selectedOption);
     };
 
 
@@ -463,6 +476,27 @@ const CreateQuestionPaper = (props) => {
                                             classNamePrefix="select2-selection"
                                         />
                                         {!subSection && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+
+                                </Row>}
+                                {languages && <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Language Name
+                                    </label>
+                                    <div className="col-md-10">
+                                        <Select
+
+                                            value={language}
+                                            onChange={handleSelectLanguage}
+                                            options={languages?.languages?.result}
+                                            getOptionLabel={option => option.languageName}
+                                            getOptionValue={option => option.id.toString()}
+                                            classNamePrefix="select2-selection"
+                                        />
+                                        {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
 
                                 </Row>}

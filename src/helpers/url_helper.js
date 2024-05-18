@@ -84,6 +84,12 @@ export const CREATE_DIFFICULTY = url_online + "/CreateDifficulty"
 export const DELETE_DIFFICULTY = url_online + "/RemoveDifficulty?Id="
 export const UPDATE_DIFFICULTY = url_online + "/UpdateDifficulty"
 export const FETCH_ALL_DIFFICULTYS = url_online + "/GetDifficulty"
+
+
+export const CREATE_LANGUAGE = url_online + "/AddLanguage"
+export const DELETE_LANGUAGE = url_online + "/RemoveLanguage?Id="
+export const UPDATE_LANGUAGE = url_online + "/UpdateLanguage"
+export const FETCH_ALL_LANGUAGES = url_online + "/GetLanguages"
 // question
 // using node 
 // export const CREATE_QUESTION = "http://localhost:8000/api/v1/question/create-question"

@@ -13,7 +13,7 @@ import { useFormik } from "formik";
 import withRouter from 'components/Common/withRouter';
 
 // actions
-import { addUser, loginUser, socialLogin } from "../../store/actions";
+import { addUser, fetchLanguage, loginUser, socialLogin } from "../../store/actions";
 import { toast } from 'react-toastify';
 import { fetchOtp, registerStudent, verifyOtp } from 'helpers/user_helper';
 import Select from "react-select"
@@ -46,9 +46,15 @@ const Login = props => {
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [allExams, setAllExams] = useState([]);
     const [selectedExam, setSelectedExam] = useState({});
+    const [language, setLanguage] = useState(null);
 
+    const languages = useSelector(state => state.languagesReducer);
+    useEffect(() => {
+        if (languages?.languages.length == 0) {
+            dispatch(fetchLanguage());
+        }
 
-
+    })
 
     const sendOtp = async () => {
         setOtpFeildDisplay(true);
@@ -70,7 +76,11 @@ const Login = props => {
         setOtp(e.target.value);
         let otp = e.target.value;
         let emailId = email;
-
+        // for testing i do it ***************************
+        // setVerify(true);
+        // setOtpButtonDisplay(false);
+        // setIsReadOnly(true)
+        // for testing i do it *******************************
         const result = await verifyOtp({ otp, emailId });
         if (result.success) {
             toast.success(result.message);
@@ -88,7 +98,7 @@ const Login = props => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("submit")
-        if (!name || !email || !phoneNumber || !fatherName || !grandFatherName || !selectedExam || !password || !confirmPassword) {
+        if (!name || !email || !phoneNumber || !fatherName || !grandFatherName || !language || !selectedExam || !password || !confirmPassword) {
             setSpanDisplay("inline")
 
         }
@@ -98,7 +108,8 @@ const Login = props => {
             }
             else {
                 let mainExamId = selectedExam.id;
-                const result = await registerStudent({ name, email, phoneNumber, fatherName, grandFatherName, mainExamId, password, confirmPassword })
+                let languageId = language.id;
+                const result = await registerStudent({ name, email, phoneNumber, fatherName, grandFatherName, languageId, mainExamId, password, confirmPassword })
                 if (result?.success) {
                     toast.success(result?.message);
                 }
@@ -135,6 +146,9 @@ const Login = props => {
 
     const handleSelectExam = selectedOption => {
         setSelectedExam(selectedOption);
+    };
+    const handleSelectLanguage = selectedOption => {
+        setLanguage(selectedOption);
     };
 
 
@@ -231,6 +245,21 @@ const Login = props => {
                                                         />
 
                                                         {!phoneNumber && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                                    </div>
+                                                    <div className="mb-3">
+
+                                                        <Label htmlFor="exam">Language</Label>
+                                                        <Select
+
+                                                            value={language}
+                                                            onChange={handleSelectLanguage}
+                                                            options={languages?.languages?.result}
+                                                            getOptionLabel={option => option.languageName}
+                                                            getOptionValue={option => option.id.toString()}
+                                                            classNamePrefix="select2-selection"
+                                                        />
+
+                                                        {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                                     </div>
                                                     <div className="mb-3">
 

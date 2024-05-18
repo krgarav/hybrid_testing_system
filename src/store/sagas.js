@@ -14,6 +14,7 @@ import courseSaga from "./course/saga"
 import sectionSaga from "./section/saga"
 import subSubSectionSaga from "./subSection/saga"
 import difficultySaga from "./difficulty/saga"
+import languageSaga from "./language/saga"
 import questionSaga from "./question/saga"
 import questionPaperSaga from "./questionPaper/saga"
 import userSaga from "./user/saga"
@@ -37,6 +38,7 @@ export default function* rootSaga() {
     fork(sectionSaga),
     fork(subSubSectionSaga),
     fork(difficultySaga),
+    fork(languageSaga),
     fork(questionSaga),
     fork(questionPaperSaga),
     fork(userSaga),

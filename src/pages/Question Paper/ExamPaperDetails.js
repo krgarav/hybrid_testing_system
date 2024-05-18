@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import '../../css/questionPaper.css'
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { fetchClass, fetchDifficulty, fetchQuestionPaper, setBreadcrumbItems } from "../../store/actions";
+import { fetchClass, fetchDifficulty, fetchLanguage, fetchQuestionPaper, setBreadcrumbItems } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -43,6 +43,8 @@ const ExamPaperDetails = (props) => {
     const [subSections, setSubSections] = useState([]);
     const [selectedTypes, setSelectedTypes] = useState(null);
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [language, setLanguage] = useState(null);
+    const languages = useSelector(state => state.languagesReducer);
 
     const typesOptions = [
         { id: 1, name: "short" },
@@ -63,6 +65,12 @@ const ExamPaperDetails = (props) => {
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
 
+    useEffect(() => {
+        if (languages?.languages.length == 0) {
+            dispatch(fetchLanguage());
+        }
+
+    })
     useEffect(() => {
         if (classes?.classes.length == 0) {
             dispatch(fetchClass());
@@ -337,7 +345,7 @@ const ExamPaperDetails = (props) => {
 
     const handleFetch = async () => {
 
-        if (!classs || !courses || !sections || !subSections || !selectedDifficultys || !selectedTypes) {
+        if (!classs || !courses || !sections || !subSections || !selectedDifficultys || !language || !selectedTypes) {
             setSpanDisplay("inline")
 
         }
@@ -365,7 +373,8 @@ const ExamPaperDetails = (props) => {
             let classId = classs.id;
             try {
                 setModalForFetchQuestions(true);
-                const result = await fetchFilterQuestions({ classId, courseIds, sectionIds, subSectionIds, difficultyIds, types });
+                let languageId = language.id;
+                const result = await fetchFilterQuestions({ classId, courseIds, sectionIds, subSectionIds, difficultyIds, languageId, types });
                 setFilterQuestions(result.result);
             } catch (error) {
                 toast.error("something went wrong");
@@ -405,6 +414,9 @@ const ExamPaperDetails = (props) => {
     }
 
 
+    const handleSelectLanguage = selectedOption => {
+        setLanguage(selectedOption);
+    };
 
     return (
         <React.Fragment>
@@ -570,6 +582,27 @@ const ExamPaperDetails = (props) => {
                                 classNamePrefix="select2-selection"
                             />
                             {!selectedDifficultys && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                        </div>
+
+                    </Row>}
+                    {languages && <Row className="mb-3">
+                        <label
+                            htmlFor="example-text-input"
+                            className="col-md-2 col-form-label"
+                        >
+                            Language Name
+                        </label>
+                        <div className="col-md-10">
+                            <Select
+
+                                value={language}
+                                onChange={handleSelectLanguage}
+                                options={languages?.languages?.result}
+                                getOptionLabel={option => option.languageName}
+                                getOptionValue={option => option.id.toString()}
+                                classNamePrefix="select2-selection"
+                            />
+                            {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                         </div>
 
                     </Row>}

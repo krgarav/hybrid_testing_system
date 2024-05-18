@@ -189,7 +189,7 @@ const TestScreen = () => {
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'hidden') {
       if (!isAlertShown) {
-        if (warningCount1 + warningCount2 === 3) {
+        if (warningCount1 + warningCount2 === 2) {
           let a = Object.keys(answers).length;
           let v = Object.keys(visited).length;
           let s = Object.keys(submit).length;
@@ -378,107 +378,107 @@ const TestScreen = () => {
 
   let first = true;
 
-  useEffect(() => {
-    // Setup the socket connection to the server
-    socket.current = io('http://192.168.0.139:5000', {
-      reconnection: true,
-      reconnectionDelay: 2000,
-    });
+  // useEffect(() => {
+  //   // Setup the socket connection to the server
+  //   socket.current = io('http://192.168.0.139:5000', {
+  //     reconnection: true,
+  //     reconnectionDelay: 2000,
+  //   });
 
-    let mediaRecorder;
-    let recordedChunks = [];
+  //   let mediaRecorder;
+  //   let recordedChunks = [];
 
 
-    // Function to handle data availability
-    const handleDataAvailable = event => {
-      if (event.data && event.data.size > 0) {
-        console.log(`Sending data: ${event.data.size} bytes`);
-        socket.current.emit('video_data', event.data);
-      }
-    };
+  //   // Function to handle data availability
+  //   const handleDataAvailable = event => {
+  //     if (event.data && event.data.size > 0) {
+  //       console.log(`Sending data: ${event.data.size} bytes`);
+  //       socket.current.emit('video_data', event.data);
+  //     }
+  //   };
 
-    const setupMediaRecorder = () => {
-      // Request access to the webcam
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          console.log("stream")
-          // Initialize MediaRecorder with the stream
-          mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+  //   const setupMediaRecorder = () => {
+  //     // Request access to the webcam
+  //     navigator.mediaDevices.getUserMedia({ video: true })
+  //       .then(stream => {
+  //         console.log("stream")
+  //         // Initialize MediaRecorder with the stream
+  //         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
 
-          // Event handler for when recorded data is available
-          mediaRecorder.ondataavailable = handleDataAvailable;
+  //         // Event handler for when recorded data is available
+  //         mediaRecorder.ondataavailable = handleDataAvailable;
 
-          // Start recording the video stream in chunks of 5 seconds
-          mediaRecorder.start(2000);
+  //         // Start recording the video stream in chunks of 5 seconds
+  //         mediaRecorder.start(2000);
 
-          // Stop recording and reset every 5 seconds to send continuous data
-          const interval = setInterval(() => {
-            if (mediaRecorder.state === "recording") {
-              mediaRecorder.stop();
-              mediaRecorder.start(2000);
-            }
-          }, 2000);
+  //         // Stop recording and reset every 5 seconds to send continuous data
+  //         const interval = setInterval(() => {
+  //           if (mediaRecorder.state === "recording") {
+  //             mediaRecorder.stop();
+  //             mediaRecorder.start(2000);
+  //           }
+  //         }, 2000);
 
-          // Cleanup interval on unmount
-          return () => clearInterval(interval);
-        })
-        .catch(error => {
-          console.log("kdjfkdjfkd----->", error.name)
-          console.error('Error accessing the webcam', error.name);
-          // If permission denied, show alert message and blur/disable the page
-          if (error instanceof DOMException || error.name === 'NotAllowedError') {
-            alert('Please allow access to the camera for the test.');
-            document.body.style.filter = 'blur(5px)';
-            document.body.style.pointerEvents = 'none';
-          }
-        });
+  //         // Cleanup interval on unmount
+  //         return () => clearInterval(interval);
+  //       })
+  //       .catch(error => {
+  //         console.log("kdjfkdjfkd----->", error.name)
+  //         console.error('Error accessing the webcam', error.name);
+  //         // If permission denied, show alert message and blur/disable the page
+  //         if (error instanceof DOMException || error.name === 'NotAllowedError') {
+  //           alert('Please allow access to the camera for the test.');
+  //           document.body.style.filter = 'blur(5px)';
+  //           document.body.style.pointerEvents = 'none';
+  //         }
+  //       });
 
-      if (first) {
-        first = false;
-      }
-      // Listen for changes in camera state
-      // if (!mediaRecorder && !first) {
-      //   // Listen for changes in camera state
-      //   alert('Access to camera denied. Please refresh the page and grant access to continue.');
-      //   document.body.style.filter = 'blur(5px)';
-      //   document.body.style.pointerEvents = 'none';
-      //   // mediaRecorder.onstop = () => {
+  //     if (first) {
+  //       first = false;
+  //     }
+  //     // Listen for changes in camera state
+  //     // if (!mediaRecorder && !first) {
+  //     //   // Listen for changes in camera state
+  //     //   alert('Access to camera denied. Please refresh the page and grant access to continue.');
+  //     //   document.body.style.filter = 'blur(5px)';
+  //     //   document.body.style.pointerEvents = 'none';
+  //     //   // mediaRecorder.onstop = () => {
 
-      //   // };
-      // }
+  //     //   // };
+  //     // }
 
-    };
+  //   };
 
-    setupMediaRecorder();
+  //   setupMediaRecorder();
 
-    // Handling results from the server
-    socket.current.on('result', result => {
-      console.log('Received result from server:', result);
-      // Here you can handle the result, such as displaying it or processing further
-    });
-    // Handle socket connection errors
-    socket.current.on('connect_error', (err) => {
-      console.error('Socket connection error:', err);
-    });
+  //   // Handling results from the server
+  //   socket.current.on('result', result => {
+  //     console.log('Received result from server:', result);
+  //     // Here you can handle the result, such as displaying it or processing further
+  //   });
+  //   // Handle socket connection errors
+  //   socket.current.on('connect_error', (err) => {
+  //     console.error('Socket connection error:', err);
+  //   });
 
-    socket.current.on('reconnect_error', (err) => {
-      console.error('Socket reconnection error:', err);
-    });
+  //   socket.current.on('reconnect_error', (err) => {
+  //     console.error('Socket reconnection error:', err);
+  //   });
 
-    socket.current.on('disconnect', (reason) => {
-      console.warn('Socket disconnected:', reason);
-    });
+  //   socket.current.on('disconnect', (reason) => {
+  //     console.warn('Socket disconnected:', reason);
+  //   });
 
-    // Cleanup function
-    return () => {
-      if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-      }
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
-  }, []);
+  //   // Cleanup function
+  //   return () => {
+  //     if (mediaRecorder && mediaRecorder.state !== "inactive") {
+  //       mediaRecorder.stop();
+  //     }
+  //     if (socket.current) {
+  //       socket.current.disconnect();
+  //     }
+  //   };
+  // }, []);
 
 
 

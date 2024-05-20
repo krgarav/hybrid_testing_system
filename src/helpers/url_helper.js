@@ -1,5 +1,5 @@
 let url = "http://192.168.0.54:82/api/";
-export let url_online = "https://2zrl7bwf-5290.inc1.devtunnels.ms";
+export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
 // let url_online = "http://192.168.0.184:8080";
 // export const BACKEND_SPRING = true;
@@ -159,6 +159,9 @@ export const ALLOCATE_ROLL_NUMBER_AND_PASSWORD = url_online + "/AllocateRollNoAn
 export const CREATE_MAIN_EXAM_PAPER = url_online + "/CreateMainExamPaper";
 export const GET_ALL_MAIN_EXAM_PAPERS = url_online + "/GetMainExamPapers";
 export const DELETE_MAIN_EXAM_PAPER = url_online + "/DeleteMainExamPaper?Id=";
+export const GET_MAIN_EXAM_PAPERS_BY_LANGUAGE = url_online + "/GetExamPaperByLanguage?Id=";
+
+
 
 
 //PROFILE

@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 import { fetchOtp, registerStudent, verifyOtp } from 'helpers/user_helper';
 import Select from "react-select"
 import axios from 'axios';
-import { getAllMainExamPapers } from 'helpers/center_helper';
+import { getAllMainExamPapers, getMainExamPapersByLanguage } from 'helpers/center_helper';
 
 const Login = props => {
     document.title = "Student Register| Register for the exam";
@@ -45,7 +45,7 @@ const Login = props => {
     const [isReadOnly, setIsReadOnly] = useState(false);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [allExams, setAllExams] = useState([]);
-    const [selectedExam, setSelectedExam] = useState({});
+    const [selectedExam, setSelectedExam] = useState(null);
     const [language, setLanguage] = useState(null);
     const navigate = useNavigate();
 
@@ -161,9 +161,9 @@ const Login = props => {
         setType(selectedValue);
     }
 
-    const fethcAllExams = async () => {
+    const fetchAllExams = async (id) => {
         try {
-            const result = await getAllMainExamPapers();
+            const result = await getMainExamPapersByLanguage(id);
             if (result?.success) {
                 setAllExams(result?.result);
             }
@@ -175,15 +175,14 @@ const Login = props => {
         }
     }
 
-    useEffect(() => {
-        fethcAllExams();
-    }, []);
+
 
     const handleSelectExam = selectedOption => {
         setSelectedExam(selectedOption);
     };
     const handleSelectLanguage = selectedOption => {
         setLanguage(selectedOption);
+        fetchAllExams(selectedOption.id);
     };
 
 
@@ -266,24 +265,10 @@ const Login = props => {
                                             }
                                             {verify &&
                                                 <>
+
                                                     <div className="mb-3">
 
-                                                        <Label htmlFor="exam">Exam</Label>
-                                                        <Select
-                                                            value={selectedExam}
-                                                            onChange={handleSelectExam}
-                                                            options={allExams}
-                                                            getOptionLabel={option => option?.examName}
-                                                            getOptionValue={option => option?.id?.toString()}
-                                                            classNamePrefix="select2-selection"
-                                                            placeholder="Select an exam..." // Add placeholder text here
-                                                        />
-
-                                                        {!phoneNumber && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                                    </div>
-                                                    <div className="mb-3">
-
-                                                        <Label htmlFor="exam">Language</Label>
+                                                        <Label htmlFor="language">Language</Label>
                                                         <Select
 
                                                             value={language}
@@ -292,9 +277,26 @@ const Login = props => {
                                                             getOptionLabel={option => option.languageName}
                                                             getOptionValue={option => option.id.toString()}
                                                             classNamePrefix="select2-selection"
+                                                            placeholder="Select an language"
                                                         />
 
                                                         {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                                    </div>
+                                                    <div className="mb-3">
+
+                                                        <Label htmlFor="language">Exam</Label>
+                                                        <Select
+
+                                                            value={selectedExam}
+                                                            onChange={handleSelectExam}
+                                                            options={allExams}
+                                                            getOptionLabel={option => option.examName}
+                                                            getOptionValue={option => option.id.toString()}
+                                                            classNamePrefix="select2-selection"
+                                                            placeholder="Select an exam"
+                                                        />
+
+                                                        {!selectedExam && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                                     </div>
                                                     <div className="mb-3">
 

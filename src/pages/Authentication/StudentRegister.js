@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, CardBody, Label, Form, Alert, Input, FormFeedback } from 'reactstrap';
 import logoDark from "../../assets/images/logo-dark.png";
 import logoLight from "../../assets/images/logo-dark.png";
@@ -47,6 +47,7 @@ const Login = props => {
     const [allExams, setAllExams] = useState([]);
     const [selectedExam, setSelectedExam] = useState({});
     const [language, setLanguage] = useState(null);
+    const navigate = useNavigate();
 
     const languages = useSelector(state => state.languagesReducer);
     useEffect(() => {
@@ -95,16 +96,48 @@ const Login = props => {
 
 
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     console.log("submit")
+    //     if (!name || !email || !phoneNumber || !fatherName || !grandFatherName || !language || !selectedExam || !password || !confirmPassword) {
+    //         setSpanDisplay("inline")
+
+    //     }
+    //     else {
+    //         if (password !== confirmPassword) {
+    //             toast.error("Pasword and confirm password did not match");
+    //         }
+    //         else {
+    //             let mainExamId = selectedExam.id;
+    //             let languageId = language.id;
+    //             const result = await registerStudent({ name, email, phoneNumber, fatherName, grandFatherName, languageId, mainExamId, password, confirmPassword })
+    //             if (result?.success) {
+    //                 toast.success(result?.message);
+
+    //             }
+    //             else {
+    //                 toast.error(result?.message);
+    //             }
+    //         }
+    //     }
+    // };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("submit")
         if (!name || !email || !phoneNumber || !fatherName || !grandFatherName || !language || !selectedExam || !password || !confirmPassword) {
-            setSpanDisplay("inline")
-
+            setSpanDisplay("inline");
         }
         else {
             if (password !== confirmPassword) {
                 toast.error("Pasword and confirm password did not match");
+            }
+            else if (!/(?=.*[a-zA-Z0-9]{8})/.test(password)) {
+                toast.error("Password must contain at least 8 letters or numbers");
+            }
+            else if (!/^\d{10}$|^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(phoneNumber)) {
+                toast.error("Invalid phone number format");
             }
             else {
                 let mainExamId = selectedExam.id;
@@ -112,6 +145,7 @@ const Login = props => {
                 const result = await registerStudent({ name, email, phoneNumber, fatherName, grandFatherName, languageId, mainExamId, password, confirmPassword })
                 if (result?.success) {
                     toast.success(result?.message);
+                    navigate("/student-login")
                 }
                 else {
                     toast.error(result?.message);
@@ -119,6 +153,7 @@ const Login = props => {
             }
         }
     };
+
 
 
     const handleSelectType = selectedValue => {

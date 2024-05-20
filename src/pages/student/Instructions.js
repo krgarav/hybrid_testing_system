@@ -25,6 +25,9 @@ const Instructions = () => {
         const setupMediaRecorder = () => {
             // Request access to the webcam
             navigator.mediaDevices.getUserMedia({ video: true })
+                .then(() => {
+                    console.log("")
+                })
                 .catch(error => {
                     console.log("kdjfkdjfkd----->", error.name)
                     console.error('Error accessing the webcam', error.name);

@@ -86,7 +86,7 @@ export const UPDATE_DIFFICULTY = url_online + "/UpdateDifficulty"
 export const FETCH_ALL_DIFFICULTYS = url_online + "/GetDifficulty"
 
 
-export const CREATE_LANGUAGE = url_online + "/AddzLanguage"
+export const CREATE_LANGUAGE = url_online + "/AddLanguage"
 export const DELETE_LANGUAGE = url_online + "/RemoveLanguage?Id="
 export const UPDATE_LANGUAGE = url_online + "/UpdateLanguage"
 export const FETCH_ALL_LANGUAGES = url_online + "/GetLanguages"

@@ -74,8 +74,9 @@ const CreateQuestion = (props) => {
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
     const languages = useSelector(state => state.languagesReducer);
+    const result = useSelector(state => state.questionsReducer);
 
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -173,6 +174,15 @@ const CreateQuestion = (props) => {
             formData.append('Type', type);
             const result = await bulkCreateQuestion(formData);
             if (result?.success === true) {
+                setFile(null);
+                setClasss(null);
+                setCourse(null);
+                setSection(null);
+                setSubSection(null);
+                setDifficulty(null);
+                setLanguage(null);
+                setType("short");
+                setAnswer("")
                 toast.success(result?.message);
             }
             else {
@@ -181,6 +191,8 @@ const CreateQuestion = (props) => {
         }
 
     };
+
+
 
 
     const handleSelectClass = selectedOption => {

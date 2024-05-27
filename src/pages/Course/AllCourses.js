@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteCourse, fetchClass, fetchCourse, setBreadcrumbItems, updateCourse } from "../../store/actions";
+import { deleteCourse, fetchClass, fetchCourse, setBreadcrumbItems, setSuccessFalseCourse, updateCourse } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -36,7 +36,7 @@ const AllCourses = (props) => {
     useEffect(() => {
         props.setBreadcrumbItems('All Courses', breadcrumbItems)
     })
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -52,6 +52,8 @@ const AllCourses = (props) => {
         }
 
     })
+
+
 
 
     const data = {
@@ -116,10 +118,17 @@ const AllCourses = (props) => {
         }
         else {
             dispatch(updateCourse({ id, classId, courseName, courseDescription, }))
-            setModalShow(false);
+
         }
 
     }
+
+    useEffect(() => {
+        if (result.success == true) {
+            setModalShow(false);
+            dispatch(setSuccessFalseCourse());
+        }
+    }, [result.success]);
     const handleDelete = () => {
         setModalShow(false);
         setDeleteModalShow(false)

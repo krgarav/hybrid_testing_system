@@ -7,10 +7,12 @@ import {
     UPDATE_SUBSECTION_SUCCESS,
     ADD_SUBSECTION_SUCCESS,
     DELETE_SUBSECTION_SUCCESS,
-    SUBSECTION_OPERATION_FAILURE
+    SUBSECTION_OPERATION_FAILURE,
+    SUBSECTION_SET_SUCCESS_FALSE
 } from './actionTypes';
 
 export const fetchSubSection = () => ({ type: FETCH_SUBSECTION });
+export const setSuccessFalseSubSection = () => ({ type: SUBSECTION_SET_SUCCESS_FALSE });
 export const updateSubSection = updatedSubSection => ({ type: UPDATE_SUBSECTION, payload: updatedSubSection });
 export const addSubSection = newSubSection => ({ type: ADD_SUBSECTION, payload: newSubSection });
 export const deleteSubSection = id => ({ type: DELETE_SUBSECTION, payload: id });

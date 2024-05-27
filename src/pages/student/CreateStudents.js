@@ -99,6 +99,8 @@ const CreateStudents = (props) => {
             console.log(result);
             if (result?.success) {
                 toast.success(result?.message);
+                setFile(null);
+                setQuestionPaper(null);
             }
             else {
                 toast.error(result?.message);

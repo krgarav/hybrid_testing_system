@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Select from "react-select";
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteSchool, fetchSchool, setBreadcrumbItems, updateSchool } from "../../store/actions";
+import { deleteSchool, fetchSchool, setBreadcrumbItems, setSuccessFalseSchool, updateSchool } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -147,9 +147,16 @@ const AllSchool = (props) => {
             let schoolTypeOwnership = schoolType.id;
             let examCenter = center.value
             dispatch(updateSchool({ id, schoolName, schoolCode, address, regionCityAdministration, zone, woreda, town, city, kebele, schoolTypeOwnership, examCenter, sittingCapacity }));
-            setModalShow(false);
+
         }
     }
+
+    useEffect(() => {
+        if (result.success == true) {
+            setModalShow(false);
+            dispatch(setSuccessFalseSchool());
+        }
+    }, [result.success]);
     const handleSelectCenter = selectedOption => {
         setCenter(selectedOption);
     };

@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 // import { addClass, updateClass } from './actions';
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { addQuestionPaper, fetchDifficulty, fetchLanguage, setBreadcrumbItems } from "../../store/actions";
+import { addQuestionPaper, fetchDifficulty, fetchLanguage, setBreadcrumbItems, setSuccessFalseQuestionPaper } from "../../store/actions";
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
@@ -92,6 +92,7 @@ const CreateQuestionPaper = (props) => {
     const [tfValues, setTfValues] = useState({});
     const [essayValues, setEssayValues] = useState({});
     const [examDate, setExamDate] = useState(null);
+    const questionPaper = useSelector(state => state.questionPapersReducer);
 
 
     useEffect(() => {
@@ -256,6 +257,30 @@ const CreateQuestionPaper = (props) => {
             }
         }
     };
+
+
+    useEffect(() => {
+        if (questionPaper.success == true) {
+            setExamName("")
+            setTotalQuestions("")
+            setTotalMarks("")
+            setClasss(null);
+            setCourses([]);
+            setSections([]);
+            setSubSections([]);
+            setLanguage(null);
+            setShortValues({});
+            setMcqValues({});
+            setTfValues({});
+            setEssayValues({});
+            setCourse(null);
+            setSection(null);
+            setSubSection(null);
+            setMcqValue("")
+            setSelectedDifficultys(null);
+            dispatch(setSuccessFalseQuestionPaper());
+        }
+    }, [questionPaper.success]);
 
     const calculateTotal = (obj) => {
         let total = 0;

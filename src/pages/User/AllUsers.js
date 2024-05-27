@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteUser, fetchClass, fetchCourse, fetchUser, setBreadcrumbItems, updateUser } from "../../store/actions";
+import { deleteUser, fetchClass, fetchCourse, fetchUser, setBreadcrumbItems, setSuccessFalseUser, updateUser } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -49,6 +49,7 @@ const AllUsers = (props) => {
     const [id, setId] = useState({});
     const dispatch = useDispatch();
     const users = useSelector(state => state.userReducer.users);
+    const user = useSelector(state => state.userReducer);
 
 
     const breadcrumbItems = [
@@ -165,9 +166,16 @@ const AllUsers = (props) => {
         else {
             let userType = type.typeName
             dispatch(updateUser({ id, position, userType, classAccess, courseAccess, sectionAccess, subSectionAccess, difficultyAccess, languageAccess, questionAccess, questionBulkAccess, questionPaperAccess, userManagementAccess, schoolManagementAccess, examCenterManagementAccess, studentManagementAccess }))
-            setModalShow(false);
+
         }
     };
+
+    useEffect(() => {
+        if (user.success == true) {
+            setModalShow(false);
+            dispatch(setSuccessFalseUser());
+        }
+    }, [user.success]);
 
     const handleDelete = () => {
         // setModalShow(false);

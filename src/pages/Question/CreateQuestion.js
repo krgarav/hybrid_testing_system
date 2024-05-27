@@ -22,7 +22,7 @@ import { fetchDifficulty, fetchLanguage, setBreadcrumbItems } from "../../store/
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
-import { addQuestion } from "store/question/action";
+import { addQuestion, setSuccessFalseQuestion } from "store/question/action";
 import { HtmlEditor, Image, Inject, Link, NodeSelection, QuickToolbar, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 
 
@@ -77,8 +77,9 @@ const CreateQuestion = (props) => {
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
     const languages = useSelector(state => state.languagesReducer);
+    const result = useSelector(state => state.questionsReducer);
 
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -264,6 +265,20 @@ const CreateQuestion = (props) => {
 
         }
     };
+
+    useEffect(() => {
+        if (result.success == true) {
+            setClasss(null);
+            setCourse(null);
+            setSection(null);
+            setSubSection(null);
+            setDifficulty(null);
+            setLanguage(null);
+            setType("short");
+            setAnswer("")
+            dispatch(setSuccessFalseQuestion());
+        }
+    }, [result.success]);
 
 
     const handleSelectClass = selectedOption => {

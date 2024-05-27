@@ -7,10 +7,12 @@ import {
     UPDATE_DIFFICULTY_SUCCESS,
     ADD_DIFFICULTY_SUCCESS,
     DELETE_DIFFICULTY_SUCCESS,
-    DIFFICULTY_OPERATION_FAILURE
+    DIFFICULTY_OPERATION_FAILURE,
+    DIFFICULTY_SET_SUCCESS_FALSE
 } from './actionTypes';
 
 export const fetchDifficulty = () => ({ type: FETCH_DIFFICULTY });
+export const setSuccessFalseDifficulty = () => ({ type: DIFFICULTY_SET_SUCCESS_FALSE });
 export const updateDifficulty = updatedDifficulty => ({ type: UPDATE_DIFFICULTY, payload: updatedDifficulty });
 export const addDifficulty = newDifficulty => ({ type: ADD_DIFFICULTY, payload: newDifficulty });
 export const deleteDifficulty = id => ({ type: DELETE_DIFFICULTY, payload: id });

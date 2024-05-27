@@ -3,7 +3,8 @@ import {
     ADD_SECTION_SUCCESS,
     UPDATE_SECTION_SUCCESS,
     DELETE_SECTION_SUCCESS,
-    SECTION_OPERATION_FAILURE
+    SECTION_OPERATION_FAILURE,
+    SECTION_SET_SUCCESS_FALSE
 } from './actionTypes';
 
 const initialState = {
@@ -15,10 +16,10 @@ function sectionsReducer(state = initialState, action) {
 
     switch (action.type) {
         case FETCH_SECTION_SUCCESS:
-            return { sections: action.payload, error: null };
+            return { sections: action.payload, error: null, success: action.payload?.success };
         case ADD_SECTION_SUCCESS:
             // return { sections: [state.sections, action.payload], error: null };
-            return { sections: [], error: null };
+            return { sections: [], error: null, success: action.payload?.success };
 
         case UPDATE_SECTION_SUCCESS:
             // return {
@@ -28,7 +29,7 @@ function sectionsReducer(state = initialState, action) {
             //     ),
             //     error: null
             // };
-            return { sections: [], error: null };
+            return { sections: [], error: null, success: action.payload?.success };
 
         case DELETE_SECTION_SUCCESS:
             // return {
@@ -36,10 +37,13 @@ function sectionsReducer(state = initialState, action) {
             //     sections: state.sections.filter(cls => cls.id !== action.payload),
             //     error: null
             // };
-            return { sections: [], error: null };
+            return { sections: [], error: null, success: action.payload?.success };
 
         case SECTION_OPERATION_FAILURE:
-            return { ...state, error: action.payload };
+            return { ...state, error: action.payload, success: action.payload?.success };
+
+        case SECTION_SET_SUCCESS_FALSE:
+            return { ...state, success: null }
 
         default:
             return state;

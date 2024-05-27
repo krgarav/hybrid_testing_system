@@ -5,7 +5,7 @@ import { Row, Col, Card, CardBody, CardTitle, Button, } from "reactstrap"
 import { connect } from "react-redux";
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteClass, fetchClass, setBreadcrumbItems, updateClass } from "../../store/actions";
+import { deleteClass, fetchClass, setBreadcrumbItems, setSuccessFalseClass, updateClass } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -99,7 +99,7 @@ const AllClasses = (props) => {
         }
         else {
             dispatch(updateClass({ id, className, classDescription }))
-            setModalShow(false);
+            // setModalShow(false);
         }
     }
     const handleDelete = () => {
@@ -107,6 +107,12 @@ const AllClasses = (props) => {
         setDeleteModalShow(false)
         dispatch(deleteClass(id));
     }
+    useEffect(() => {
+        if (result.success == true) {
+            setModalShow(false);
+            dispatch(setSuccessFalseClass());
+        }
+    }, [result.success]);
 
     return (
         <React.Fragment>

@@ -1,3 +1,4 @@
+
 import {
   LOGIN_USER,
   LOGIN_SUCCESS,
@@ -5,6 +6,7 @@ import {
   LOGOUT_USER_SUCCESS,
   API_ERROR,
   SOCIAL_LOGIN,
+  AUTH_SET_SUCCESS_FALSE,
 } from "./actionTypes"
 
 export const loginUser = (user, history) => {
@@ -48,3 +50,6 @@ export const socialLogin = (type, history) => {
     payload: { type, history },
   };
 };
+
+
+export const setSuccessFalseAuth = () => ({ type: AUTH_SET_SUCCESS_FALSE });

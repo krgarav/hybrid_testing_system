@@ -22,7 +22,7 @@ import { fetchSection, setBreadcrumbItems } from "../../store/actions";
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
-import { addSubSection } from "store/subSection/action";
+import { addSubSection, setSuccessFalseSubSection } from "store/subSection/action";
 
 
 const CreateSubSection = (props) => {
@@ -49,6 +49,7 @@ const CreateSubSection = (props) => {
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
     const sections = useSelector(state => state.sectionsReducer)
+    const result = useSelector(state => state.subSectionsReducer)
 
     useEffect(() => {           /* For closing the sidebar if opened */
         const blurDiv = document.getElementById("blur");
@@ -77,6 +78,16 @@ const CreateSubSection = (props) => {
         }
 
     };
+
+    useEffect(() => {
+        if (result.success == true) {
+            setSubSectionCode("");
+            setSubSectionName("");
+            setSection(null);
+            setSubSectionDescription("");
+            dispatch(setSuccessFalseSubSection());
+        }
+    }, [result.success]);
 
 
     const handleSelectSection = selectedOption => {

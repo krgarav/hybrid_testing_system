@@ -18,7 +18,8 @@ import { useDispatch } from 'react-redux';
 
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
-import { addDifficulty } from "store/difficulty/action";
+import { addDifficulty, setSuccessFalseDifficulty } from "store/difficulty/action";
+import { useSelector } from "react-redux";
 
 
 const CreateDifficulty = (props) => {
@@ -30,7 +31,7 @@ const CreateDifficulty = (props) => {
         { title: "Difficulty", link: "#" },
         { title: "Create Difficulty", link: "#" },
     ]
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -45,6 +46,7 @@ const CreateDifficulty = (props) => {
     const [difficultyName, setDifficultyName] = useState("");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
+    const result = useSelector(state => state.difficultysReducer);
 
 
 
@@ -61,6 +63,13 @@ const CreateDifficulty = (props) => {
         }
 
     };
+
+    useEffect(() => {
+        if (result.success == true) {
+            setDifficultyName("");
+            dispatch(setSuccessFalseDifficulty());
+        }
+    }, [result.success]);
 
 
 

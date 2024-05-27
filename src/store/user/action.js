@@ -7,10 +7,12 @@ import {
     UPDATE_USER_SUCCESS,
     ADD_USER_SUCCESS,
     DELETE_USER_SUCCESS,
-    USER_OPERATION_FAILURE
+    USER_OPERATION_FAILURE,
+    USER_SET_SUCCESS_FALSE
 } from './actionTypes';
 
 export const fetchUser = () => ({ type: FETCH_USER });
+export const setSuccessFalseUser = () => ({ type: USER_SET_SUCCESS_FALSE });
 export const updateUser = updatedUser => ({ type: UPDATE_USER, payload: updatedUser });
 export const addUser = newUser => ({ type: ADD_USER, payload: newUser });
 export const deleteUser = id => ({ type: DELETE_USER, payload: id });

@@ -42,7 +42,7 @@ const CreateExam = (props) => {
         { title: "Create Exam", link: "#" },
     ]
 
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -122,6 +122,11 @@ const CreateExam = (props) => {
                 const result = await createMainExamPaper({ paperId, totalSets, onlineExam, offlineExam, shiftData });
                 if (result?.success) {
                     toast.success(result?.message);
+                    setPaper(null);
+                    setTotalSets("");
+                    setExamType("");
+                    setTotalShifts("");
+                    setShiftData([]);
                 }
                 else {
                     toast.error(result?.message);

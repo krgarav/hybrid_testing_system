@@ -7,11 +7,14 @@ import {
     UPDATE_LANGUAGE_SUCCESS,
     ADD_LANGUAGE_SUCCESS,
     DELETE_LANGUAGE_SUCCESS,
-    LANGUAGE_OPERATION_FAILURE
+    LANGUAGE_OPERATION_FAILURE,
+    LANGUAGE_SET_SUCCESS_FALSE
 } from './actionTypes';
 
 export const fetchLanguage = () => ({ type: FETCH_LANGUAGE });
+
 export const updateLanguage = updatedLanguage => ({ type: UPDATE_LANGUAGE, payload: updatedLanguage });
+export const setSuccessFalseLanguage = () => ({ type: LANGUAGE_SET_SUCCESS_FALSE });
 export const addLanguage = newLanguage => ({ type: ADD_LANGUAGE, payload: newLanguage });
 export const deleteLanguage = id => ({ type: DELETE_LANGUAGE, payload: id });
 export const fetchLanguageSuccess = languageDetails => ({ type: FETCH_LANGUAGE_SUCCESS, payload: languageDetails });

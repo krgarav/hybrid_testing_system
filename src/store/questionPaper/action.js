@@ -7,10 +7,12 @@ import {
     UPDATE_QUESTIONPAPER_SUCCESS,
     ADD_QUESTIONPAPER_SUCCESS,
     DELETE_QUESTIONPAPER_SUCCESS,
-    QUESTIONPAPER_OPERATION_FAILURE
+    QUESTIONPAPER_OPERATION_FAILURE,
+    QUESTIONPAPER_SET_SUCCESS_FALSE
 } from './actionTypes';
 
 export const fetchQuestionPaper = () => ({ type: FETCH_QUESTIONPAPER });
+export const setSuccessFalseQuestionPaper = () => ({ type: QUESTIONPAPER_SET_SUCCESS_FALSE });
 export const updateQuestionPaper = updatedQuestionPaper => ({ type: UPDATE_QUESTIONPAPER, payload: updatedQuestionPaper });
 export const addQuestionPaper = newQuestionPaper => ({ type: ADD_QUESTIONPAPER, payload: newQuestionPaper });
 export const deleteQuestionPaper = id => ({ type: DELETE_QUESTIONPAPER, payload: id });

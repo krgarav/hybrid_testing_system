@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteDifficulty, fetchClass, fetchDifficulty, setBreadcrumbItems, updateDifficulty } from "../../store/actions";
+import { deleteDifficulty, fetchClass, fetchDifficulty, setBreadcrumbItems, setSuccessFalseDifficulty, updateDifficulty } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -37,7 +37,7 @@ const AllDifficultys = (props) => {
         props.setBreadcrumbItems('All Difficulties', breadcrumbItems)
     })
 
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -120,9 +120,16 @@ const AllDifficultys = (props) => {
         }
         else {
             dispatch(updateDifficulty({ id, difficultyName }))
-            setModalShow(false);
+
         }
     }
+
+    useEffect(() => {
+        if (result.success == true) {
+            setModalShow(false);
+            dispatch(setSuccessFalseDifficulty());
+        }
+    }, [result.success]);
     const handleDelete = () => {
         setModalShow(false);
         setDeleteModalShow(false)

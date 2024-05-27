@@ -294,86 +294,86 @@ const TestScreen = () => {
 
   // its working code of the face recognization
 
-  // useEffect(() => {
-  //   // Setup the socket connection to the server
-  //   socket.current = io('http://192.168.0.139:5000', {
-  //     // socket.current = io('http://localhost:5000', {
-  //     reconnection: true,
-  //     reconnectionDelay: 2000,
-  //   });
+  useEffect(() => {
+    // Setup the socket connection to the server
+    socket.current = io('http://192.168.0.139:5000', {
+      // socket.current = io('http://localhost:5000', {
+      reconnection: true,
+      reconnectionDelay: 2000,
+    });
 
-  //   let mediaRecorder;
-  //   let recordedChunks = [];
+    let mediaRecorder;
+    let recordedChunks = [];
 
-  //   // Function to handle data availability
-  //   const handleDataAvailable = event => {
-  //     if (event.data && event.data.size > 0) {
-  //       console.log(`Sending data: ${event.data.size} bytes`);
-  //       socket.current.emit('video_data', event.data);
-  //     }
-  //   };
+    // Function to handle data availability
+    const handleDataAvailable = event => {
+      if (event.data && event.data.size > 0) {
+        console.log(`Sending data: ${event.data.size} bytes`);
+        socket.current.emit('video_data', event.data);
+      }
+    };
 
-  //   // Request access to the webcam
-  //   navigator.mediaDevices.getUserMedia({ video: true })
-  //     .then(stream => {
-  //       // Initialize MediaRecorder with the stream
-  //       mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+    // Request access to the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        // Initialize MediaRecorder with the stream
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
 
-  //       // Event handler for when recorded data is available
-  //       mediaRecorder.ondataavailable = handleDataAvailable;
+        // Event handler for when recorded data is available
+        mediaRecorder.ondataavailable = handleDataAvailable;
 
-  //       // Start recording the video stream in chunks of 2 seconds
-  //       mediaRecorder.start(5000);
+        // Start recording the video stream in chunks of 2 seconds
+        mediaRecorder.start(5000);
 
-  //       // Stop recording and reset every 2 seconds to send continuous data
-  //       const interval = setInterval(() => {
-  //         if (mediaRecorder.state === "recording") {
-  //           mediaRecorder.stop();
-  //           mediaRecorder.start(5000);
-  //         }
-  //       }, 5000);
+        // Stop recording and reset every 2 seconds to send continuous data
+        const interval = setInterval(() => {
+          if (mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            mediaRecorder.start(5000);
+          }
+        }, 5000);
 
-  //       // Cleanup interval on unmount
-  //       return () => clearInterval(interval);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error accessing the webcam', error);
-  //     });
+        // Cleanup interval on unmount
+        return () => clearInterval(interval);
+      })
+      .catch(error => {
+        console.error('Error accessing the webcam', error);
+      });
 
-  //   // Handling results from the server
-  //   socket.current.on('result', result => {
-  //     console.log('Received result from server:', result);
-  //     // Here you can handle the result, such as displaying it or processing further
-  //   });
-  //   // Handle socket connection errors
-  //   socket.current.on('connect_error', (err) => {
-  //     console.error('Socket connection error:', err);
-  //   });
+    // Handling results from the server
+    socket.current.on('result', result => {
+      console.log('Received result from server:', result);
+      // Here you can handle the result, such as displaying it or processing further
+    });
+    // Handle socket connection errors
+    socket.current.on('connect_error', (err) => {
+      console.error('Socket connection error:', err);
+    });
 
-  //   socket.current.on('reconnect_error', (err) => {
-  //     console.error('Socket reconnection error:', err);
-  //   });
+    socket.current.on('reconnect_error', (err) => {
+      console.error('Socket reconnection error:', err);
+    });
 
-  //   socket.current.on('disconnect', (reason) => {
-  //     console.warn('Socket disconnected:', reason);
-  //   });
+    socket.current.on('disconnect', (reason) => {
+      console.warn('Socket disconnected:', reason);
+    });
 
-  //   // Cleanup function
-  //   return () => {
-  //     if (mediaRecorder && mediaRecorder.state !== "inactive") {
-  //       mediaRecorder.stop();
-  //     }
-  //     if (socket.current) {
-  //       socket.current.disconnect();
-  //     }
-  //   };
-  // }, []);
+    // Cleanup function
+    return () => {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
+  }, []);
 
 
 
   // yha tak hai 
 
-  let first = true;
+  // let first = true;
 
   // useEffect(() => {
   //   // Setup the socket connection to the server
@@ -434,15 +434,15 @@ const TestScreen = () => {
   //       first = false;
   //     }
   //     // Listen for changes in camera state
-  //     // if (!mediaRecorder && !first) {
-  //     //   // Listen for changes in camera state
-  //     //   alert('Access to camera denied. Please refresh the page and grant access to continue.');
-  //     //   document.body.style.filter = 'blur(5px)';
-  //     //   document.body.style.pointerEvents = 'none';
-  //     //   // mediaRecorder.onstop = () => {
+  //     if (!mediaRecorder && !first) {
+  //       // Listen for changes in camera state
+  //       alert('Access to camera denied. Please refresh the page and grant access to continue.');
+  //       document.body.style.filter = 'blur(5px)';
+  //       document.body.style.pointerEvents = 'none';
+  //       // mediaRecorder.onstop = () => {
 
-  //     //   // };
-  //     // }
+  //       // };
+  //     }
 
   //   };
 

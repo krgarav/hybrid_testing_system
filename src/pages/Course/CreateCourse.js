@@ -22,7 +22,7 @@ import { setBreadcrumbItems } from "../../store/actions";
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
-import { addCourse } from "store/course/action";
+import { addCourse, setSuccessFalseCourse } from "store/course/action";
 
 
 const CreateCourse = (props) => {
@@ -49,6 +49,7 @@ const CreateCourse = (props) => {
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
+    const result = useSelector(state => state.coursesReducer)
 
     useEffect(() => {           /* For closing the sidebar if opened */
         const blurDiv = document.getElementById("blur");
@@ -75,6 +76,17 @@ const CreateCourse = (props) => {
             dispatch(addCourse({ courseName, courseDescription, courseCode, classId, classs }));
         }
     };
+
+    useEffect(() => {
+        if (result.success == true) {
+            setCourseCode("");
+            setCourseName("");
+            setClasss(null);
+            setSelectedClasss(null);
+            setCourseDescription("");
+            dispatch(setSuccessFalseCourse());
+        }
+    }, [result.success]);
 
     const handleSelectClass = selectedOption => {
         setClasss(selectedOption);

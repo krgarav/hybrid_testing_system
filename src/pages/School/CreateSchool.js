@@ -8,7 +8,7 @@ import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
-import { addSchool } from "store/school/action";
+import { addSchool, setSuccessFalseSchool } from "store/school/action";
 import { useSelector } from "react-redux";
 import schoolesReducer from '../../store/school/reducer';
 import axios from "axios";
@@ -50,6 +50,7 @@ const CreateSchool = (props) => {
     const [sittingCapacity, setSittingCapacity] = useState("");
     const [schoolTypes, setSchoolTypes] = useState([]);
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const result = useSelector(state => state.schoolReducer);
     const dispatch = useDispatch();
 
 
@@ -81,6 +82,24 @@ const CreateSchool = (props) => {
             dispatch(addSchool({ schoolName, schoolCode, address, regionCityAdministration, zone, woreda, town, city, kebele, schoolTypeOwnership, examCenter, sittingCapacity }));
         }
     };
+
+    useEffect(() => {
+        if (result.success == true) {
+            setSchoolName("");
+            setSchoolCode("");
+            setAddress("");
+            setAdministration("");
+            setSchoolType("")
+            setCenter(null)
+            setWoreda("")
+            setZone("")
+            setTown("")
+            setCity("")
+            setKebele("")
+            setSittingCapacity("")
+            dispatch(setSuccessFalseSchool());
+        }
+    }, [result.success]);
     const handleSelectCenter = selectedOption => {
         setCenter(selectedOption);
     };

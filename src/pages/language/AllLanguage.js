@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteLanguage, fetchClass, fetchLanguage, setBreadcrumbItems, updateLanguage } from "../../store/actions";
+import { deleteLanguage, fetchClass, fetchLanguage, setBreadcrumbItems, setSuccessFalseLanguage, updateLanguage } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -114,9 +114,14 @@ const AllLanguages = (props) => {
         }
         else {
             dispatch(updateLanguage({ id, languageName }))
-            setModalShow(false);
         }
     }
+    useEffect(() => {
+        if (result.success == true) {
+            setModalShow(false);
+            dispatch(setSuccessFalseLanguage());
+        }
+    }, [result.success]);
     const handleDelete = () => {
         setModalShow(false);
         setDeleteModalShow(false)

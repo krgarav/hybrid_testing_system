@@ -7,10 +7,12 @@ import {
     UPDATE_SCHOOL_SUCCESS,
     ADD_SCHOOL_SUCCESS,
     DELETE_SCHOOL_SUCCESS,
-    SCHOOL_OPERATION_FAILURE
+    SCHOOL_OPERATION_FAILURE,
+    SCHOOL_SET_SUCCESS_FALSE
 } from './actionTypes';
 
 export const fetchSchool = () => ({ type: FETCH_SCHOOL });
+export const setSuccessFalseSchool = () => ({ type: SCHOOL_SET_SUCCESS_FALSE });
 export const updateSchool = updatedSchool => ({ type: UPDATE_SCHOOL, payload: updatedSchool });
 export const addSchool = newSchool => ({ type: ADD_SCHOOL, payload: newSchool });
 export const deleteSchool = id => ({ type: DELETE_SCHOOL, payload: id });

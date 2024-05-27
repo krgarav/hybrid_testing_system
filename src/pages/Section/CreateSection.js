@@ -22,7 +22,7 @@ import { fetchCourse, setBreadcrumbItems } from "../../store/actions";
 import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
-import { addSection } from "store/section/action";
+import { addSection, setSuccessFalseSection } from "store/section/action";
 
 
 const CreateSection = (props) => {
@@ -56,6 +56,7 @@ const CreateSection = (props) => {
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
     const courses = useSelector(state => state.coursesReducer)
+    const result = useSelector(state => state.sectionsReducer)
 
 
     useEffect(() => {
@@ -77,6 +78,16 @@ const CreateSection = (props) => {
         }
 
     };
+
+    useEffect(() => {
+        if (result.success == true) {
+            setSectionCode("");
+            setSectionName("");
+            setCourse(null);
+            setSectionDescription("");
+            dispatch(setSuccessFalseSection());
+        }
+    }, [result.success]);
 
 
     const handleSelectCourse = selectedOption => {

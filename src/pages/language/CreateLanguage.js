@@ -18,7 +18,8 @@ import { useDispatch } from 'react-redux';
 
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
-import { addLanguage } from "store/language/action";
+import { addLanguage, setSuccessFalseLanguage } from "store/language/action";
+import { useSelector } from "react-redux";
 
 
 const CreateLanguage = (props) => {
@@ -38,6 +39,7 @@ const CreateLanguage = (props) => {
     const [languageName, setLanguageName] = useState("");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
+    const result = useSelector(state => state.languagesReducer)
 
 
 
@@ -54,6 +56,13 @@ const CreateLanguage = (props) => {
         }
 
     };
+
+    useEffect(() => {
+        if (result.success == true) {
+            setLanguageName("");
+            dispatch(setSuccessFalseLanguage());
+        }
+    }, [result.success]);
 
 
 

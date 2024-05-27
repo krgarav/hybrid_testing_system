@@ -16,11 +16,12 @@ import { useDispatch } from 'react-redux';
 
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
-import { addClass } from "store/class/action";
+import { addClass, setSuccessFalseClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
 import axios from "axios";
 import { toast } from "react-toastify";
+import { success } from "toastr";
 
 
 const CreateClass = (props) => {
@@ -64,6 +65,16 @@ const CreateClass = (props) => {
             dispatch(addClass({ className, classDescription, classCode }));
         }
     };
+
+
+    useEffect(() => {
+        if (result.success == true) {
+            setClassCode("");
+            setClassName("");
+            setClassDescription("");
+            dispatch(setSuccessFalseClass());
+        }
+    }, [result.success]);
 
 
 

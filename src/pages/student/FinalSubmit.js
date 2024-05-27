@@ -11,7 +11,7 @@ const TestSubmitted = () => {
 
   const handleClick = () => {
     console.log("hello forks")
-    navigate("/student-login");
+    // navigate("/student-login");
   }
 
 

@@ -18,7 +18,8 @@ import Select from "react-select";
 import { setBreadcrumbItems } from "../../store/actions";
 import { fetchOtp, getOtp, getUserType, verifyOtp } from "helpers/user_helper";
 import { toast } from "react-toastify";
-import { addUser } from "store/user/action";
+import { addUser, setSuccessFalseUser } from "store/user/action";
+import { useSelector } from "react-redux";
 
 
 
@@ -43,6 +44,7 @@ const CreateUser = (props) => {
     const [allUserTypes, setAllUserTypes] = useState([]);
     const [isReadOnly, setIsReadOnly] = useState(false);
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const result = useSelector(state => state.userReducer);
     const dispatch = useDispatch();
 
 
@@ -126,6 +128,20 @@ const CreateUser = (props) => {
             }
         }
     };
+    useEffect(() => {
+        if (result.success == true) {
+            setName("")
+            setEmail("")
+            setPhoneNumber("")
+            setFatherName("")
+            setGrandFatherName("")
+            setPosition("")
+            setType("")
+            setPassword("")
+            setConfirmPassword("")
+            dispatch(setSuccessFalseUser());
+        }
+    }, [result.success]);
 
 
     const handleSelectType = selectedValue => {

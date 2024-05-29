@@ -16,11 +16,11 @@ const initialState = {
 function difficultysReducer(state = initialState, action) {
     switch (action.type) {
         case FETCH_DIFFICULTY_SUCCESS:
-            return { difficultys: action.payload, error: null, success: action.payload.success };
+            return { difficultys: action.payload, error: null, success: action.payload?.success };
 
         case ADD_DIFFICULTY_SUCCESS:
             // return { difficultys: [state.difficultys, action.payload], error: null };
-            return { difficultys: [], error: null, success: action.payload.success };
+            return { difficultys: [], error: null, success: action.payload?.success };
 
         case UPDATE_DIFFICULTY_SUCCESS:
             // return {
@@ -30,7 +30,7 @@ function difficultysReducer(state = initialState, action) {
             //     ),
             //     error: null
             // };
-            return { difficultys: [], error: null, success: action.payload.success };
+            return { difficultys: [], error: null, success: action.payload?.success };
 
         case DELETE_DIFFICULTY_SUCCESS:
             // return {
@@ -38,10 +38,10 @@ function difficultysReducer(state = initialState, action) {
             //     difficultys: state.difficultys.filter(cls => cls.id !== action.payload),
             //     error: null
             // };
-            return { difficultys: [], error: null, success: action.payload.success };
+            return { difficultys: [], error: null, success: action.payload?.success };
 
         case DIFFICULTY_OPERATION_FAILURE:
-            return { ...state, error: action.payload, success: action.payload.success };
+            return { ...state, error: action.payload, success: action.payload?.success };
 
         case DIFFICULTY_SET_SUCCESS_FALSE:
             return { ...state, success: null }

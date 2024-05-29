@@ -16,11 +16,11 @@ const initialState = {
 function languagesReducer(state = initialState, action) {
     switch (action.type) {
         case FETCH_LANGUAGE_SUCCESS:
-            return { languages: action.payload, error: null, success: action.payload.success };
+            return { languages: action.payload, error: null, success: action.payload?.success };
 
         case ADD_LANGUAGE_SUCCESS:
             // return { languages: [state.languages, action.payload], error: null };
-            return { languages: [], error: null, success: action.payload.success };
+            return { languages: [], error: null, success: action.payload?.success };
 
         case UPDATE_LANGUAGE_SUCCESS:
             // return {
@@ -30,7 +30,7 @@ function languagesReducer(state = initialState, action) {
             //     ),
             //     error: null
             // };
-            return { languages: [], error: null, success: action.payload.success };
+            return { languages: [], error: null, success: action.payload?.success };
 
         case DELETE_LANGUAGE_SUCCESS:
             // return {
@@ -38,10 +38,10 @@ function languagesReducer(state = initialState, action) {
             //     languages: state.languages.filter(cls => cls.id !== action.payload),
             //     error: null
             // };
-            return { languages: [], error: null, success: action.payload.success };
+            return { languages: [], error: null, success: action.payload?.success };
 
         case LANGUAGE_OPERATION_FAILURE:
-            return { ...state, error: action.payload, success: action.payload.success };
+            return { ...state, error: action.payload, success: action.payload?.success };
 
         case LANGUAGE_SET_SUCCESS_FALSE:
             return { ...state, success: null }

@@ -17,6 +17,7 @@ const data = localStorage.getItem('authUser');
 const parseData = JSON.parse(data);
 const token = parseData?.token;
 // axiosApi.defaults.headers.common["Authorization"] = "Bearer " + token;
+axiosApi.defaults.headers.common["Authorization"] = token;
 axiosApi.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject(error)

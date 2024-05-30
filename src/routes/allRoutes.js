@@ -190,81 +190,7 @@ const userRoutes = [
   { path: "/center-alloction", component: <CenterAllocation /> },
 
 
-  // //calendar
-  { path: "/calendar", component: <Calendar /> },
 
-  { path: "/chat", component: <Chat /> },
-  { path: "/kanbanboard", component: <Kanban /> },
-
-  // // //profile
-  { path: "/profile", component: <UserProfile /> },
-
-  // //Email
-  { path: "/email-inbox", component: <EmailInbox /> },
-  { path: "/email-read", component: <EmailRead /> },
-  { path: "/email-compose", component: <EmailCompose /> },
-
-  // //Charts
-  { path: "/apex-charts", component: <ChartsAppex /> },
-  { path: "/charts-chartjs", component: <ChartsJs /> },
-  { path: "/charts-knob", component: <ChartsKnob /> },
-  { path: "/charts-c3", component: <ChartsC3 /> },
-  { path: "/sparkline-charts", component: <ChartsSparkLine /> },
-
-  // // Icons
-  { path: "/icons-materialdesign", component: <IconMaterialdesign /> },
-  { path: "/icons-ion", component: <Iconion /> },
-  { path: "/icons-fontawesome", component: <IconFontawesome /> },
-  { path: "/icons-themify", component: <IconThemify /> },
-  { path: "/icons-dripicons", component: <IconDripicons /> },
-  { path: "/icons-typicons", component: <IconTypicons /> },
-
-  // // Tables
-  { path: "/tables-basic", component: <BasicTables /> },
-  { path: "/tables-datatable", component: <DatatableTables /> },
-  { path: "/tables-responsive", component: <ResponsiveTables /> },
-  { path: "/tables-editable", component: <EditableTables /> },
-
-  // // Maps
-  { path: "/maps-google", component: <MapsGoogle /> },
-  { path: "/maps-vector", component: <MapsVector /> },
-
-  // // Forms
-  { path: "/form-elements", component: <FormElements /> },
-  { path: "/form-advanced", component: <FormAdvanced /> },
-  { path: "/form-editors", component: <FormEditors /> },
-  { path: "/form-uploads", component: <FormUpload /> },
-  { path: "/form-validation", component: <FormValidations /> },
-  { path: "/form-xeditable", component: <FormXeditable /> },
-
-  // // Ui
-  { path: "/ui-alerts", component: <UiAlert /> },
-  { path: "/ui-buttons", component: <UiButtons /> },
-  { path: "/ui-badge", component: <UiBadge /> },
-  { path: "/ui-cards", component: <UiCards /> },
-  { path: "/ui-carousel", component: <UiCarousel /> },
-  { path: "/ui-dropdowns", component: <UiDropdown /> },
-  { path: "/ui-grid", component: <UiGrid /> },
-  { path: "/ui-images", component: <UiImages /> },
-  { path: "/ui-lightbox", component: <UiLightbox /> },
-  { path: "/ui-modals", component: <UiModal /> },
-  { path: "/ui-pagination", component: <UiPagination /> },
-  { path: "/ui-popover-tooltip", component: <UiPopoverTooltips /> },
-  { path: "/ui-progressbars", component: <UiProgressbar /> },
-  { path: "/ui-tabs-accordions", component: <UiTabsAccordions /> },
-  { path: "/ui-typography", component: <UiTypography /> },
-  { path: "/ui-video", component: <UiVideo /> },
-  { path: "/ui-session-timeout", component: <UiSessionTimeout /> },
-  { path: "/ui-rangeslider", component: <UiRangeSlider /> },
-  { path: "/ui-utilities", component: <UiUtilities /> },
-  { path: "/ui-colors", component: <UiColors /> },
-  { path: "/ui-offcanvas", component: <UiOffcanvas /> },
-
-  // //Extra Pages
-  { path: "/pages-timeline", component: <PagesTimeline /> },
-  { path: "/pages-invoice", component: <PagesInvoice /> },
-  { path: "/pages-directory", component: <PagesDirectory /> },
-  { path: "/pages-blank", component: <PagesBlank /> },
 
   // this route should be at the end of all other routes
   {
@@ -288,9 +214,9 @@ const authRoutes = [
 
   // Authentication Inner
   { path: "/pages-login", component: <Login1 /> },
-  { path: "/pages-register", component: <Register1 /> },
-  { path: "/page-recoverpw", component: <Recoverpw /> },
-  { path: "/auth-lock-screen", component: <LockScreen /> },
+  // { path: "/pages-register", component: <Register1 /> },
+  // { path: "/page-recoverpw", component: <Recoverpw /> },
+  // { path: "/auth-lock-screen", component: <LockScreen /> },
 ]
 
 export { userRoutes, authRoutes }

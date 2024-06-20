@@ -156,7 +156,7 @@ const AllSections = (props) => {
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Sections </CardTitle>
-                            <MDBDataTable responsive bordered data={data} />
+                            <MDBDataTable responsive bordered data={data} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>
@@ -209,6 +209,7 @@ const AllSections = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter new Section"
+                                maxLength="50"
                                 value={sectionName}
                                 onChange={(e) => setSectionName(e.target.value)} />
                             {!sectionName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -225,6 +226,7 @@ const AllSections = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter New Description"
+                                maxLength="50"
                                 value={sectionDescription}
                                 onChange={(e) => setSectionDescription(e.target.value)} />
                             {!sectionDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -242,6 +244,7 @@ const AllSections = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter Section Code"
+                                maxLength="50"
                                 value={sectionCode}
                                 // onChange={(e) => setSectionCode(e.target.value)} 
                                 readOnly />

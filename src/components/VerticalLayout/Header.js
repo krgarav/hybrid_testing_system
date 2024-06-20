@@ -16,7 +16,8 @@ import ProfileMenu from "../CommonForBoth/TopbarDropdown/ProfileMenu"
 
 // import megamenuImg from "../../assets/images/megamenu-img.png"
 import logo from "../../assets/images/logo-sm.png"
-import ios from "../../assets/images/ios.png";
+import ios from "../../assets/images/hts_logo.png";
+import ios1 from "../../assets/images/1.png";
 import logoLightPng from "../../assets/images/logo-light.png"
 import logoDark from "../../assets/images/logo-dark.png"
 
@@ -36,7 +37,7 @@ import classes from "./Header.module.css";
 const Header = props => {
   const [search, setsearch] = useState(false)
   const [createmenu, setCreateMenu] = useState(false)
-  const [logoHeight, setLogoHeight] = useState(40);
+  const [logoHeight, setLogoHeight] = useState(80);
   const { width } = useWindowSize();
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
   useEffect(() => {
@@ -77,11 +78,11 @@ const Header = props => {
 
   function tToggle() {
 
-    if (logoHeight == 40) {
-      setLogoHeight(20)
+    if (logoHeight == 80) {
+      setLogoHeight(30)
     }
     else {
-      setLogoHeight(40)
+      setLogoHeight(80)
     }
     var body = document.body;
     body.classList.toggle("vertical-collpsed");
@@ -129,16 +130,16 @@ const Header = props => {
       <header id="page-topbar">
         <div className="navbar-header">
           <div className="d-flex">
-            <div className="navbar-brand-box" style={{ backgroundColor: width <= 998 && "white" }}>
+            <div className="navbar-brand-box pt-2" style={{ backgroundColor: width <= 998 && "white" }}>
               <Link to="/"
-                className="logo logo-dark"
+                className="logo logo-dark "
 
               >
-                <img src={ios} alt="" height="40" />
+                <img src={ios} alt="" height="120" style={{ color: "white" }} />
               </Link>
 
               <Link to="/" className="logo logo-light" >
-                <img src={ios} alt="" height={logoHeight} />
+                <img src={ios} alt="" height={logoHeight} style={{ filter: "invert(1)" }} />
               </Link>
             </div>
 

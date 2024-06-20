@@ -1,5 +1,5 @@
 let url = "http://192.168.0.54:82/api/";
-export let url_online = "http://16.170.213.59";
+export let url_online = "http://13.51.59.133";
 export const BACKEND_SPRING = false;
 // let url_online = "http://192.168.0.184:8080";
 // export const BACKEND_SPRING = true;

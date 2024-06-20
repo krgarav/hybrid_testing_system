@@ -433,7 +433,7 @@ const ExamPaperDetails = (props) => {
                                     <Button type="button" color="info" className="waves-effect waves-light mb-2" onClick={() => setModalForAddQuestion(true)}>Add Question</Button>
                                 </div>
                             </div>
-                            <MDBDataTable responsive bordered data={data} />
+                            <MDBDataTable responsive bordered data={data} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>
@@ -669,7 +669,7 @@ const ExamPaperDetails = (props) => {
                                     <div className="d-flex justify-content-between">
                                         <CardTitle className="h4">All Questions</CardTitle>
                                     </div>
-                                    <MDBDataTable responsive bordered data={FilterQuestionData} />
+                                    <MDBDataTable responsive bordered data={FilterQuestionData} noBottomColumns />
                                 </CardBody>
                             </Card>
                         </Col>

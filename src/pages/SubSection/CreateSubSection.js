@@ -141,6 +141,7 @@ const CreateSubSection = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter new SubSection"
+                                            maxLength="50"
                                             value={subSectionName}
                                             onChange={(e) => setSubSectionName(e.target.value)} />
                                         {!subSectionName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -157,6 +158,7 @@ const CreateSubSection = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter New Description"
+                                            maxLength="50"
                                             value={subSectionDescription}
                                             onChange={(e) => setSubSectionDescription(e.target.value)} />
                                         {!subSectionDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -173,6 +175,7 @@ const CreateSubSection = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter SubSection Code"
+                                            maxLength="50"
                                             value={subSectionCode}
                                             onChange={(e) => setSubSectionCode(e.target.value)} />
                                         {!subSectionCode && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

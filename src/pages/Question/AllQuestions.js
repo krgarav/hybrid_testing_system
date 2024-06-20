@@ -521,7 +521,7 @@ const AllQuestions = (props) => {
                             <CardTitle className="h4">All Questions </CardTitle>
                             {questions?.questions?.result?.length}
                             <div id="MBDTableDiv" >
-                                <MDBDataTable responsive bordered data={data} />
+                                <MDBDataTable responsive bordered data={data} noBottomColumns />
 
                             </div>
                         </CardBody>

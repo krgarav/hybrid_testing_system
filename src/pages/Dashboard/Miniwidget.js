@@ -1,12 +1,14 @@
 import React from "react"
-import { Card, CardBody, Row , Col} from "reactstrap"
+import { useNavigate } from "react-router-dom"
+import { Card, CardBody, Row, Col } from "reactstrap"
 
 const Miniwidget = props => {
+  const navigate = useNavigate();
   return (
     <React.Fragment>
       <Row>
         {props.reports.map((report, key) => (
-          <Col xl={3} sm={6} key={key}>
+          <Col xl={3} sm={6} key={key} onClick={() => navigate(`${report.navigateLink}`)} style={{ cursor: "pointer" }}>
             <Card className="mini-stat bg-primary">
               <CardBody className="card-body mini-stat-img">
                 <div className="mini-stat-icon">

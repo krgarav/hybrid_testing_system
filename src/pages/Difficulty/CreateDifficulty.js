@@ -99,6 +99,7 @@ const CreateDifficulty = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter new Difficulty"
+                                            maxLength="50"
                                             value={difficultyName}
                                             onChange={(e) => setDifficultyName(e.target.value)} />
                                         {!difficultyName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

@@ -74,18 +74,23 @@ function* loginUser({ payload: { user, history } }) {
         password: user.password,
       });
       console.log(response, "response");
-      if (response.success) {
+      if (response?.success) {
         localStorage.setItem("authUser", JSON.stringify(response));
         yield put(loginSuccess(response));
       }
-      else {
-        toast.error(response.message);
+      else if (response?.message) {
+        toast.error(response?.message);
         // yield put(apiError(response.message))
+      }
+      else {
+        toast.error("something went wrong")
       }
     }
     history('/dashboard');
   } catch (error) {
     toast.error("something went wrong")
+    console.log(error)
+
     // yield put(apiError(error));
   }
 }

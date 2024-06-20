@@ -87,6 +87,7 @@
     "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
     "react-sparklines": "^1.7.0",
+    "react-spinners": "^0.13.8",
     "react-super-responsive-table": "^5.2.2",
     "react-switch": "^7.0.0",
     "react-toastify": "9.1.3",

@@ -185,7 +185,7 @@ const SidebarContent = props => {
             <li>
               <Link to="/dashboard" className="waves-effect">
                 <i className="mdi mdi-view-dashboard"></i>
-                <span className="badge rounded-pill bg-primary float-end">2</span>
+                {/* <span className="badge rounded-pill bg-primary float-end">2</span> */}
                 <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Dashboard")}</span>
               </Link>
             </li>
@@ -302,7 +302,7 @@ const SidebarContent = props => {
                   <Link to="/create-question">{props.t("Create Question")}</Link>
                 </li>
                 <li>
-                  <Link to="/create-question-using-csv" style={{fontSize:"calc(0.7rem + 0.05rem)"}}>{props.t("Create Question Using CSV")}</Link>
+                  <Link to="/create-question-using-csv" style={{ fontSize: "calc(0.7rem + 0.05rem)" }}>{props.t("Create Question Using CSV")}</Link>
                 </li>
                 <li>
                   <Link to="/all-questions">{props.t("All Questions")} </Link>

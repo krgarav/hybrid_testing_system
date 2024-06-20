@@ -138,7 +138,7 @@ const AllLanguages = (props) => {
 
                             <CardBody>
                                 <CardTitle className="h4">All Difficulties </CardTitle>
-                                <MDBDataTable responsive bordered data={data} />
+                                <MDBDataTable responsive bordered data={data} noBottomColumns />
                             </CardBody>
                         </div>
                     </Card>
@@ -168,6 +168,7 @@ const AllLanguages = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter new Language"
+                                maxLength="50"
                                 value={languageName}
                                 onChange={(e) => setLanguageName(e.target.value)} />
                             {!languageName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

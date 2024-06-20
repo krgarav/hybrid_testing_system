@@ -140,6 +140,7 @@ const CreateCourse = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter new Course"
+                                            maxLength="50"
                                             value={courseName}
                                             onChange={(e) => setCourseName(e.target.value)} />
                                         {!courseName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -156,6 +157,7 @@ const CreateCourse = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter New Description"
+                                            maxLength="50"
                                             value={courseDescription}
                                             onChange={(e) => setCourseDescription(e.target.value)} />
                                         {!courseDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -172,6 +174,7 @@ const CreateCourse = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter Course Code"
+                                            maxLength="50"
                                             value={courseCode}
                                             onChange={(e) => setCourseCode(e.target.value)} />
                                         {!courseCode && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

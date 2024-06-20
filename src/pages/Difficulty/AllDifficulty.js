@@ -144,7 +144,7 @@ const AllDifficultys = (props) => {
                     <Card>
                         <CardBody className="col-lg-6 col-sm-12 col-xs-12"   >
                             <CardTitle className="h4">All Difficulties </CardTitle>
-                            <MDBDataTable responsive bordered data={data} />
+                            <MDBDataTable responsive bordered data={data} noBottomColumns />
                         </CardBody>
 
                     </Card>
@@ -174,6 +174,7 @@ const AllDifficultys = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter new Difficulty"
+                                maxLength="50"
                                 value={difficultyName}
                                 onChange={(e) => setDifficultyName(e.target.value)} />
                             {!difficultyName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

@@ -122,7 +122,7 @@ const AllClasses = (props) => {
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Classes </CardTitle>
-                            <MDBDataTable responsive bordered data={data} />
+                            <MDBDataTable responsive bordered data={data} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>
@@ -155,6 +155,7 @@ const AllClasses = (props) => {
                                 className='form-control'
                                 placeholder="Enter new Class"
                                 value={className}
+                                maxLength="50"
                                 onChange={(e) => setClassName(e.target.value)} />
                             {!className && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                         </div>
@@ -171,6 +172,7 @@ const AllClasses = (props) => {
                                 className='form-control'
                                 placeholder="Enter New Description"
                                 value={classDescription}
+                                maxLength="50"
                                 onChange={(e) => setClassDescription(e.target.value)} />
                             {!classDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                         </div>
@@ -188,6 +190,7 @@ const AllClasses = (props) => {
                                 className='form-control'
                                 placeholder="Enter Class Code"
                                 value={classCode}
+                                maxLength="50"
                                 onChange={(e) => setClassCode(e.target.value)}
                                 readOnly />
                         </div>

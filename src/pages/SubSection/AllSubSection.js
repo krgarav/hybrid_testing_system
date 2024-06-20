@@ -156,7 +156,7 @@ const AllSubSections = (props) => {
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Sub Sections </CardTitle>
-                            <MDBDataTable responsive bordered data={data} />
+                            <MDBDataTable responsive bordered data={data} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>
@@ -209,6 +209,7 @@ const AllSubSections = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter new Sub Section"
+                                maxLength="50"
                                 value={subSectionName}
                                 onChange={(e) => setSubSectionName(e.target.value)} />
                             {!subSectionName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -225,6 +226,7 @@ const AllSubSections = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter New Description"
+                                maxLength="50"
                                 value={subSectionDescription}
                                 onChange={(e) => setSubSectionDescription(e.target.value)} />
                             {!subSectionDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -242,6 +244,7 @@ const AllSubSections = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter Sub Section Code"
+                                maxLength="50"
                                 value={subSectionCode}
                                 // onChange={(e) => setSubSectionCode(e.target.value)} 
                                 readOnly />

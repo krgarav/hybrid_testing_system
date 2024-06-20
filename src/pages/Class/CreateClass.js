@@ -54,15 +54,29 @@ const CreateClass = (props) => {
     const dispatch = useDispatch();
     const result = useSelector(state => state.classesReducer)
 
+    function isValidName(name) {
+        const specialCharRegex = /[^a-zA-Z0-9 ]/; // Regular expression to check for special characters
+        if (specialCharRegex.test(name)) {
+            toast.error("Class name should not contain any special characters");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     const handleSubmit = async (e) => {
+
         e.preventDefault();
-        console.log(!className)
+        console.log(className)
         if (!className || !classDescription || !classCode) {
             setSpanDisplay("inline")
 
         }
         else {
-            dispatch(addClass({ className, classDescription, classCode }));
+            if (isValidName(className)) {
+
+                dispatch(addClass({ className, classDescription, classCode }));
+            }
         }
     };
 
@@ -103,6 +117,7 @@ const CreateClass = (props) => {
                                             className='form-control'
                                             placeholder="Enter new Class"
                                             value={className}
+                                            maxLength="50"
                                             onChange={(e) => setClassName(e.target.value)} />
 
                                         {!className && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -119,6 +134,7 @@ const CreateClass = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter New Description"
+                                            maxLength="50"
                                             value={classDescription}
                                             onChange={(e) => setClassDescription(e.target.value)} />
                                         {!classDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -135,6 +151,7 @@ const CreateClass = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter Class Code"
+                                            maxLength="50"
                                             value={classCode}
                                             onChange={(e) => setClassCode(e.target.value)} />
                                         {!classCode && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

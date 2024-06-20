@@ -36,10 +36,10 @@ const Dashboard = (props) => {
   },)
 
   const reports = [
-    { title: "Questions in QB", iconClass: "cube-outline", total: "1200", average: "+11%", badgecolor: "info" },
-    { title: "School Register", iconClass: "buffer", total: "5", average: "+29%", badgecolor: "info" },
-    { title: "School Sitting Capacity", iconClass: "tag-text-outline", total: "4500", average: "0%", badgecolor: "info" },
-    { title: "Student Registered", iconClass: "briefcase-check", total: "1000", average: "+89%", badgecolor: "info" },
+    { title: "Questions in QB", iconClass: "cube-outline", total: "1200", average: "+11%", badgecolor: "info", navigateLink: "/all-questions" },
+    { title: "School Register", iconClass: "buffer", total: "5", average: "+29%", badgecolor: "info", navigateLink: "/all-school" },
+    { title: "School Sitting Capacity", iconClass: "tag-text-outline", total: "4500", average: "0%", badgecolor: "info", navigateLink: "/dashboard" },
+    { title: "Student Registered", iconClass: "briefcase-check", total: "1000", average: "+89%", badgecolor: "info", navigateLink: "/dashboard" },
   ]
 
   return (

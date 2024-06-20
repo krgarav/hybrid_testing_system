@@ -172,7 +172,7 @@ const AllSchool = (props) => {
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All School </CardTitle>
-                            <MDBDataTable responsive bordered data={data} />
+                            <MDBDataTable responsive bordered data={data} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>

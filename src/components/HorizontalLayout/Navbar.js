@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"
 import React, { useState, useEffect } from "react"
 import { Row, Col, Collapse } from "reactstrap"
-import { Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import withRouter from "components/Common/withRouter"
 import classname from "classnames"
 
@@ -114,8 +114,8 @@ const Navbar = props => {
                     <i className="ti-email"></i>{props.t("Email")}
                   </Link>
                   <div
-                    className={classname("dropdown-menu dropdown-menu-left", 
-                    { show: email }
+                    className={classname("dropdown-menu dropdown-menu-left",
+                      { show: email }
                     )}
                   >
                     <Link to="/email-inbox" className="dropdown-item">
@@ -354,7 +354,7 @@ const Navbar = props => {
                         <Link to="/maps-vector" className="dropdown-item">
                           {props.t("Vector Maps")}{" "}
                         </Link>
-                       
+
                       </div>
                     </div>
                     <Link to="/ui-rangeslider" className="dropdown-item">{props.t("Range Slider")}</Link>
@@ -380,7 +380,7 @@ const Navbar = props => {
                       {props.t("Apex charts")}
                     </Link>
 
-                    
+
                     <Link to="/charts-chartjs" className="dropdown-item">
                       {props.t("Chartjs Chart")}
                     </Link>

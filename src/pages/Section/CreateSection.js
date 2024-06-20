@@ -141,6 +141,7 @@ const CreateSection = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter new Section"
+                                            maxLength="50"
                                             value={sectionName}
                                             onChange={(e) => setSectionName(e.target.value)} />
                                         {!sectionName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -157,6 +158,7 @@ const CreateSection = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter New Description"
+                                            maxLength="50"
                                             value={sectionDescription}
                                             onChange={(e) => setSectionDescription(e.target.value)} />
                                         {!sectionDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -173,6 +175,7 @@ const CreateSection = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter Section Code"
+                                            maxLength="50"
                                             value={sectionCode}
                                             onChange={(e) => setSectionCode(e.target.value)} />
                                         {!sectionCode && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

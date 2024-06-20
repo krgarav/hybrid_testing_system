@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, CardBody, Label, Form, Alert, Input, FormFeedback } from 'reactstrap';
 import logoDark from "../../assets/images/logo-dark.png";
@@ -15,12 +15,15 @@ import withRouter from 'components/Common/withRouter';
 
 // actions
 import { loginUser, socialLogin } from "../../store/actions";
+import Loader from 'components/Loader/Loader';
 
 
 const Login = props => {
   document.title = "Login | Lexa - Responsive Bootstrap 5 Admin Dashboard";
 
   const dispatch = useDispatch();
+  const [loader, setLoader] = useState(false);
+  const login = useSelector(state => state.login);
 
   const validation = useFormik({
     // enableReinitialize : use this  flag when initial values needs to be changed
@@ -36,6 +39,7 @@ const Login = props => {
     }),
     onSubmit: (values) => {
       console.log(values)
+      setLoader(true);
       // navigate("/dashboard")
       dispatch(loginUser(values, props.router.navigate));
     }
@@ -68,7 +72,11 @@ const Login = props => {
 
   return (
     <React.Fragment>
+
       <div className="account-pages my-5 pt-sm-5">
+        {loader ? (
+          <Loader />
+        ) : ("")}
         <Container>
           <Row className="justify-content-center">
             <Col md={8} lg={6} xl={5}>
@@ -138,7 +146,15 @@ const Login = props => {
                           </div>
                         </div>
                         <div className="col-6 text-end">
-                          <button className="btn btn-primary w-md waves-effect waves-light" type="submit">Log In</button>
+                          <button
+                            className={`btn w-md waves-effect waves-light ${loader ? 'btn-secondary' : 'btn-primary'}`}
+                            type="submit"
+                            disabled={loader}
+                          >
+                            Log In
+                          </button>
+
+
                         </div>
                       </Row>
                       <Row className="form-group mb-0">
@@ -168,6 +184,7 @@ const Login = props => {
             </Col>
           </Row>
         </Container>
+
       </div>
 
     </React.Fragment>

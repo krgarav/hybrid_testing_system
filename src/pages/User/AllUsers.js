@@ -219,7 +219,7 @@ const AllUsers = (props) => {
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Users </CardTitle>
-                            <MDBDataTable responsive bordered data={data} style={{ cursor: 'pointer' }} />
+                            <MDBDataTable responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>

@@ -146,7 +146,7 @@ const AllCourses = (props) => {
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Courses </CardTitle>
-                            <MDBDataTable responsive bordered data={data} />
+                            <MDBDataTable responsive bordered data={data} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>
@@ -200,6 +200,7 @@ const AllCourses = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter new Course"
+                                maxLength="50"
                                 value={courseName}
                                 onChange={(e) => setCourseName(e.target.value)} />
                             {!courseName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -216,6 +217,7 @@ const AllCourses = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter New Description"
+                                maxLength="50"
                                 value={courseDescription}
                                 onChange={(e) => setCourseDescription(e.target.value)} />
                             {!courseDescription && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
@@ -233,6 +235,7 @@ const AllCourses = (props) => {
                             <input type="text"
                                 className='form-control'
                                 placeholder="Enter Course Code"
+                                maxLength="50"
                                 value={courseCode}
                                 // onChange={(e) => setCourseCode(e.target.value)}
                                 readOnly />

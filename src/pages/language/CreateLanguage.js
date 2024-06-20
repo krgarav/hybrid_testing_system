@@ -92,6 +92,7 @@ const CreateLanguage = (props) => {
                                         <input type="text"
                                             className='form-control'
                                             placeholder="Enter new Language"
+                                            maxLength="50"
                                             value={languageName}
                                             onChange={(e) => setLanguageName(e.target.value)} />
                                         {!languageName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}

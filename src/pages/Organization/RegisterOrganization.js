@@ -19,6 +19,7 @@ import { fetchOtp, registerStudent, verifyOtp } from 'helpers/user_helper';
 import Select from "react-select"
 import axios from 'axios';
 import { getAllMainExamPapers, getMainExamPapersByLanguage } from 'helpers/center_helper';
+import { CreateOrganization } from 'helpers/organization_helper';
 
 const RegisterOrganization = props => {
     document.title = "Organization Register| Register for the HTS application";
@@ -50,6 +51,8 @@ const RegisterOrganization = props => {
     const [allExams, setAllExams] = useState([]);
     const [selectedExam, setSelectedExam] = useState(null);
     const [language, setLanguage] = useState(null);
+    const [sentOtp, setSentOtp] = useState(false);
+    const [emailReadOnly, setEmailReadOnly] = useState(false);
     const navigate = useNavigate();
 
     const languages = useSelector(state => state.languagesReducer);
@@ -72,7 +75,7 @@ const RegisterOrganization = props => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("submit")
-        if (!name || !email || !phoneNumber || !fatherName || !grandFatherName || !language || !selectedExam || !password || !confirmPassword) {
+        if (!username || !email || !phoneNumber || !password || !confirmPassword) {
             setSpanDisplay("inline");
         }
         else {
@@ -86,12 +89,10 @@ const RegisterOrganization = props => {
                 toast.error("Invalid phone number format");
             }
             else {
-                let mainExamId = selectedExam.id;
-                let languageId = language.id;
-                const result = await registerStudent({ name, email, phoneNumber, fatherName, grandFatherName, languageId, mainExamId, password, confirmPassword })
+                const result = await CreateOrganization({ username, email, phoneNumber, password, confirmPassword })
                 if (result?.success) {
                     toast.success(result?.message);
-                    navigate("/student-login")
+                    navigate("/login")
                 }
                 else {
                     toast.error(result?.message);
@@ -100,11 +101,46 @@ const RegisterOrganization = props => {
         }
     };
 
+    const sendOtp = async () => {
+        setSentOtp(true);
+        if (!email) {
+            toast.error("Enter email id");
+        }
+        else {
+            const result = await fetchOtp({ email });
+            if (result.success) {
+                toast.success(result.message);
+            }
+            else {
+                toast.error(result.message);
+            }
+        }
+    }
 
 
 
-
-
+    const handleOtpChange = async (e) => {
+        setOtp(e.target.value);
+        let otp = e.target.value;
+        let emailId = email;
+        // for testing i do it ***************************
+        // setVerify(true);
+        // setOtpButtonDisplay(false);
+        // setIsReadOnly(true)
+        // for testing i do it *******************************
+        const result = await verifyOtp({ otp, emailId });
+        if (result.success) {
+            toast.success(result.message);
+            setVerify(true);
+            setEmailReadOnly(true);
+        }
+        else {
+            console.log()
+            if (otp.length >= 6) {
+                toast.error(result.message);
+            }
+        }
+    }
 
 
 
@@ -131,35 +167,24 @@ const RegisterOrganization = props => {
 
                                     <div className="p-3">
                                         <h4 className="text-muted font-size-18 mb-1 text-center">Welcome </h4>
-                                        <p className="text-muted text-center">Register for the Exam.</p>
+                                        <p className="text-muted text-center">Register with our application</p>
                                         <form onSubmit={handleSubmit}>
 
+                                            <div className="mb-3">
+
+                                                <Label htmlFor="number">Username</Label>
+                                                <Input
+                                                    name="number"
+                                                    className="form-control"
+                                                    placeholder="Enter Username"
+                                                    type="text"
+                                                    value={username}
+                                                    onChange={(e) => setUsername(e.target.value)}
+                                                />
+                                                {!username && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                            </div>
 
 
-                                            <div className="mb-3">
-                                                <Label htmlFor="name">Organization Name</Label>
-                                                <Input
-                                                    name="name"
-                                                    className="form-control"
-                                                    placeholder="Enter Organization Name"
-                                                    type="text"
-                                                    value={orgName}
-                                                    onChange={(e) => setOrgName(e.target.value)}
-                                                />
-                                                {!orgName && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                            </div>
-                                            <div className="mb-3">
-                                                <Label htmlFor="name">Organization Code</Label>
-                                                <Input
-                                                    name="name"
-                                                    className="form-control"
-                                                    placeholder="Enter Organization Code"
-                                                    type="text"
-                                                    value={orgCode}
-                                                    onChange={(e) => setOrgCode(e.target.value)}
-                                                />
-                                                {!orgCode && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                            </div>
                                             <div className="mb-3">
                                                 <Label htmlFor="email">Email</Label>
                                                 <Input
@@ -169,6 +194,7 @@ const RegisterOrganization = props => {
                                                     type="text"
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
+                                                    readOnly={emailReadOnly}
                                                 />
                                                 {!email && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                             </div>
@@ -185,85 +211,6 @@ const RegisterOrganization = props => {
                                                 />
                                                 {!phoneNumber && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                             </div>
-                                            <div className="mb-3">
-
-                                                <Label htmlFor="number">Address</Label>
-                                                <Input
-                                                    name="number"
-                                                    className="form-control"
-                                                    placeholder="Enter Address"
-                                                    type="text"
-                                                    value={address}
-                                                    onChange={(e) => setAddress(e.target.value)}
-                                                />
-                                                {!address && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                            </div>
-                                            <div className="mb-3">
-
-                                                <Label htmlFor="number">City</Label>
-                                                <Input
-                                                    name="number"
-                                                    className="form-control"
-                                                    placeholder="Enter City"
-                                                    type="text"
-                                                    value={city}
-                                                    onChange={(e) => setCity(e.target.value)}
-                                                />
-                                                {!city && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                            </div>
-                                            <div className="mb-3">
-
-                                                <Label htmlFor="number">State</Label>
-                                                <Input
-                                                    name="number"
-                                                    className="form-control"
-                                                    placeholder="Enter State"
-                                                    type="text"
-                                                    value={state}
-                                                    onChange={(e) => setState(e.target.value)}
-                                                />
-                                                {!state && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                            </div>
-                                            <div className="mb-3">
-
-                                                <Label htmlFor="number">Country</Label>
-                                                <Input
-                                                    name="number"
-                                                    className="form-control"
-                                                    placeholder="Enter Country"
-                                                    type="text"
-                                                    value={country}
-                                                    onChange={(e) => setCountry(e.target.value)}
-                                                />
-                                                {!country && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                            </div>
-                                            <div className="mb-3">
-
-                                                <Label htmlFor="number">Username</Label>
-                                                <Input
-                                                    name="number"
-                                                    className="form-control"
-                                                    placeholder="Enter Username"
-                                                    type="text"
-                                                    value={username}
-                                                    onChange={(e) => setUsername(e.target.value)}
-                                                />
-                                                {!username && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -279,7 +226,6 @@ const RegisterOrganization = props => {
                                                     onChange={(e) => setPassword(e.target.value)} />
                                                 {!password && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                             </div>
-
                                             <div className="mb-3">
 
                                                 <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -292,10 +238,29 @@ const RegisterOrganization = props => {
                                                     onChange={(e) => setConfirmPassword(e.target.value)} />
                                                 {!confirmPassword && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                             </div>
+                                            {sentOtp &&
+                                                !verify &&
+                                                < div className="mb-3">
+
+
+                                                    <Label htmlFor="confirmPassword">Enter Otp</Label>
+                                                    <Input
+                                                        name="otp"
+                                                        className="form-control"
+                                                        placeholder="Enter Otp"
+                                                        type="text"
+                                                        value={otp}
+                                                        onChange={handleOtpChange} />
+                                                </div>
+                                            }
 
                                             <Row className="mb-3">
                                                 <div className="mt-4">
-                                                    <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                                    {!verify ?
+                                                        <button type="button" className="btn btn-primary w-md" onClick={sendOtp}>Send Otp</button>
+                                                        :
+                                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                                    }
                                                 </div>
                                             </Row>
 
@@ -320,7 +285,7 @@ const RegisterOrganization = props => {
 
 export default withRouter(RegisterOrganization);
 
-Login.propTypes = {
+RegisterOrganization.propTypes = {
     history: PropTypes.object,
 };
 

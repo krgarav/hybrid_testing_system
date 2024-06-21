@@ -20,6 +20,7 @@ import LatestOrders from "./latest-orders";
 
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
+import { updateToken } from "helpers/api_helper";
 
 const Dashboard = (props) => {
 
@@ -34,6 +35,10 @@ const Dashboard = (props) => {
   useEffect(() => {
     props.setBreadcrumbItems('Dashboard', breadcrumbItems)
   },)
+
+  useEffect(() => {
+    updateToken();
+  }, []);
 
   const reports = [
     { title: "Questions in QB", iconClass: "cube-outline", total: "1200", average: "+11%", badgecolor: "info", navigateLink: "/all-questions" },

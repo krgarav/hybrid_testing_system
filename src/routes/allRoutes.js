@@ -132,6 +132,8 @@ import StudentRegister from "pages/Authentication/StudentRegister"
 import CreateLanguage from "pages/language/CreateLanguage"
 import AllLanguage from "pages/language/AllLanguage"
 import StudentLogin from "pages/student/StudentLogin"
+import RegisterOrganization from "pages/Organization/RegisterOrganization"
+import ProfileMenu from "components/CommonForBoth/TopbarDropdown/ProfileMenu"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -188,6 +190,7 @@ const userRoutes = [
   { path: "/create-exam", component: <CreateExam /> },
   { path: "/all-exams", component: <AllExams /> },
   { path: "/center-alloction", component: <CenterAllocation /> },
+  { path: "/profile", component: <UserProfile /> },
 
 
 
@@ -206,7 +209,7 @@ const authRoutes = [
   { path: "/login", component: <Login /> },
   { path: "/student-login", component: <StudentLogin /> },
   { path: "/forgot-password", component: <ForgetPwd /> },
-  { path: "/register", component: <Register /> },
+  { path: "/register", component: <RegisterOrganization /> },
   { path: "/student-register", component: <StudentRegister /> },
 
   { path: "/pages-404", component: <Pages404 /> },

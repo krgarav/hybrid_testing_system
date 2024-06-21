@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import PropTypes from 'prop-types'
 import {
   Dropdown,
@@ -11,16 +11,21 @@ import {
 import { withTranslation } from "react-i18next"
 // Redux
 import { connect } from "react-redux"
-import { Link } from "react-router-dom";
+import { Link, useNavigate, } from "react-router-dom";
 import withRouter from "components/Common/withRouter"
 
 // users
 import user1 from "../../../assets/images/users/user-1.jpg"
+import { getOrganization } from "helpers/organization_helper"
 
 const ProfileMenu = props => {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false)
+  const navigate = useNavigate();
 
+  const handleProfileClick = (link) => {
+    navigate(link); // Navigate programmatically
+  };
 
   return (
     <React.Fragment>
@@ -42,11 +47,10 @@ const ProfileMenu = props => {
           <i className="fas fa-user h1"></i>
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-end" style={{ marginLeft: "25px" }}>
-          {/* <DropdownItem tag="a" href="/profile">
-            {" "}
+          <DropdownItem tag="a" onClick={() => handleProfileClick('/profile')}>
             <i className="mdi mdi-account-circle font-size-17 text-muted align-middle me-1" />
-            {props.t("Profile")}{" "}
-          </DropdownItem> */}
+            {props.t("Profile")}
+          </DropdownItem>
 
           {/* <DropdownItem className="d-flex align-items-center" to="#">
             <i className="mdi mdi-cog font-size-17 text-muted align-middle me-1"></i>
@@ -59,7 +63,7 @@ const ProfileMenu = props => {
 
           <Link to="/logout" className="dropdown-item text-danger" style={{ display: "flex" }}>
             <i className="mdi mdi-power font-size-17 text-muted align-middle me-1 text-danger" />
-            <span style={{ display: "flex", alignSelf: "center", alignItems: "center",fontWeight:"bold" , fontSize:"0.9rem" }} >{props.t("Logout")}</span>
+            <span style={{ display: "flex", alignSelf: "center", alignItems: "center", fontWeight: "bold", fontSize: "0.9rem" }} >{props.t("Logout")}</span>
           </Link>
         </DropdownMenu>
       </Dropdown>

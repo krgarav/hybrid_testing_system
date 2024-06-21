@@ -33,6 +33,7 @@ import {
 
 //css import
 import classes from "./Header.module.css";
+import { IMAGE_FETCH } from 'helpers/url_helper';
 
 const Header = props => {
   const [search, setsearch] = useState(false)
@@ -125,6 +126,12 @@ const Header = props => {
 
     }
   }
+
+
+  const logo = JSON.parse(localStorage.getItem("authUser")).orgLogo;
+  useEffect(() => {
+    console.log(logo)
+  }, [])
   return (
     <React.Fragment>
       <header id="page-topbar">
@@ -135,11 +142,15 @@ const Header = props => {
                 className="logo logo-dark "
 
               >
-                <img src={ios} alt="" height="120" style={{ color: "white" }} />
+                <img src={ios} alt="" height="40" style={{ color: "white" }} />
               </Link>
 
               <Link to="/" className="logo logo-light" >
-                <img src={ios} alt="" height={logoHeight} style={{ filter: "invert(1)" }} />
+                {!logo ?
+                  <img src={ios} alt="" height={logoHeight} style={{ filter: "invert(1)" }} />
+                  :
+                  <img src={IMAGE_FETCH + logo} alt="" height={logoHeight} />
+                }
               </Link>
             </div>
 

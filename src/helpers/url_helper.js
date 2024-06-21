@@ -1,5 +1,6 @@
 let url = "http://192.168.0.54:82/api/";
-export let url_online = "http://13.51.59.133";
+// export let url_online = "http://13.51.59.133";
+export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
 // let url_online = "http://192.168.0.184:8080";
 // export const BACKEND_SPRING = true;
@@ -161,8 +162,12 @@ export const GET_ALL_MAIN_EXAM_PAPERS = url_online + "/GetMainExamPapers";
 export const DELETE_MAIN_EXAM_PAPER = url_online + "/DeleteMainExamPaper?Id=";
 export const GET_MAIN_EXAM_PAPERS_BY_LANGUAGE = url_online + "/GetExamPaperByLanguage?Id=";
 
+const url2 = "https://4wq09l1k-5290.inc1.devtunnels.ms"
 
-
+//organization
+export const CREATE_ORGANIZATION = url2 + "/CreateOrganization";
+export const GET_ORGANIZATION_BY_ID = url_online + "/GetOrganizationById?Id=";
+export const UPDATE_ORGANIZATION = url_online + "/UpdateOrganization";
 
 //PROFILE
 export const POST_EDIT_JWT_PROFILE = "/post-jwt-profile"

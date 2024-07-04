@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
 import { ExamCenters, fetchSchoolTypes } from "helpers/school_helper";
+import Loader from "components/Loader/Loader";
 
 const AllSchool = (props) => {
     document.title = "Question Bank | All School";
@@ -32,6 +33,7 @@ const AllSchool = (props) => {
     const [sittingCapacity, setSittingCapacity] = useState("");
     const [id, setId] = useState("");
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
     const result = useSelector(state => state.schoolReducer)
 
@@ -146,6 +148,7 @@ const AllSchool = (props) => {
             let regionCityAdministration = administration
             let schoolTypeOwnership = schoolType.id;
             let examCenter = center.value
+            setLoader(true);
             dispatch(updateSchool({ id, schoolName, schoolCode, address, regionCityAdministration, zone, woreda, town, city, kebele, schoolTypeOwnership, examCenter, sittingCapacity }));
 
         }
@@ -156,6 +159,7 @@ const AllSchool = (props) => {
             setModalShow(false);
             dispatch(setSuccessFalseSchool());
         }
+        setLoader(false);
     }, [result.success]);
     const handleSelectCenter = selectedOption => {
         setCenter(selectedOption);
@@ -166,13 +170,15 @@ const AllSchool = (props) => {
     }
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All School </CardTitle>
-                            <MDBDataTable responsive bordered data={data} noBottomColumns />
+                            <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>

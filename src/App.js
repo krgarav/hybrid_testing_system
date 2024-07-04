@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React from "react"
+import React, { useEffect, useState } from "react"
 import './App.css'
 
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import { connect } from "react-redux"
 
 // Import Routes all
@@ -20,7 +20,7 @@ import NonAuthLayout from "./components/NonAuthLayout"
 import "./assets/scss/theme.scss"
 
 // Toast for Notification
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 // Import Firebase Configuration file
@@ -50,6 +50,9 @@ fakeBackend()
 // init firebase backend
 // initFirebaseBackend(firebaseConfig)
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 const App = props => {
   // {alert('hiii')}
   //   useEffect(() => {
@@ -71,8 +74,41 @@ const App = props => {
   }
 
   const Layout = getLayout()
+  const [save, setSave] = useState(false);
+
+  const query = useQuery();
+
+  useEffect(() => {
+    if (localStorage.getItem('authUser')) {
+      setSave(true);
+    }
+    else {
+
+
+      const authUser = query.get('authtoken');
+
+      if (!save) {
+        if (authUser) {
+          localStorage.setItem('authUser', authUser);
+          localStorage.removeItem('showSuccessToast');
+          toast.success('Login successful!');
+          setSave(true)
+
+        }
+        // else {
+        //   const storedAuthUser = localStorage.getItem('authUser');
+        //   if (!storedAuthUser) {
+
+        //     window.location.href = 'http://localhost:5173/login'; // Redirect to login if no auth data
+        //   }
+        // }
+      }
+    }
+  }, [query]);
+
   return (
     <React.Fragment>
+
       <Routes>
         {/* Non-authenticated routes */}
         {authRoutes.map((route, idx) => (
@@ -86,24 +122,26 @@ const App = props => {
             }
           />
         ))}
+        {save && <>
+          {/* Authenticated routes */}
+          {userRoutes.map((route, idx) => (
+            <Route
+              key={idx}
+              path={route.path}
+              element={
+                <Authmiddleware>
+                  <Layout>{route.component}</Layout>
+                </Authmiddleware>
+              }
+            />
+          ))}
 
-        {/* Authenticated routes */}
-        {userRoutes.map((route, idx) => (
-          <Route
-            key={idx}
-            path={route.path}
-            element={
-              <Authmiddleware>
-                <Layout>{route.component}</Layout>
-              </Authmiddleware>
-            }
-          />
-        ))}
-
-        <Route exact path='/Instructions' element={<Instructions />} />
-        <Route exact path='/test' element={<TestScreen />} />
-        <Route exact path='/finalSubmit/:submit/:visit/:unAttempt' element={<TestSubmitted />} />
-        <Route exact path='*' element={<Pages404 />} />
+          <Route exact path='/Instructions' element={<Instructions />} />
+          <Route exact path='/test' element={<TestScreen />} />
+          <Route exact path='/finalSubmit/:submit/:visit/:unAttempt' element={<TestSubmitted />} />
+          <Route exact path='*' element={<Pages404 />} />
+        </>
+        }
       </Routes>
       <ToastContainer />
     </React.Fragment>

@@ -15,6 +15,7 @@ import { Modal } from "react-bootstrap";
 import coursesReducer from "store/course/reducer";
 import usersReducer from "store/user/reducer";
 import { getUserType } from "helpers/user_helper";
+import Loader from "components/Loader/Loader";
 
 const AllUsers = (props) => {
     document.title = "Question Bank | All Users";
@@ -46,6 +47,7 @@ const AllUsers = (props) => {
     const [studentManagementAccess, setStudentManagementAccess] = useState(false);
     const [languageAccess, setLanguageAccess] = useState(false);
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [loader, setLoader] = useState(false);
     const [id, setId] = useState({});
     const dispatch = useDispatch();
     const users = useSelector(state => state.userReducer.users);
@@ -84,9 +86,13 @@ const AllUsers = (props) => {
     }, [])
 
     const fetchUserTypes = async () => {
-        const result = await getUserType();
-        console.log(result);
-        setAllUserTypes(result?.result);
+        try {
+
+            const result = await getUserType();
+            setAllUserTypes(result?.result);
+        } catch (error) {
+
+        }
     }
 
 
@@ -165,6 +171,7 @@ const AllUsers = (props) => {
         }
         else {
             let userType = type.typeName
+            setLoader(true);
             dispatch(updateUser({ id, position, userType, classAccess, courseAccess, sectionAccess, subSectionAccess, difficultyAccess, languageAccess, questionAccess, questionBulkAccess, questionPaperAccess, userManagementAccess, schoolManagementAccess, examCenterManagementAccess, studentManagementAccess }))
 
         }
@@ -175,6 +182,7 @@ const AllUsers = (props) => {
             setModalShow(false);
             dispatch(setSuccessFalseUser());
         }
+        setLoader(false);
     }, [user.success]);
 
     const handleDelete = () => {
@@ -213,13 +221,15 @@ const AllUsers = (props) => {
 
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Users </CardTitle>
-                            <MDBDataTable responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
+                            <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>

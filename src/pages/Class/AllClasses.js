@@ -11,6 +11,7 @@ import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
+import Loader from "components/Loader/Loader";
 
 const AllClasses = (props) => {
     document.title = "Question Bank | All Classes";
@@ -22,6 +23,7 @@ const AllClasses = (props) => {
     const [deleteModalShow, setDeleteModalShow] = useState(false);
     const [id, setId] = useState({});
     const dispatch = useDispatch();
+    const [loader, setLoader] = useState(false);
     const result = useSelector(state => state.classesReducer)
 
 
@@ -46,6 +48,7 @@ const AllClasses = (props) => {
     })
 
 
+    const [page, setPage] = useState(1);
     const data = {
         columns: [
             {
@@ -98,18 +101,22 @@ const AllClasses = (props) => {
 
         }
         else {
-            dispatch(updateClass({ id, className, classDescription }))
-            // setModalShow(false);
+            setLoader(true);
+            dispatch(updateClass({ id, className, classDescription }));
         }
     }
     const handleDelete = () => {
-        setModalShow(false);
-        setDeleteModalShow(false)
+
+        setLoader(true);
         dispatch(deleteClass(id));
     }
+
+
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
             setModalShow(false);
+            setDeleteModalShow(false)
             dispatch(setSuccessFalseClass());
         }
     }, [result.success]);
@@ -117,12 +124,27 @@ const AllClasses = (props) => {
     return (
         <React.Fragment>
 
+            {loader ? (
+                <>
+                    dsdsds
+                    < Loader />
+                </>
+            ) : ("")}
+
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Classes </CardTitle>
-                            <MDBDataTable responsive bordered data={data} noBottomColumns />
+                            <MDBDataTable
+                                className="table-row-hover"
+                                responsive
+                                bordered
+                                data={data}
+                                style={{ cursor: 'pointer' }}
+                                noBottomColumns
+                                paging={{ page, onPageChange: setPage }}
+                            />
                         </CardBody>
                     </Card>
                 </Col>

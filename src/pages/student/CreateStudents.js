@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import { ExamCenters, SchoolTypes, fetchSchoolTypes } from "helpers/school_helper";
 import { uploadStudents } from "helpers/student_helper";
 import { getAllMainExamPapers } from "helpers/center_helper";
+import Loader from "components/Loader/Loader";
+import { STUDENT_CSV_FILE_FORMAT } from "helpers/url_helper";
 
 
 const CreateStudents = (props) => {
@@ -25,6 +27,7 @@ const CreateStudents = (props) => {
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [questionPapersData, setQuestionPapersData] = useState(null);
     const [allExams, setAllExams] = useState([]);
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
     // let questionPapers = useSelector(state => state.questionPapersReducer.questionPapers)
 
@@ -95,26 +98,72 @@ const CreateStudents = (props) => {
             const formData = new FormData();
             formData.append('File', file);
             formData.append('PaperId', questionPaper.id)
+            setLoader(true);
             const result = await uploadStudents(formData);
             console.log(result);
             if (result?.success) {
+                setLoader(false);
                 toast.success(result?.message);
                 setFile(null);
                 setQuestionPaper(null);
             }
             else {
+                setLoader(false);
                 toast.error(result?.message);
             }
         }
     };
 
+    const handleDownloadFile = async () => {
+        try {
+
+            // Make a request to the API endpoint to download the ZIP file
+            const response = await axios.get(STUDENT_CSV_FILE_FORMAT, {
+                responseType: 'blob' // Set response type to 'blob' to receive binary data
+            });
+
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+
+            // Create a URL for the blob data
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a link element
+            const link = document.createElement('a');
+            link.href = url;
+
+            // Specify the filename for the downloaded file
+            link.setAttribute('download', 'stuents_file_format.csv');
+
+            // Append the link to the body
+            document.body.appendChild(link);
+
+            // Click the link to trigger the download
+            link.click();
+
+            // Clean up: remove the link and revoke the URL object
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('An error occurred while downloading demo file');
+        }
+    }
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
                         <CardBody className="col-xl-6 col-lg-10 col-md-10 col-sm-12 col-xs-12">
-                            <CardTitle className="h4">Upldoad Student File</CardTitle>
+                            <div className="d-flex justify-content-between mb-5">
+
+                                <CardTitle className="h4">Upldoad Student File</CardTitle>
+                                <button type="submit" onClick={handleDownloadFile} className="btn btn-info w-md">Download Demo Csv File</button>
+                            </div>
+
                             <form onSubmit={handleSubmit}>
                                 <Row className="mb-3">
                                     <label

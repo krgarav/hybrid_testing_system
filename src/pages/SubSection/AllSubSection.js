@@ -15,6 +15,7 @@ import { Modal } from "react-bootstrap";
 import sectionsReducer from "store/section/reducer";
 import classesReducer from "store/class/reducer";
 import subSectionsReducer from "store/subSection/reducer";
+import Loader from "components/Loader/Loader";
 
 const AllSubSections = (props) => {
     document.title = "Question Bank | All Sub Sections";
@@ -27,6 +28,7 @@ const AllSubSections = (props) => {
     const [section, setSection] = useState(null);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [deleteModalShow, setDeleteModalShow] = useState(false);
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
     const subSections = useSelector(state => state.subSectionsReducer)
     const sections = useSelector(state => state.sectionsReducer);
@@ -122,20 +124,23 @@ const AllSubSections = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(updateSubSection({ id, sectionId, subSectionName, subSectionDescription }))
         }
     };
 
     useEffect(() => {
+        setLoader(false);
         if (subSections.success == true) {
             setModalShow(false);
+            setDeleteModalShow(false)
             dispatch(setSuccessFalseSubSection());
         }
     }, [subSections.success]);
 
     const handleDelete = () => {
-        setModalShow(false);
-        setDeleteModalShow(false)
+
+        setLoader(true);
         dispatch(deleteSubSection(id));
     };
 
@@ -150,13 +155,15 @@ const AllSubSections = (props) => {
     };
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Sub Sections </CardTitle>
-                            <MDBDataTable responsive bordered data={data} noBottomColumns />
+                            <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>

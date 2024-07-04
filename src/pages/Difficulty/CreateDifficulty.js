@@ -20,6 +20,8 @@ import { useDispatch } from 'react-redux';
 import { setBreadcrumbItems } from "../../store/actions";
 import { addDifficulty, setSuccessFalseDifficulty } from "store/difficulty/action";
 import { useSelector } from "react-redux";
+import Loader from "components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 
 const CreateDifficulty = (props) => {
@@ -44,8 +46,11 @@ const CreateDifficulty = (props) => {
     })
 
     const [difficultyName, setDifficultyName] = useState("");
+    const [loader, setLoader] = useState(false);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
+    const [another, setAnother] = useState(false);
+    const navigate = useNavigate();
     const result = useSelector(state => state.difficultysReducer);
 
 
@@ -59,13 +64,19 @@ const CreateDifficulty = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(addDifficulty({ difficultyName }));
         }
 
     };
 
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
+            if (!another) {
+                navigate("/all-difficultys");
+            }
+            setAnother(false);
             setDifficultyName("");
             dispatch(setSuccessFalseDifficulty());
         }
@@ -80,6 +91,9 @@ const CreateDifficulty = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
@@ -110,7 +124,8 @@ const CreateDifficulty = (props) => {
 
                                 <Row className="mb-3">
                                     <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" className="btn btn-primary w-md">Create</button>
+                                        <button type="submit" className="btn btn-primary w-md ms-2 me-2" onClick={() => setAnother(true)}>Create and add more</button>
                                     </div>
                                 </Row>
                             </form>

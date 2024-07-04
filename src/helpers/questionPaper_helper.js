@@ -15,6 +15,10 @@ export const addQuestionToPaper = data => post(url.ADD_QUESTION_TO_PAPER, data);
 
 export const createMainExamPaper = data => post(url.CREATE_MAIN_EXAM_PAPER, data);
 
+export const getResult = id => get(url.GET_EXAM_RESULT + id);
+export const getResultDetails = data => get(url.GET_RESULT_DETAILS1 + data.studentId + url.GET_RESULT_DETAILS2 + data.examPaperId)
+export const sendResult = id => post(url.SEND_EXAM_RESULT + id);
+
 
 
 

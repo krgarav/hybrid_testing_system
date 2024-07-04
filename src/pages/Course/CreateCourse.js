@@ -23,6 +23,8 @@ import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
 import { addCourse, setSuccessFalseCourse } from "store/course/action";
+import Loader from "components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 
 const CreateCourse = (props) => {
@@ -48,8 +50,11 @@ const CreateCourse = (props) => {
     const [courseCode, setCourseCode] = useState("");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
-    const classes = useSelector(state => state.classesReducer)
-    const result = useSelector(state => state.coursesReducer)
+    const [loader, setLoader] = useState(false);
+    const [another, setAnother] = useState(false);
+    const navigate = useNavigate();
+    const classes = useSelector(state => state.classesReducer);
+    const result = useSelector(state => state.coursesReducer);
 
     useEffect(() => {           /* For closing the sidebar if opened */
         const blurDiv = document.getElementById("blur");
@@ -73,12 +78,19 @@ const CreateCourse = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(addCourse({ courseName, courseDescription, courseCode, classId, classs }));
         }
     };
 
+
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
+            if (!another) {
+                navigate("/all-courses");
+            }
+            setAnother(false);
             setCourseCode("");
             setCourseName("");
             setClasss(null);
@@ -101,6 +113,9 @@ const CreateCourse = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
@@ -183,7 +198,8 @@ const CreateCourse = (props) => {
 
                                 <Row className="mb-3">
                                     <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" className="btn btn-primary w-md">Create</button>
+                                        <button type="submit" className="btn btn-primary w-md ms-2 me-2" onClick={() => setAnother(true)}>Create and add more</button>
                                     </div>
                                 </Row>
                             </form>
@@ -192,9 +208,6 @@ const CreateCourse = (props) => {
                     </Card>
                 </Col>
             </Row>
-
-
-
         </React.Fragment>
     )
 }

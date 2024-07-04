@@ -12,6 +12,7 @@ import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
+import Loader from "components/Loader/Loader";
 
 const AllLanguages = (props) => {
     document.title = "Question Bank | All Languages";
@@ -23,6 +24,7 @@ const AllLanguages = (props) => {
     const [classs, setClasss] = useState(null);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [deleteModalShow, setDeleteModalShow] = useState(false);
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
     const result = useSelector(state => state.languagesReducer)
     const classes = useSelector(state => state.classesReducer)
@@ -49,33 +51,6 @@ const AllLanguages = (props) => {
     })
 
 
-    // const data = {
-    //     columns: [
-    //         {
-    //             label: "Code",
-    //             field: "languageCode",
-    //             sort: "asc",
-    //             width: 100,
-    //         },
-    //         {
-    //             label: "Name",
-    //             field: "languageName",
-    //             sort: "asc",
-    //             width: 150,
-    //         },
-    //         {
-    //             label: "Description",
-    //             field: "languageDescription",
-    //             sort: "asc",
-    //             width: 200,
-    //         },
-    //     ],
-    //     rows: result?.languages?.result,
-    //     rows: result?.languages?.result?.map(row => ({
-    //         ...row,
-    //         clickEvent: () => handleRowClick(row)
-    //     }))
-    // }
     const data = {
         columns: [
             {
@@ -113,24 +88,28 @@ const AllLanguages = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(updateLanguage({ id, languageName }))
         }
     }
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
-            setModalShow(false);
+            setDeleteModalShow(false)
+            setLoader(true);
             dispatch(setSuccessFalseLanguage());
         }
     }, [result.success]);
     const handleDelete = () => {
         setModalShow(false);
-        setDeleteModalShow(false)
         dispatch(deleteLanguage(id));
     }
 
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row >
                 <Col className="col-12">
                     <Card>
@@ -138,7 +117,7 @@ const AllLanguages = (props) => {
 
                             <CardBody>
                                 <CardTitle className="h4">All Difficulties </CardTitle>
-                                <MDBDataTable responsive bordered data={data} noBottomColumns />
+                                <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                             </CardBody>
                         </div>
                     </Card>

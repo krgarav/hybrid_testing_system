@@ -20,6 +20,8 @@ import { useDispatch } from 'react-redux';
 import { setBreadcrumbItems } from "../../store/actions";
 import { addLanguage, setSuccessFalseLanguage } from "store/language/action";
 import { useSelector } from "react-redux";
+import Loader from "components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 
 const CreateLanguage = (props) => {
@@ -38,7 +40,10 @@ const CreateLanguage = (props) => {
 
     const [languageName, setLanguageName] = useState("");
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
+    const [another, setAnother] = useState(false);
+    const navigate = useNavigate();
     const result = useSelector(state => state.languagesReducer)
 
 
@@ -52,13 +57,19 @@ const CreateLanguage = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(addLanguage({ languageName }));
         }
 
     };
 
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
+            if (!another) {
+                navigate("/all-languages");
+            }
+            setAnother(false);
             setLanguageName("");
             dispatch(setSuccessFalseLanguage());
         }
@@ -73,6 +84,9 @@ const CreateLanguage = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
@@ -103,7 +117,8 @@ const CreateLanguage = (props) => {
 
                                 <Row className="mb-3">
                                     <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" className="btn btn-primary w-md">Create</button>
+                                        <button type="submit" className="btn btn-primary w-md ms-2 me-2" onClick={() => setAnother(true)}>Create and add more</button>
                                     </div>
                                 </Row>
                             </form>

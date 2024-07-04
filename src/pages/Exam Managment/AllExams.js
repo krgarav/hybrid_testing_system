@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteQuestionPaper } from "helpers/questionPaper_helper";
 import { toast } from "react-toastify";
 import { deleteMainExamPaper, getAllMainExamPapers } from "helpers/center_helper";
+import Loader from "components/Loader/Loader";
 
 const AllQuestionExams = (props) => {
     document.title = "Question Bank | All Questions";
@@ -26,13 +27,14 @@ const AllQuestionExams = (props) => {
     const [modalShow, setModalShow] = useState(false);
     const [selectedQuestionPaper, setSelectedQuestionPaper] = useState(null);
     const [allExams, setAllExams] = useState([]);
+    const [loader, setLoader] = useState(false);
 
 
     const breadcrumbItems = [
         { title: "Question Exams", link: "#" },
         { title: "All Questions Exams", link: "#" },
     ]
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -84,23 +86,24 @@ const AllQuestionExams = (props) => {
 
     const handleRemove = async () => {
 
-        // const result = await deleteQuestionPaper({ Id });
         setModalShow(false)
-        // fetchQuestion();f
 
     }
 
     const deletePaper = async () => {
         let Id = selectedQuestionPaper.id;
         // console.log()
+        setLoader(true);
         const result = await deleteMainExamPaper(Id);
         console.log(result);
         if (result?.success) {
+            setLoader(false);
             setModalShow(false);
             toast.success(result.message);
             fetchAllExams();
         }
         else {
+            setLoader(false);
             toast.error(result?.message);
         }
     }
@@ -119,7 +122,9 @@ const AllQuestionExams = (props) => {
 
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
 
 
             <Row>

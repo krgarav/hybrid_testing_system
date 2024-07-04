@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
 import coursesReducer from "store/course/reducer";
 import sectionsReducer from "store/section/reducer";
+import Loader from "components/Loader/Loader";
 
 const AllSections = (props) => {
     document.title = "Question Bank | All Sections";
@@ -26,6 +27,7 @@ const AllSections = (props) => {
     const [course, setCourse] = useState(null);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [deleteModalShow, setDeleteModalShow] = useState(false);
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
     const courses = useSelector(state => state.coursesReducer)
     const sections = useSelector(state => state.sectionsReducer);
@@ -121,21 +123,25 @@ const AllSections = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(updateSection({ id, courseId, sectionName, sectionDescription, }))
         }
 
     };
 
     useEffect(() => {
+        setLoader(false);
         if (sections.success == true) {
             setModalShow(false);
+            setModalShow(false);
+            setDeleteModalShow(false)
             dispatch(setSuccessFalseSection());
         }
     }, [sections.success]);
 
     const handleDelete = () => {
-        setModalShow(false);
-        setDeleteModalShow(false)
+
+        setLoader(true);
         dispatch(deleteSection(id));
     };
 
@@ -150,13 +156,15 @@ const AllSections = (props) => {
     };
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Sections </CardTitle>
-                            <MDBDataTable responsive bordered data={data} noBottomColumns />
+                            <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>

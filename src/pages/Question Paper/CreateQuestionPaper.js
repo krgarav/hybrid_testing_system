@@ -35,6 +35,8 @@ import { createQuestionPaper } from "helpers/question_helper";
 import { result } from "lodash";
 import Flatpickr from "react-flatpickr"
 import { toast } from "react-toastify";
+import Loader from "components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 
 const CreateQuestionPaper = (props) => {
@@ -92,6 +94,9 @@ const CreateQuestionPaper = (props) => {
     const [tfValues, setTfValues] = useState({});
     const [essayValues, setEssayValues] = useState({});
     const [examDate, setExamDate] = useState(null);
+    const [loader, setLoader] = useState(false);
+    const [another, setAnother] = useState(false);
+    const navigate = useNavigate();
     const questionPaper = useSelector(state => state.questionPapersReducer);
 
 
@@ -252,7 +257,7 @@ const CreateQuestionPaper = (props) => {
                 console.log(Number(mcqValue) + Number(shortValue) + Number(tfValue) + Number(essayValue))
                 console.log(calculateTotal(mcqValues))
                 let languageId = language?.id;
-                // let result = await createQuestionPaper({ examName, totalQuestions, totalMarks, totalTime, classId, courseIds, sectionIds, subSectionIds, shortValues, mcqValues, tfValues, essayValues });
+                setLoader(true);
                 dispatch(addQuestionPaper({ examName, totalQuestions, totalMarks, classs, course, section, languageId, subSection, classId, courseIds, sectionIds, subSectionIds, shortValues, mcqValues, tfValues, essayValues }));
             }
         }
@@ -261,6 +266,10 @@ const CreateQuestionPaper = (props) => {
 
     useEffect(() => {
         if (questionPaper.success == true) {
+            if (!another) {
+                navigate("/all-question-papers");
+            }
+            setAnother(false);
             setExamName("")
             setTotalQuestions("")
             setTotalMarks("")
@@ -280,6 +289,7 @@ const CreateQuestionPaper = (props) => {
             setSelectedDifficultys(null);
             dispatch(setSuccessFalseQuestionPaper());
         }
+        setLoader(false);
     }, [questionPaper.success]);
 
     const calculateTotal = (obj) => {
@@ -362,6 +372,9 @@ const CreateQuestionPaper = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
@@ -695,7 +708,8 @@ const CreateQuestionPaper = (props) => {
 
                                 <Row className="mb-3">
                                     <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" className="btn btn-primary w-md">Create</button>
+                                        <button type="submit" className="btn btn-primary w-md ms-2 me-2" onClick={() => setAnother(true)}>Create and add more</button>
                                     </div>
                                 </Row>
                             </form>

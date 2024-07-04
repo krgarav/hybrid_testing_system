@@ -17,6 +17,7 @@ import { ExamCenters, SchoolTypes, fetchSchoolTypes } from "helpers/school_helpe
 import { allocateRollNumberAndPassword, centerAllocations, getAllCenters, getAllMainExamPapers, totalStudentsCenterCapacityCount } from "helpers/center_helper";
 import { fetchAllQuestionPapers } from "helpers/questionPaper_helper";
 import { useAuth } from "context/authContext";
+import Loader from "components/Loader/Loader";
 
 
 const CenteAllocation = (props) => {
@@ -28,7 +29,7 @@ const CenteAllocation = (props) => {
         { title: "Exam Managment", link: "#" },
         { title: "Center and Roll no. Allocation", link: "#" },
     ]
-   useEffect(() => {
+    useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
         if (width <= 994) {
@@ -57,6 +58,7 @@ const CenteAllocation = (props) => {
     const [exam, setExam] = useState(null);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [allExams, setAllExams] = useState([]);
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
 
 
@@ -91,6 +93,7 @@ const CenteAllocation = (props) => {
 
         }
         else {
+            setLoader(true);
             const result1 = await totalStudentsCenterCapacityCount(exam.id);
             if (result1.centerCount > result1.studentCount) {
                 const result2 = await centerAllocations();
@@ -101,11 +104,14 @@ const CenteAllocation = (props) => {
                 }
                 const result3 = await allocateRollNumberAndPassword(exam.id);
                 if (result3.success) {
+                    setLoader(false);
                     toast.success(result3.message);
                 } else {
+                    setLoader(false);
                     toast.error(result3.message)
                 }
             } else {
+                setLoader(false);
                 toast.error("Insufficient space in center!!! Please increase the capacity of the center");
             }
         }
@@ -125,6 +131,9 @@ const CenteAllocation = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>

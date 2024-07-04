@@ -106,6 +106,8 @@ export const DELETE_QUESTION = url_online + "/RemoveQuestion?Id="
 export const UPDATE_QUESTION = url_online + "/UpdateQuestion"
 export const FETCH_ALL_QUESTIONS = url_online + "/GetQuestions"
 export const FETCH_SINGLE_QUESTION = url_online + "/GetSingleQuestions?Id=";
+export const QUESTION_CSV_FILE_FORMAT = url_online + "/GetQuestionDemoFormat";
+export const STUDENT_CSV_FILE_FORMAT = url_online + "/GetStudentDemoFormat";
 
 // image 
 // using .net 
@@ -151,6 +153,10 @@ export const LOGIN_STUDENT = url_online + "/StudentLogin";
 
 //Exam
 export const SAVE_EXAM_ANSWERS = url_online + "/saveExamAnswers"
+export const GET_EXAM_RESULT = url_online + "/GetExamResult?Id="
+export const GET_RESULT_DETAILS1 = url_online + "/GetResultDetails?StudentId="
+export const GET_RESULT_DETAILS2 = "&ExamPaperId="
+export const SEND_EXAM_RESULT = url_online + "/SendExamResult?ExamPaperId="
 
 // exam managment
 export const FETCH_ALL_CENTERS = url_online + "/GetAllCenters";

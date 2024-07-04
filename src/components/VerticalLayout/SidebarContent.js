@@ -25,7 +25,7 @@ const SidebarContent = props => {
 
 
   useEffect(() => {
-    let a = JSON.parse(localStorage.getItem("authUser")).menuAccess[0];
+    let a = JSON.parse(localStorage.getItem("authUser"))?.menuAccess[0];
     setAccess(a);
   }, []);
 
@@ -302,11 +302,32 @@ const SidebarContent = props => {
                   <Link to="/create-question">{props.t("Create Question")}</Link>
                 </li>
                 <li>
+                  <Link to="/create-question-using-ai">{props.t("Genrate Question Using Ai")}</Link>
+                </li>
+                <li>
                   <Link to="/create-question-using-csv" style={{ fontSize: "calc(0.7rem + 0.05rem)" }}>{props.t("Create Question Using CSV")}</Link>
                 </li>
                 <li>
                   <Link to="/all-questions">{props.t("All Questions")} </Link>
                 </li>
+              </ul>
+            </li>
+
+
+            <li style={{ "display": "block" }}>
+              <Link to="/#" className="has-arrow waves-effect"  >
+
+                <i className="fas fa-dice-d6"></i>
+
+                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("QB Workflow")}</span>
+
+
+              </Link>
+              <ul className="sub-menu" >
+                <li>
+                  <Link to="/qb-workflow">{props.t("Workflow")}</Link>
+                </li>
+
               </ul>
             </li>
 
@@ -376,6 +397,9 @@ const SidebarContent = props => {
                 </li>
                 <li>
                   <Link to="/center-alloction">{props.t("Center Allocation")}</Link>
+                </li>
+                <li>
+                  <Link to="/result">{props.t("Result")}</Link>
                 </li>
               </ul>
             </li>

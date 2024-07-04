@@ -29,13 +29,13 @@
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type="number"] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
 div[style="display: none; position: fixed; top: 10px; left: 10px; right: 10px; font-size: 14px; background: #EEF2FF; color: #222222; z-index: 999999999; text-align: left; border: 1px solid #EEEEEE; padding: 10px 11px 10px 50px; border-radius: 8px; font-family: Helvetica Neue, Helvetica, Arial;"] {
@@ -193,32 +193,62 @@ div[style="display: none; position: fixed; top: 10px; left: 10px; right: 10px; f
     /* Adjust scrollbar width as desired */
     /* scrollbar-width: d; Firefox */
     /* scrollbar-color:#000 ; */
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 7px; /* Width of the scrollbar */
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #899bae; /* Color of the thumb */
-    border-radius: 10px; /* Roundness of the thumb */
-  }
-  .custom-scrollbar {
-    -ms-overflow-style: none; /* Hide scrollbar */
-  }
-  
-  .custom-scrollbar:hover {
-    -ms-overflow-style: auto; /* Show scrollbar on hover */
-  }
-  /* .custom-scrollbar::-webkit-scrollbar {
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 7px;
+    /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #899bae;
+    /* Color of the thumb */
+    border-radius: 10px;
+    /* Roundness of the thumb */
+}
+
+.custom-scrollbar {
+    -ms-overflow-style: none;
+    /* Hide scrollbar */
+}
+
+.custom-scrollbar:hover {
+    -ms-overflow-style: auto;
+    /* Show scrollbar on hover */
+}
+
+/* .custom-scrollbar::-webkit-scrollbar {
     display: none;
   } */
-  
-  /* Show scrollbar on hover */
-  .custom-scrollbar:hover::-webkit-scrollbar {
+
+/* Show scrollbar on hover */
+.custom-scrollbar:hover::-webkit-scrollbar {
     display: auto;
-  }
-  .dropdown-menu {
+}
+
+.dropdown-menu {
     left: 0;
     right: auto;
-  }
+}
+
+
+
+
+.table-row-hover tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.table-row-hover tbody tr:hover {
+    background-color: #f1f1f1;
+    /* Change this to your desired hover color */
+    transform: scale(1);
+    /* Slightly increase the size */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Add shadow effect */
+    z-index: 1;
+    /* Bring the hovered row above other rows */
+}
+
+.custom-modal .modal-dialog {
+    max-width: 50vw;
+}

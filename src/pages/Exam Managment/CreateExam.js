@@ -32,6 +32,7 @@ import Flatpickr from "react-flatpickr"
 import { toast } from "react-toastify";
 import { ExamTypes, createMainExamPaper } from "helpers/questionPaper_helper";
 import { getAllMainExamPapers } from "helpers/center_helper";
+import Loader from "components/Loader/Loader";
 
 
 const CreateExam = (props) => {
@@ -53,6 +54,7 @@ const CreateExam = (props) => {
         props.setBreadcrumbItems('Create Exam', breadcrumbItems)
     })
     const [totalSets, setTotalSets] = useState("");
+    const [showResult, setShowResult] = useState(false)
     const [shiftTimeFrom, setShiftTimeFrom] = useState([]);
     const [shiftTimeTo, setShiftTimeTo] = useState([]);
     const [spanDisplay, setSpanDisplay] = useState("none");
@@ -61,27 +63,13 @@ const CreateExam = (props) => {
     const [examType, setExamType] = useState("")
     const [totalShifts, setTotalShifts] = useState("");
     const [shiftData, setShiftData] = useState([]);
+    const [loader, setLoader] = useState(false);
     // const [allExams, setAllExams] = useState([]);
     const allExams = useSelector(state => state.questionPapersReducer.questionPapers?.result)
 
 
 
-    // const fetchAllExams = async () => {
-    //     console.log("Call hua")
-    //     try {
-    //         const result = await getAllMainExamPapers();
-    //         if (result?.success) {
-    //             console.log(result)
-    //             setAllExams(result?.result);
-    //         }
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
 
-    // useEffect(() => {
-    //     fetchAllExams();
-    // }, []);
 
 
     useEffect(() => {
@@ -101,7 +89,7 @@ const CreateExam = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        console.log(showResult)
         if (!paper || !totalSets || !examType || !shiftData || !totalShifts) {
             setSpanDisplay("inline")
 
@@ -111,16 +99,13 @@ const CreateExam = (props) => {
             let onlineExam = (examType.id === 1 || examType.id === 2) ? true : false;
             let offlineExam = (examType.id === 0 || examType.id === 2) ? true : false;
 
-            // console.log((examType.id === 1))
-            // console.log((examType.id === 0))
-            console.log(paperId)
-            console.log(totalSets)
-            console.log("onlineExam ", onlineExam)
-            console.log("offlineExam ", offlineExam)
-            console.log(shiftData)
+
+
             try {
-                const result = await createMainExamPaper({ paperId, totalSets, onlineExam, offlineExam, shiftData });
+                setLoader(true);
+                const result = await createMainExamPaper({ paperId, totalSets, onlineExam, offlineExam, shiftData, showResult });
                 if (result?.success) {
+                    setLoader(false);
                     toast.success(result?.message);
                     setPaper(null);
                     setTotalSets("");
@@ -129,14 +114,15 @@ const CreateExam = (props) => {
                     setShiftData([]);
                 }
                 else {
+                    setLoader(false);
                     toast.error(result?.message);
                 }
             } catch (error) {
+                setLoader(false);
                 console.log(error);
             }
 
 
-            // dispatch(addExam({ examName, totalQuestions, totalMarks, classId, courseIds, sectionIds, subSectionIds, shortValues, mcqValues, tfValues, essayValues }));
         }
     };
 
@@ -178,12 +164,52 @@ const CreateExam = (props) => {
 
     // Function to handle input change for shift start and end times
     const handleTimeChange = (index, key, event) => {
-        handleShiftChange(index, key, event.target.value);
+        const bool = handleDateTimeChange(event);
+        if (bool) {
+            handleShiftChange(index, key, event.target.value);
+        }
+
     };
 
+    const getCurrentDateTime = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    const [minDateTime, setMinDateTime] = useState(getCurrentDateTime);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setMinDateTime(getCurrentDateTime());
+        }, 1000); // Update minDateTime every second
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleDateTimeChange = (index, key, e) => {
+        const selectedDateTime = e.target.value;
+        const now = new Date();
+        const selectedDate = new Date(selectedDateTime);
+
+        if (selectedDate < now) {
+            toast.error('Cannot select a past date and time.');
+            handleShiftChange(index, key, '');
+            return false;
+        } else {
+            handleShiftChange(index, key, e.target.value);
+        }
+    };
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
@@ -251,6 +277,7 @@ const CreateExam = (props) => {
                                         {!examType && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
                                 </Row>
+
                                 <Row className="mb-3">
                                     <label
                                         htmlFor="example-text-input"
@@ -283,7 +310,8 @@ const CreateExam = (props) => {
                                                         className="form-control"
                                                         type="datetime-local"
                                                         value={shiftData[index]?.start || ''}
-                                                        onChange={(e) => handleTimeChange(index, 'start', e)}
+                                                        onChange={(e) => handleDateTimeChange(index, 'start', e)}
+                                                        min={minDateTime}
                                                     />
                                                     {!shiftData[index]?.start && (
                                                         <span style={{ color: "red", display: spanDisplay }}>This field is required</span>
@@ -297,7 +325,8 @@ const CreateExam = (props) => {
                                                         className="form-control"
                                                         type="datetime-local"
                                                         value={shiftData[index]?.end || ''}
-                                                        onChange={(e) => handleTimeChange(index, 'end', e)}
+                                                        onChange={(e) => handleDateTimeChange(index, 'end', e)}
+                                                        min={minDateTime}
                                                     />
                                                     {!shiftData[index]?.end && (
                                                         <span style={{ color: "red", display: spanDisplay }}>This field is required</span>
@@ -307,6 +336,21 @@ const CreateExam = (props) => {
                                         </div>
                                     </Row>
                                 ))}
+
+                                <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-4 col-form-label"
+                                    >
+                                        Show Result After Submission
+                                    </label>
+                                    <div className="col-md-8">
+                                        <input type="checkbox"
+                                            className='mt-2'
+                                            onChange={(e) => setShowResult(!showResult)} />
+                                        {!examType && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+                                </Row>
                                 <Row className="mb-3">
                                     <div className="mt-4">
                                         <button type="submit" className="btn btn-primary w-md">Submit</button>

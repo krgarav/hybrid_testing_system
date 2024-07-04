@@ -21,6 +21,12 @@ import LatestOrders from "./latest-orders";
 //Import Action to copy breadcrumb items from local state to redux state
 import { setBreadcrumbItems } from "../../store/actions";
 import { updateToken } from "helpers/api_helper";
+import { useLocation } from 'react-router-dom';
+import { toast } from "react-toastify";
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const Dashboard = (props) => {
 
@@ -31,14 +37,18 @@ const Dashboard = (props) => {
     { title: "IOS", link: "#" },
     { title: "Dashboard", link: "#" }
   ]
-
+  const query = useQuery();
   useEffect(() => {
     props.setBreadcrumbItems('Dashboard', breadcrumbItems)
   },)
 
+
+
   useEffect(() => {
     updateToken();
   }, []);
+
+
 
   const reports = [
     { title: "Questions in QB", iconClass: "cube-outline", total: "1200", average: "+11%", badgecolor: "info", navigateLink: "/all-questions" },

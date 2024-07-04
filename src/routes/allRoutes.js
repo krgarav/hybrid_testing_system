@@ -134,6 +134,8 @@ import AllLanguage from "pages/language/AllLanguage"
 import StudentLogin from "pages/student/StudentLogin"
 import RegisterOrganization from "pages/Organization/RegisterOrganization"
 import ProfileMenu from "components/CommonForBoth/TopbarDropdown/ProfileMenu"
+import Result from "pages/Exam Managment/Result"
+import CreateQuestionUsingAi from "pages/Question/CreateQuestionUsingAi"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -164,7 +166,8 @@ const userRoutes = [
 
   // question
   { path: "/create-question", component: <CreateQuestion /> },
-  { path: "//create-question-using-csv", component: <BulkCreateQuestion /> },
+  { path: "/create-question-using-ai", component: <CreateQuestionUsingAi /> },
+  { path: "/create-question-using-csv", component: <BulkCreateQuestion /> },
   { path: "/all-questions", component: <AllQuestions /> },
 
   // question paper
@@ -190,6 +193,9 @@ const userRoutes = [
   { path: "/create-exam", component: <CreateExam /> },
   { path: "/all-exams", component: <AllExams /> },
   { path: "/center-alloction", component: <CenterAllocation /> },
+  { path: "/result", component: <Result /> },
+
+
   { path: "/profile", component: <UserProfile /> },
 
 

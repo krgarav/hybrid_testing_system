@@ -14,6 +14,7 @@ import schoolesReducer from '../../store/school/reducer';
 import axios from "axios";
 import { toast } from "react-toastify";
 import { ExamCenters, SchoolTypes, fetchSchoolTypes } from "helpers/school_helper";
+import Loader from "components/Loader/Loader";
 
 
 const CreateSchool = (props) => {
@@ -50,6 +51,7 @@ const CreateSchool = (props) => {
     const [sittingCapacity, setSittingCapacity] = useState("");
     const [schoolTypes, setSchoolTypes] = useState([]);
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [loader, setLoader] = useState(false);
     const result = useSelector(state => state.schoolReducer);
     const dispatch = useDispatch();
 
@@ -79,6 +81,7 @@ const CreateSchool = (props) => {
             let regionCityAdministration = administration
             let schoolTypeOwnership = schoolType.id;
             let examCenter = center.value
+            setLoader(true);
             dispatch(addSchool({ schoolName, schoolCode, address, regionCityAdministration, zone, woreda, town, city, kebele, schoolTypeOwnership, examCenter, sittingCapacity }));
         }
     };
@@ -99,6 +102,7 @@ const CreateSchool = (props) => {
             setSittingCapacity("")
             dispatch(setSuccessFalseSchool());
         }
+        setLoader(false);
     }, [result.success]);
     const handleSelectCenter = selectedOption => {
         setCenter(selectedOption);
@@ -110,6 +114,9 @@ const CreateSchool = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>

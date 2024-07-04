@@ -82,7 +82,7 @@ const RegisterOrganization = props => {
             if (password !== confirmPassword) {
                 toast.error("Pasword and confirm password did not match");
             }
-            else if (!/(?=.*[a-zA-Z0-9]{8})/.test(password)) {
+            else if (password.length < 8) {
                 toast.error("Password must contain at least 8 letters or numbers");
             }
             else if (!/^\d{10}$|^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(phoneNumber)) {

@@ -23,7 +23,7 @@ import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
 import { addQuestion, setSuccessFalseQuestion } from "store/question/action";
-import { HtmlEditor, Image, Inject, Link, NodeSelection, QuickToolbar, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import { HtmlEditor, Image, Inject, Link, QuickToolbar, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 
 
 import { Editor } from 'primereact/editor';
@@ -32,6 +32,8 @@ import { fetchAllCoursesByClass } from "helpers/course_helper";
 import { fetchAllSectionsByCourse } from "helpers/section_helper";
 import { fetchAllSubSectionsBySection } from "helpers/subSection_helper";
 import { useWindowSize } from 'react-use';
+import Loader from "components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 const CreateQuestion = (props) => {
 
@@ -72,7 +74,9 @@ const CreateQuestion = (props) => {
     const [optionsEditDisplay, setOptionsEditDisplay] = useState("none");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [auth, setAuth] = useAuth();
-
+    const [loader, setLoader] = useState(false);
+    const [another, setAnother] = useState(false);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
@@ -259,6 +263,8 @@ const CreateQuestion = (props) => {
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
             formData.append('Answer', answer);
+
+            setLoader(true);
             dispatch(addQuestion(formData));
 
 
@@ -268,6 +274,10 @@ const CreateQuestion = (props) => {
 
     useEffect(() => {
         if (result.success == true) {
+            if (!another) {
+                navigate("/all-questions");
+            }
+            setAnother(false);
             setClasss(null);
             setCourse(null);
             setSection(null);
@@ -278,6 +288,7 @@ const CreateQuestion = (props) => {
             setAnswer("")
             dispatch(setSuccessFalseQuestion());
         }
+        setLoader(false);
     }, [result.success]);
 
 
@@ -369,9 +380,6 @@ const CreateQuestion = (props) => {
     // let template = `<div style="display:block;"><p style="margin-right:10px"></p></div>`;
     let template = "";
 
-    let selection = new NodeSelection();
-    let ranges;
-    let dialogObj;
     // Rich Text Editor items list
     let items = ['Bold', 'Italic', 'Underline', '|', 'Formats', 'Alignments', 'OrderedList',
         'UnorderedList', '|', 'CreateLink', 'Image', '|', 'SourceCode', '|', 'Undo', 'Redo'
@@ -384,6 +392,9 @@ const CreateQuestion = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
@@ -720,7 +731,8 @@ const CreateQuestion = (props) => {
 
                                 <Row className="mb-3">
                                     <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" className="btn btn-primary w-md">Create</button>
+                                        <button type="submit" className="btn btn-primary w-md ms-2 me-2" onClick={() => setAnother(true)}>Create and add more</button>
                                     </div>
                                 </Row>
                             </form>

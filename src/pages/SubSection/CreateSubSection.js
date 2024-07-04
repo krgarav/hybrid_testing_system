@@ -23,6 +23,8 @@ import { addClass, fetchClass } from "store/class/action";
 import { useSelector } from "react-redux";
 import classesReducer from '../../store/class/reducer';
 import { addSubSection, setSuccessFalseSubSection } from "store/subSection/action";
+import Loader from "components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 
 const CreateSubSection = (props) => {
@@ -47,6 +49,9 @@ const CreateSubSection = (props) => {
     const [subSectionDescription, setSubSectionDescription] = useState("");
     const [subSectionCode, setSubSectionCode] = useState("");
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [loader, setLoader] = useState(false);
+    const [another, setAnother] = useState(false);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const sections = useSelector(state => state.sectionsReducer)
     const result = useSelector(state => state.subSectionsReducer)
@@ -74,13 +79,19 @@ const CreateSubSection = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(addSubSection({ subSectionName, subSectionDescription, subSectionCode, sectionId }));
         }
 
     };
 
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
+            if (!another) {
+                navigate("/all-subSections");
+            }
+            setAnother(false);
             setSubSectionCode("");
             setSubSectionName("");
             setSection(null);
@@ -102,6 +113,9 @@ const CreateSubSection = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
@@ -184,7 +198,8 @@ const CreateSubSection = (props) => {
 
                                 <Row className="mb-3">
                                     <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" className="btn btn-primary w-md">Create</button>
+                                        <button type="submit" className="btn btn-primary w-md ms-2 me-2" onClick={() => setAnother(true)}>Create and add more</button>
                                     </div>
                                 </Row>
                             </form>

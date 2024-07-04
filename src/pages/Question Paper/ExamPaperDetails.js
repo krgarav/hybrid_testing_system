@@ -21,6 +21,7 @@ import { fetchAllCoursesByClass } from "helpers/course_helper";
 import { fetchAllSectionsByCourse } from "helpers/section_helper";
 import { fetchAllSubSectionsBySection } from "helpers/subSection_helper";
 import { toast } from "react-toastify";
+import Loader from "components/Loader/Loader";
 
 const ExamPaperDetails = (props) => {
     document.title = "Question Bank | All Questions";
@@ -44,6 +45,7 @@ const ExamPaperDetails = (props) => {
     const [selectedTypes, setSelectedTypes] = useState(null);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [language, setLanguage] = useState(null);
+    const [loader, setLoader] = useState(false);
     const languages = useSelector(state => state.languagesReducer);
 
     const typesOptions = [
@@ -317,7 +319,9 @@ const ExamPaperDetails = (props) => {
         let paperId = params.id;
         let questionId = row.id;
         try {
+            setLoader(true);
             const result = await addQuestionToPaper({ paperId, questionId });
+            setLoader(false);
             toast.success(result.message);
             fetchQuestion();
         } catch (error) {
@@ -332,7 +336,9 @@ const ExamPaperDetails = (props) => {
         let paperId = selectedRow.paperId;
         let questionId = selectedRow.questionId;
         try {
+            setLoader(true);
             const result = await deleteQuestionFromPaper({ paperId, questionId });
+            setLoader(false);
             toast.success(result.message);
             setModalShow(false)
             fetchQuestion();
@@ -374,16 +380,16 @@ const ExamPaperDetails = (props) => {
             try {
                 setModalForFetchQuestions(true);
                 let languageId = language.id;
+                setLoader(true);
                 const result = await fetchFilterQuestions({ classId, courseIds, sectionIds, subSectionIds, difficultyIds, languageId, types });
                 setFilterQuestions(result.result);
+                setLoader(false);
             } catch (error) {
                 toast.error("something went wrong");
             }
 
         }
     }
-
-
 
     const handleUpdateMarks = async () => {
         try {
@@ -400,15 +406,19 @@ const ExamPaperDetails = (props) => {
             console.log(questionId)
             console.log(questionMarks)
             // let {data} = await axios.post("")
+            setLoader(true);
             let result = await updateQuestionPaper({ paperId, questionId, questionMarks })
             if (result?.success) {
+                setLoader(false);
                 toast.success(result?.message);
             }
             else {
+                setLoader(false);
                 toast.error(result?.message)
             }
         } catch (error) {
             console.log(error);
+            setLoader(false);
             toast.error("Something went wrong");
         }
     }
@@ -420,7 +430,9 @@ const ExamPaperDetails = (props) => {
 
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
 
             <Row>
                 <Col className="col-12">
@@ -433,7 +445,7 @@ const ExamPaperDetails = (props) => {
                                     <Button type="button" color="info" className="waves-effect waves-light mb-2" onClick={() => setModalForAddQuestion(true)}>Add Question</Button>
                                 </div>
                             </div>
-                            <MDBDataTable responsive bordered data={data} noBottomColumns />
+                            <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>
@@ -669,7 +681,7 @@ const ExamPaperDetails = (props) => {
                                     <div className="d-flex justify-content-between">
                                         <CardTitle className="h4">All Questions</CardTitle>
                                     </div>
-                                    <MDBDataTable responsive bordered data={FilterQuestionData} noBottomColumns />
+                                    <MDBDataTable className="table-row-hover" responsive bordered data={FilterQuestionData} style={{ cursor: 'pointer' }} noBottomColumns />
                                 </CardBody>
                             </Card>
                         </Col>

@@ -12,7 +12,7 @@ import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
-import { HtmlEditor, Image, Inject, Link, NodeSelection, QuickToolbar, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import { HtmlEditor, Image, Inject, Link, QuickToolbar, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import { fetchAllCoursesByClass } from "helpers/course_helper";
 import { fetchAllSectionsByCourse } from "helpers/section_helper";
 import { fetchAllSubSectionsBySection } from "helpers/subSection_helper";
@@ -20,6 +20,7 @@ import { fetchSingleQuestion } from "helpers/question_helper";
 import { BACKEND_SPRING, IMAGE_FETCH } from "helpers/url_helper";
 import DOMPurify from 'dompurify';
 import { useWindowSize } from 'react-use';
+import Loader from "components/Loader/Loader";
 const AllQuestions = (props) => {
     document.title = "Question Bank | All Questions";
     const [modalShow, setModalShow] = useState(false);
@@ -44,6 +45,7 @@ const AllQuestions = (props) => {
     const [editOptionText, setEditOptionText] = useState("Edit Options");
     const [optionsEditDisplay, setOptionsEditDisplay] = useState("none");
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [loader, setLoader] = useState(false);
     const [deleteModalShow, setDeleteModalShow] = useState(false);
     const dispatch = useDispatch();
     const questions = useSelector(state => state.questionsReducer);
@@ -179,44 +181,6 @@ const AllQuestions = (props) => {
     };
 
 
-
-    // const data = {
-    //     columns: [
-    //         {
-    //             label: "Serial No.",
-    //             field: "serialNo",
-    //             sort: "asc",
-    //             width: 50,
-    //         },
-    //         {
-    //             label: "Type",
-    //             field: "type",
-    //             sort: "asc",
-    //             width: 100,
-    //         },
-    //         {
-    //             label: "Question",
-    //             field: "description", // Use "description" directly
-    //             sort: "asc",
-    //             width: 150,
-    //             formatter: (cell, row) => (
-    //                 <div>{extractTextContent(cell)}</div>
-    //             ),
-    //         },
-    //         {
-    //             label: "Answer",
-    //             field: "answer",
-    //             sort: "asc",
-    //             width: 200,
-    //         },
-    //     ],
-    //     rows: questions.questions.result,
-    //     rows: questions?.questions?.result?.map((row, index) => ({
-    //         ...row,
-    //         serialNo: index + 1, // Add 1 to start counting from 1
-    //         clickEvent: () => handleRowClick(row)
-    //     }))
-    // }
     const data = {
         columns: [
             {
@@ -405,6 +369,8 @@ const AllQuestions = (props) => {
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
             formData.append('Answer', answer);
+
+            setLoader(true);
             dispatch(updateQuestion(formData));
             dispatch(fetchQuestion());
             console.log(questions)
@@ -413,13 +379,15 @@ const AllQuestions = (props) => {
     useEffect(() => {
         if (questions.success == true) {
             setModalShow(false);
+            setDeleteModalShow(false);
             dispatch(setSuccessFalseQuestion());
         }
+        setLoader(false);
     }, [questions.success]);
 
     const handleDelete = () => {
-        setModalShow(false);
-        setDeleteModalShow(false);
+
+        setLoader(true);
         dispatch(deleteQuestion(id));
     }
     const handleSelectClass = selectedOption => {
@@ -505,23 +473,24 @@ const AllQuestions = (props) => {
     let template = description + oldImages;
     // let template = description;
 
-    let selection = new NodeSelection();
-    let ranges;
-    let dialogObj;
+
     // Rich Text Editor items list
     let items = ['Bold', 'Italic', 'Underline', '|', 'Formats', 'Alignments', 'OrderedList',
         'UnorderedList', '|', 'CreateLink', 'Image', '|', 'SourceCode', '|', 'Undo', 'Redo'
     ];
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Questions </CardTitle>
-                            {questions?.questions?.result?.length}
+
                             <div id="MBDTableDiv" >
-                                <MDBDataTable responsive bordered data={data} noBottomColumns />
+                                <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
 
                             </div>
                         </CardBody>
@@ -541,331 +510,332 @@ const AllQuestions = (props) => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <div className="" style={{ height: "80vh", overflowY: "scroll", overflowX: "visible" }}>
+                        <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Class Name
+                            </label>
+                            <div className="col-md-10">
+                                <Select
 
-                    <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Class Name
-                        </label>
-                        <div className="col-md-10">
-                            <Select
-
-                                value={classs}
-                                onChange={handleSelectClass}
-                                options={classes?.classes?.result}
-                                getOptionLabel={option => option.className + " (" + option.classCode + ")"}
-                                getOptionValue={option => option.id.toString()} // Convert to string if classId is a number
-                                classNamePrefix="select2-selection"
-                            />
-                            {!classs && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                        </div>
-
-                    </Row>
-
-                    {courses && <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Course Name
-                        </label>
-                        <div className="col-md-10">
-                            <Select
-
-                                value={course}
-                                onChange={handleSelectCourse}
-                                options={courses?.result}
-                                getOptionLabel={option => option.courseName + " (" + option.courseCode + ")"}
-                                getOptionValue={option => option.id.toString()} // Convert to string if classId is a number
-                                classNamePrefix="select2-selection"
-                            />
-                            {!course && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-
-                        </div>
-
-                    </Row>}
-
-                    {sections && <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Section Name
-                        </label>
-                        <div className="col-md-10">
-                            <Select
-
-                                value={section}
-                                onChange={handleSelectSection}
-                                options={sections?.result}
-                                getOptionLabel={option => option.sectionName + " (" + option.sectionCode + ")"}
-                                getOptionValue={option => option.id.toString()}
-                                classNamePrefix="select2-selection"
-                            />
-                            {!section && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                        </div>
-
-                    </Row>}
-
-                    {subSections && <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Sub Section Name
-                        </label>
-                        <div className="col-md-10">
-                            <Select
-
-                                value={subSection}
-                                onChange={handleSelectSubSection}
-                                options={subSections?.result}
-                                getOptionLabel={option => option.subSectionName + " (" + option.subSectionCode + ")"}
-                                getOptionValue={option => option.id.toString()}
-                                classNamePrefix="select2-selection"
-                            />
-                            {!subSection && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                        </div>
-
-                    </Row>}
-
-                    {difficultys && <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Difficulty Name
-                        </label>
-                        <div className="col-md-10">
-                            <Select
-
-                                value={difficulty}
-                                onChange={handleSelectDifficulty}
-                                options={difficultys?.difficultys?.result}
-                                getOptionLabel={option => option.difficultyName}
-                                getOptionValue={option => option.id.toString()}
-                                classNamePrefix="select2-selection"
-                            />
-                            {!difficulty && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                        </div>
-
-                    </Row>}
-                    {languages && <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Language Name
-                        </label>
-                        <div className="col-md-10">
-                            <Select
-
-                                value={language}
-                                onChange={handleSelectLanguage}
-                                options={languages?.languages?.result}
-                                getOptionLabel={option => option.languageName}
-                                getOptionValue={option => option.id.toString()}
-                                classNamePrefix="select2-selection"
-                            />
-                            {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                        </div>
-
-                    </Row>}
-
-                    <Row className="mb-3">
-                        <label htmlFor="example-text-input" className="col-md-2 col-form-label">
-                            Question Type
-                        </label>
-                        <div className="col-md-10">
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="type"
-                                    id="type2"
-                                    value="short"
-                                    checked={type === 'short'}
-                                    onChange={handleTypeChange}
+                                    value={classs}
+                                    onChange={handleSelectClass}
+                                    options={classes?.classes?.result}
+                                    getOptionLabel={option => option.className + " (" + option.classCode + ")"}
+                                    getOptionValue={option => option.id.toString()} // Convert to string if classId is a number
+                                    classNamePrefix="select2-selection"
                                 />
-                                <label className="form-check-label" htmlFor="exampleRadios2">
-                                    Short
-                                </label>
+                                {!classs && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                             </div>
-                            <div className="form-check form-check-inline mb-3">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="type"
-                                    id="type1"
-                                    value="mcq"
-                                    checked={type === 'mcq'}
-                                    onChange={handleTypeChange}
+
+                        </Row>
+
+                        {courses && <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Course Name
+                            </label>
+                            <div className="col-md-10">
+                                <Select
+
+                                    value={course}
+                                    onChange={handleSelectCourse}
+                                    options={courses?.result}
+                                    getOptionLabel={option => option.courseName + " (" + option.courseCode + ")"}
+                                    getOptionValue={option => option.id.toString()} // Convert to string if classId is a number
+                                    classNamePrefix="select2-selection"
                                 />
-                                <label className="form-check-label" htmlFor="exampleRadios1">
-                                    MCQ
-                                </label>
+                                {!course && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+
                             </div>
 
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="type"
-                                    id="type3"
-                                    value="true false"
-                                    checked={type === 'true false'}
-                                    onChange={handleTypeChange}
+                        </Row>}
+
+                        {sections && <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Section Name
+                            </label>
+                            <div className="col-md-10">
+                                <Select
+
+                                    value={section}
+                                    onChange={handleSelectSection}
+                                    options={sections?.result}
+                                    getOptionLabel={option => option.sectionName + " (" + option.sectionCode + ")"}
+                                    getOptionValue={option => option.id.toString()}
+                                    classNamePrefix="select2-selection"
                                 />
-                                <label className="form-check-label" htmlFor="exampleRadios2">
-                                    True False
-                                </label>
+                                {!section && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                             </div>
-                            <div className="form-check form-check-inline">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="type"
-                                    id="type4"
-                                    value="essay"
-                                    checked={type === 'essay'}
-                                    onChange={handleTypeChange}
+
+                        </Row>}
+
+                        {subSections && <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Sub Section Name
+                            </label>
+                            <div className="col-md-10">
+                                <Select
+
+                                    value={subSection}
+                                    onChange={handleSelectSubSection}
+                                    options={subSections?.result}
+                                    getOptionLabel={option => option.subSectionName + " (" + option.subSectionCode + ")"}
+                                    getOptionValue={option => option.id.toString()}
+                                    classNamePrefix="select2-selection"
                                 />
-                                <label className="form-check-label" htmlFor="exampleRadios2">
-                                    Essay
-                                </label>
+                                {!subSection && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                             </div>
-                        </div>
-                    </Row>
 
-                    <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Question Description
-                        </label>
-                        <div className="col-md-10">
-                            <div className="card">
-                                <RichTextEditorComponent id="defaultRTE" ref={(scope) => { rteObj = scope; }} valueTemplate={template} toolbarSettings={toolbarSettings}>
-                                    <Inject services={[HtmlEditor, Toolbar, Link, Image, QuickToolbar]} />
-                                </RichTextEditorComponent>
+                        </Row>}
 
+                        {difficultys && <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Difficulty Name
+                            </label>
+                            <div className="col-md-10">
+                                <Select
+
+                                    value={difficulty}
+                                    onChange={handleSelectDifficulty}
+                                    options={difficultys?.difficultys?.result}
+                                    getOptionLabel={option => option.difficultyName}
+                                    getOptionValue={option => option.id.toString()}
+                                    classNamePrefix="select2-selection"
+                                />
+                                {!difficulty && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                             </div>
-                        </div>
-                    </Row>
-                    {type === "short" && <Row className="mb-3">
-                        <label
-                            htmlFor="example-text-input"
-                            className="col-md-2 col-form-label"
-                        >
-                            Answer
-                        </label>
-                        <div className="col-md-10">
-                            <input type="text"
-                                className='form-control'
-                                placeholder="Enter Answer"
-                                value={answer}
-                                onChange={(e) => setAnswer(e.target.value)} />
-                            {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                        </div>
-                    </Row>}
-                    {type === "mcq" &&
-                        <>
 
-                            <Row className="mb-3">
-                                <label
-                                    htmlFor="example-text-input"
-                                    className="col-md-2 col-form-label"
-                                >
-                                    {/* Answer */}
-                                </label>
-                                <div className="col-md-10">
-                                    <input type="text"
-                                        className='form-control col-md-4 mb-2'
-                                        onChange={(e) => { setOption(e.target.value) }}
-                                        placeholder="write a option"
-                                        value={option} />
+                        </Row>}
+                        {languages && <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Language Name
+                            </label>
+                            <div className="col-md-10">
+                                <Select
 
-                                    <button type="button" className="btn btn-primary w-md me-2 " onClick={addOption}>Add Option</button>
-                                    <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick} >{editOptionText}</button>
-                                </div>
-                            </Row>
-                            <Row className="mb-3">
-                                <label
-                                    htmlFor="example-text-input"
-                                    className="col-md-2 col-form-label"
-                                >
-                                    Select Answer
-                                </label>
-                                <div className="col-md-10">
-                                    {options?.map((o, i) => (
-                                        <>
-                                            <div className="form-check mb-3">
-                                                <input
-                                                    className="form-check-input mt-1"
-                                                    type="radio"
-                                                    name="options"
-                                                    id={i}
-                                                    value={o}
-                                                    checked={answer === o}
-                                                    onChange={(e) => setAnswer(e.target.value)}
-                                                />
-                                                <label
-                                                    className="form-check-label"
-                                                    htmlFor="exampleRadios1"
-                                                >
-                                                    {o}
-                                                </label>
-                                                <button type='button' className="text-danger" onClick={() => removeOption(i)} style={{ fontSize: "1rem", background: "none", border: "none", fontWeight: "bolder", display: `${optionsEditDisplay}` }}> <i className="mdi mdi-delete "></i></button>
+                                    value={language}
+                                    onChange={handleSelectLanguage}
+                                    options={languages?.languages?.result}
+                                    getOptionLabel={option => option.languageName}
+                                    getOptionValue={option => option.id.toString()}
+                                    classNamePrefix="select2-selection"
+                                />
+                                {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                            </div>
 
-                                            </div>
-                                        </>
-                                    ))}
-                                    {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                </div>
-                            </Row>
-                        </>
-                    }
-                    {type === "true false" && <Row className="mb-3">
-                        <label htmlFor="example-text-input" className="col-md-2 col-form-label">
-                            Answer
-                        </label>
-                        <div className="col-md-10">
-                            <div className="">
+                        </Row>}
+
+                        <Row className="mb-3">
+                            <label htmlFor="example-text-input" className="col-md-2 col-form-label">
+                                Question Type
+                            </label>
+                            <div className="col-md-10">
                                 <div className="form-check form-check-inline">
                                     <input
                                         className="form-check-input"
                                         type="radio"
-                                        name="answer"
-                                        id="answer1"
-                                        value="true"
-                                        checked={answer === 'true'}
-                                        onChange={(e) => setAnswer(e.target.value)}
+                                        name="type"
+                                        id="type2"
+                                        value="short"
+                                        checked={type === 'short'}
+                                        onChange={handleTypeChange}
                                     />
                                     <label className="form-check-label" htmlFor="exampleRadios2">
-                                        True
+                                        Short
+                                    </label>
+                                </div>
+                                <div className="form-check form-check-inline mb-3">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="type"
+                                        id="type1"
+                                        value="mcq"
+                                        checked={type === 'mcq'}
+                                        onChange={handleTypeChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="exampleRadios1">
+                                        MCQ
+                                    </label>
+                                </div>
+
+                                <div className="form-check form-check-inline">
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="type"
+                                        id="type3"
+                                        value="true false"
+                                        checked={type === 'true false'}
+                                        onChange={handleTypeChange}
+                                    />
+                                    <label className="form-check-label" htmlFor="exampleRadios2">
+                                        True False
                                     </label>
                                 </div>
                                 <div className="form-check form-check-inline">
                                     <input
                                         className="form-check-input"
                                         type="radio"
-                                        name="answer"
-                                        id="answer2"
-                                        value="false"
-                                        checked={answer === 'false'}
-                                        onChange={(e) => setAnswer(e.target.value)}
+                                        name="type"
+                                        id="type4"
+                                        value="essay"
+                                        checked={type === 'essay'}
+                                        onChange={handleTypeChange}
                                     />
                                     <label className="form-check-label" htmlFor="exampleRadios2">
-                                        false
+                                        Essay
                                     </label>
                                 </div>
                             </div>
-                            {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                        </div>
-                    </Row>}
+                        </Row>
+
+                        <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Question Description
+                            </label>
+                            <div className="col-md-10">
+                                <div className="card">
+                                    <RichTextEditorComponent id="defaultRTE" ref={(scope) => { rteObj = scope; }} valueTemplate={template} toolbarSettings={toolbarSettings}>
+                                        <Inject services={[HtmlEditor, Toolbar, Link, Image, QuickToolbar]} />
+                                    </RichTextEditorComponent>
+
+                                </div>
+                            </div>
+                        </Row>
+                        {type === "short" && <Row className="mb-3">
+                            <label
+                                htmlFor="example-text-input"
+                                className="col-md-2 col-form-label"
+                            >
+                                Answer
+                            </label>
+                            <div className="col-md-10">
+                                <input type="text"
+                                    className='form-control'
+                                    placeholder="Enter Answer"
+                                    value={answer}
+                                    onChange={(e) => setAnswer(e.target.value)} />
+                                {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                            </div>
+                        </Row>}
+                        {type === "mcq" &&
+                            <>
+
+                                <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        {/* Answer */}
+                                    </label>
+                                    <div className="col-md-10">
+                                        <input type="text"
+                                            className='form-control col-md-4 mb-2'
+                                            onChange={(e) => { setOption(e.target.value) }}
+                                            placeholder="write a option"
+                                            value={option} />
+
+                                        <button type="button" className="btn btn-primary w-md me-2 " onClick={addOption}>Add Option</button>
+                                        <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick} >{editOptionText}</button>
+                                    </div>
+                                </Row>
+                                <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Select Answer
+                                    </label>
+                                    <div className="col-md-10">
+                                        {options?.map((o, i) => (
+                                            <>
+                                                <div className="form-check mb-3">
+                                                    <input
+                                                        className="form-check-input mt-1"
+                                                        type="radio"
+                                                        name="options"
+                                                        id={i}
+                                                        value={o}
+                                                        checked={answer === o}
+                                                        onChange={(e) => setAnswer(e.target.value)}
+                                                    />
+                                                    <label
+                                                        className="form-check-label"
+                                                        htmlFor="exampleRadios1"
+                                                    >
+                                                        {o}
+                                                    </label>
+                                                    <button type='button' className="text-danger" onClick={() => removeOption(i)} style={{ fontSize: "1rem", background: "none", border: "none", fontWeight: "bolder", display: `${optionsEditDisplay}` }}> <i className="mdi mdi-delete "></i></button>
+
+                                                </div>
+                                            </>
+                                        ))}
+                                        {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+                                </Row>
+                            </>
+                        }
+                        {type === "true false" && <Row className="mb-3">
+                            <label htmlFor="example-text-input" className="col-md-2 col-form-label">
+                                Answer
+                            </label>
+                            <div className="col-md-10">
+                                <div className="">
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="answer"
+                                            id="answer1"
+                                            value="true"
+                                            checked={answer === 'true'}
+                                            onChange={(e) => setAnswer(e.target.value)}
+                                        />
+                                        <label className="form-check-label" htmlFor="exampleRadios2">
+                                            True
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="answer"
+                                            id="answer2"
+                                            value="false"
+                                            checked={answer === 'false'}
+                                            onChange={(e) => setAnswer(e.target.value)}
+                                        />
+                                        <label className="form-check-label" htmlFor="exampleRadios2">
+                                            false
+                                        </label>
+                                    </div>
+                                </div>
+                                {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                            </div>
+                        </Row>}
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button type="button" color="primary" onClick={() => setModalShow(false)} className="waves-effect waves-light">Close</Button>{" "}

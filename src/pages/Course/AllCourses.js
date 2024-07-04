@@ -12,6 +12,7 @@ import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
+import Loader from "components/Loader/Loader";
 
 const AllCourses = (props) => {
     document.title = "Question Bank | All Courses";
@@ -24,6 +25,7 @@ const AllCourses = (props) => {
     const [id, setId] = useState({});
     const [classs, setClasss] = useState(null);
     const dispatch = useDispatch();
+    const [loader, setLoader] = useState(false);
     const result = useSelector(state => state.coursesReducer)
     const classes = useSelector(state => state.classesReducer)
 
@@ -117,6 +119,7 @@ const AllCourses = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(updateCourse({ id, classId, courseName, courseDescription, }))
 
         }
@@ -124,14 +127,16 @@ const AllCourses = (props) => {
     }
 
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
             setModalShow(false);
+            setDeleteModalShow(false)
             dispatch(setSuccessFalseCourse());
         }
     }, [result.success]);
     const handleDelete = () => {
-        setModalShow(false);
-        setDeleteModalShow(false)
+
+        setLoader(true);
         dispatch(deleteCourse(id));
     }
     const handleSelectClass = selectedOption => {
@@ -140,13 +145,15 @@ const AllCourses = (props) => {
     };
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <CardTitle className="h4">All Courses </CardTitle>
-                            <MDBDataTable responsive bordered data={data} noBottomColumns />
+                            <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
                     </Card>
                 </Col>

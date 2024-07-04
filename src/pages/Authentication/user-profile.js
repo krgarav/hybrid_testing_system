@@ -133,7 +133,9 @@ const UserProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log(email)
+    console.log(!email)
+    console.log(typeof (email))
     if (!email || !phoneNumber || !address || !city || !state || !country || !orgName) {
 
       setSpanDisplay("inline")
@@ -158,8 +160,10 @@ const UserProfile = () => {
         toast.success(result.message);
         const data = await getOrganization(id);
         let logoPath = data.result[0].orgLogoPath
-        console.log(data.result[0]);
+        console.log(data.result[0].orgLogoPath);
         let user = JSON.parse(localStorage.getItem("authUser"));
+        user.orgLogo = logoPath;
+        localStorage.setItem("authUser", JSON.stringify(user));
         console.log(user)
       }
       else {

@@ -103,7 +103,8 @@ function* logoutUser({ payload: { history } }) {
       const response = yield call(fireBaseBackend.logout);
       yield put(logoutUserSuccess(response));
     }
-    history('/login');
+    // history('/login');
+    window.location.href = 'http://localhost:5173/login';
   } catch (error) {
     yield put(apiError(error));
   }

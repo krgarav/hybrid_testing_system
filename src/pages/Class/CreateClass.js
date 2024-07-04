@@ -22,10 +22,13 @@ import classesReducer from '../../store/class/reducer';
 import axios from "axios";
 import { toast } from "react-toastify";
 import { success } from "toastr";
+import Loader from "components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 
 const CreateClass = (props) => {
     document.title = "Question Bank | Create Class";
+
 
 
 
@@ -52,7 +55,10 @@ const CreateClass = (props) => {
     const [classCode, setClassCode] = useState("");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const dispatch = useDispatch();
+    const [loader, setLoader] = useState(false);
+    const [another, setAnother] = useState(false);
     const result = useSelector(state => state.classesReducer)
+    const navigate = useNavigate();
 
     function isValidName(name) {
         const specialCharRegex = /[^a-zA-Z0-9 ]/; // Regular expression to check for special characters
@@ -74,15 +80,22 @@ const CreateClass = (props) => {
         }
         else {
             if (isValidName(className)) {
-
+                setLoader(true);
                 dispatch(addClass({ className, classDescription, classCode }));
+
+
             }
         }
     };
 
 
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
+            if (!another) {
+                navigate("/all-classes");
+            }
+            setAnother(false);
             setClassCode("");
             setClassName("");
             setClassDescription("");
@@ -98,6 +111,9 @@ const CreateClass = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row >
                 <Col>
                     <Card>
@@ -160,7 +176,8 @@ const CreateClass = (props) => {
 
                                 <Row className="mb-3">
                                     <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary w-md">Submit</button>
+                                        <button type="submit" className="btn btn-primary w-md me-2">Create</button>
+                                        <button type="submit" className="btn btn-primary w-md ms-2 me-2" onClick={() => setAnother(true)}>Create and add more</button>
                                     </div>
                                 </Row>
                             </form>

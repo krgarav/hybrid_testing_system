@@ -12,6 +12,7 @@ import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
+import Loader from "components/Loader/Loader";
 
 const AllDifficultys = (props) => {
     document.title = "Question Bank | All Difficultys";
@@ -23,6 +24,7 @@ const AllDifficultys = (props) => {
     const [classs, setClasss] = useState(null);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [deleteModalShow, setDeleteModalShow] = useState(false);
+    const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
     const result = useSelector(state => state.difficultysReducer)
     const classes = useSelector(state => state.classesReducer)
@@ -55,33 +57,6 @@ const AllDifficultys = (props) => {
     })
 
 
-    // const data = {
-    //     columns: [
-    //         {
-    //             label: "Code",
-    //             field: "difficultyCode",
-    //             sort: "asc",
-    //             width: 100,
-    //         },
-    //         {
-    //             label: "Name",
-    //             field: "difficultyName",
-    //             sort: "asc",
-    //             width: 150,
-    //         },
-    //         {
-    //             label: "Description",
-    //             field: "difficultyDescription",
-    //             sort: "asc",
-    //             width: 200,
-    //         },
-    //     ],
-    //     rows: result?.difficultys?.result,
-    //     rows: result?.difficultys?.result?.map(row => ({
-    //         ...row,
-    //         clickEvent: () => handleRowClick(row)
-    //     }))
-    // }
     const data = {
         columns: [
             {
@@ -119,32 +94,36 @@ const AllDifficultys = (props) => {
 
         }
         else {
+            setLoader(true);
             dispatch(updateDifficulty({ id, difficultyName }))
 
         }
     }
 
     useEffect(() => {
+        setLoader(false);
         if (result.success == true) {
             setModalShow(false);
+            setDeleteModalShow(false)
             dispatch(setSuccessFalseDifficulty());
         }
     }, [result.success]);
     const handleDelete = () => {
-        setModalShow(false);
-        setDeleteModalShow(false)
+        setLoader(true);
         dispatch(deleteDifficulty(id));
     }
 
     return (
         <React.Fragment>
-
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row  >
                 <Col className="col-12">
                     <Card>
                         <CardBody className="col-lg-6 col-sm-12 col-xs-12"   >
                             <CardTitle className="h4">All Difficulties </CardTitle>
-                            <MDBDataTable responsive bordered data={data} noBottomColumns />
+                            <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
                         </CardBody>
 
                     </Card>

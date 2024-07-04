@@ -3,13 +3,18 @@ import { Navigate } from "react-router-dom";
 
 const Authmiddleware = (props) => {
   if (!localStorage.getItem("authUser")) {
-    return (
-      <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
-    );
+    window.location.href = "http://localhost:5173/login";
+    return null; // Or optionally return a loading indicator or message
+    // return (
+    //   <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
+    // );
   }
   return (<React.Fragment>
-   {props.children}
+    {props.children}
   </React.Fragment>);
 };
 
 export default Authmiddleware;
+
+
+

@@ -16,6 +16,7 @@ import TimeAgo from "HelperComponent/TimeAgo";
 import { useNavigate } from "react-router-dom";
 import { deleteQuestionPaper } from "helpers/questionPaper_helper";
 import { toast } from "react-toastify";
+import Loader from "components/Loader/Loader";
 
 const AllQuestionPapers = (props) => {
     document.title = "Question Bank | All Questions";
@@ -23,7 +24,9 @@ const AllQuestionPapers = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const questionPapers = useSelector(state => state.questionPapersReducer.questionPapers)
+    const result = useSelector(state => state.questionPapersReducer)
     const [modalShow, setModalShow] = useState(false);
+    const [loader, setLoader] = useState(false);
     const [selectedQuestionPaper, setSelectedQuestionPaper] = useState(null);
 
 
@@ -32,7 +35,7 @@ const AllQuestionPapers = (props) => {
         { title: "Question Papers", link: "#" },
         { title: "All Questions Papers", link: "#" },
     ]
-    
+
     useEffect(() => {           /* For closing the sidebar if opened */
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
@@ -83,21 +86,28 @@ const AllQuestionPapers = (props) => {
     const deletePaper = async () => {
         let Id = selectedQuestionPaper.id;
         // console.log()
+        setLoader(true);
         const result = await deleteQuestionPaper(Id);
         console.log(result);
         if (result?.success) {
             setModalShow(false);
             toast.success(result.message);
+            setLoader(false);
             dispatch(fetchQuestionPaper());
         }
         else {
+            setLoader(false);
             toast.error(result?.message);
         }
     }
 
 
+
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 {questionPapers?.result?.map((data, i) => (
                     <>

@@ -30,6 +30,9 @@ import { fetchAllSectionsByCourse } from "helpers/section_helper";
 import { fetchAllSubSectionsBySection } from "helpers/subSection_helper";
 import { bulkCreateQuestion } from "helpers/question_helper";
 import { toast } from "react-toastify";
+import Loader from "components/Loader/Loader";
+import { QUESTION_CSV_FILE_FORMAT } from "helpers/url_helper";
+import axios from "axios";
 
 
 const CreateQuestion = (props) => {
@@ -69,6 +72,7 @@ const CreateQuestion = (props) => {
     const [auth, setAuth] = useAuth();
     const [language, setLanguage] = useState(null);
     const [difficulty, setDifficulty] = useState(null);
+    const [loader, setLoader] = useState(false);
 
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
@@ -172,8 +176,12 @@ const CreateQuestion = (props) => {
             formData.append('languageId', language.id);
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
+
+            setLoader(true);
             const result = await bulkCreateQuestion(formData);
             if (result?.success === true) {
+
+                setLoader(false);
                 setFile(null);
                 setClasss(null);
                 setCourse(null);
@@ -186,6 +194,7 @@ const CreateQuestion = (props) => {
                 toast.success(result?.message);
             }
             else {
+                setLoader(false);
                 toast.error(result?.message);
             }
         }
@@ -264,14 +273,56 @@ const CreateQuestion = (props) => {
         setOptions(newOptions);
     };
 
+    const handleDownloadFile = async () => {
+        try {
+
+            // Make a request to the API endpoint to download the ZIP file
+            const response = await axios.get(QUESTION_CSV_FILE_FORMAT, {
+                responseType: 'blob' // Set response type to 'blob' to receive binary data
+            });
+
+            const blob = new Blob([response.data], { type: response.headers['content-type'] });
+
+            // Create a URL for the blob data
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a link element
+            const link = document.createElement('a');
+            link.href = url;
+
+            // Specify the filename for the downloaded file
+            link.setAttribute('download', 'questions_file_format.csv');
+
+            // Append the link to the body
+            document.body.appendChild(link);
+
+            // Click the link to trigger the download
+            link.click();
+
+            // Clean up: remove the link and revoke the URL object
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('An error occurred while downloading demo file');
+        }
+    }
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>
                         <CardBody className="col-xl-6 col-lg-10 col-md-10 col-sm-12 col-xs-12">
-                            <CardTitle className="h4">Create Question</CardTitle>
+                            <div className="d-flex justify-content-between mb-5">
+
+                                <CardTitle className="h4">Create Question</CardTitle>
+                                <button type="submit" onClick={handleDownloadFile} className="btn btn-info w-md">Download Demo Csv File</button>
+                            </div>
                             <form onSubmit={handleSubmit}>
 
                                 <Row className="mb-3">

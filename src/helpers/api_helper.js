@@ -19,12 +19,14 @@ const axiosApi = axios.create({
 // axiosApi.defaults.headers.common["Authorization"] = "Bearer " + token;
 
 export const updateToken = () => {
-  axiosApi.defaults.headers.common["Authorization"] = "Bearer " + JSON.parse(localStorage.getItem('authUser')).token;
+  axiosApi.defaults.headers.common["Authorization"] = "Bearer " + JSON.parse(localStorage.getItem('authUser'))?.token;
 }
 axiosApi.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject(error)
 );
+
+updateToken();
 
 export async function get(url, config = {}) {
   return await axiosApi

@@ -20,6 +20,7 @@ import { fetchOtp, getOtp, getUserType, verifyOtp } from "helpers/user_helper";
 import { toast } from "react-toastify";
 import { addUser, setSuccessFalseUser } from "store/user/action";
 import { useSelector } from "react-redux";
+import Loader from "components/Loader/Loader";
 
 
 
@@ -44,6 +45,7 @@ const CreateUser = (props) => {
     const [allUserTypes, setAllUserTypes] = useState([]);
     const [isReadOnly, setIsReadOnly] = useState(false);
     const [spanDisplay, setSpanDisplay] = useState("none");
+    const [loader, setLoader] = useState(false);
     const result = useSelector(state => state.userReducer);
     const dispatch = useDispatch();
 
@@ -71,43 +73,17 @@ const CreateUser = (props) => {
     }, [])
 
     const fetchUserTypes = async () => {
-        const result = await getUserType();
-        console.log(result);
-        setAllUserTypes(result?.result);
-    }
+        try {
 
-    const sendOtp = async () => {
-        if (!email) {
-            toast.error("Enter email id");
-        }
-        else {
-            const result = await fetchOtp({ email });
-            if (result.success) {
-                toast.success(result.message);
-                setOtpFeildDisplay(true);
-            }
-            else {
-                toast.error(result.message);
-            }
+            const result = await getUserType();
+            console.log(result);
+            setAllUserTypes(result?.result);
+        } catch (error) {
+            console.log(error);
         }
     }
 
-    const handleOtpChange = async (e) => {
-        setOtp(e.target.value);
-        let otp = e.target.value;
-        let emailId = email;
 
-        const result = await verifyOtp({ otp, emailId });
-        if (result.success) {
-            toast.success(result.message);
-            setVerify(true);
-            setOtpButtonDisplay(false);
-            setIsReadOnly(true)
-        }
-        else {
-            toast.error(result.message);
-        }
-    }
 
 
 
@@ -123,7 +99,8 @@ const CreateUser = (props) => {
             }
             else {
                 // dispatch(add)
-                let userType = type.typeName
+                let userType = type.typeName;
+                setLoader(true);
                 dispatch(addUser({ name, email, phoneNumber, fatherName, grandFatherName, position, userType, password, confirmPassword }));
             }
         }
@@ -141,6 +118,7 @@ const CreateUser = (props) => {
             setConfirmPassword("")
             dispatch(setSuccessFalseUser());
         }
+        setLoader(false);
     }, [result.success]);
 
 
@@ -155,6 +133,9 @@ const CreateUser = (props) => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col>
                     <Card>

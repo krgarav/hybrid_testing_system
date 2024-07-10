@@ -1,6 +1,6 @@
 let url = "http://192.168.0.54:82/api/";
-// export let url_online = "http://13.51.59.133";
-export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
+export let url_online = "http://13.51.59.133";
+// export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
 // let url_online = "http://192.168.0.184:8080";
 // export const BACKEND_SPRING = true;
@@ -177,8 +177,8 @@ const url2 = "https://4wq09l1k-5290.inc1.devtunnels.ms"
 
 
 
-export const LOGOUT_URL = "http://localhost:5173/login";
-// export const LOGOUT_URL = "http://is10live.com/login";
+// export const LOGOUT_URL = "http://localhost:5173/login";
+export const LOGOUT_URL = "http://is10live.com/login";
 
 //organization
 export const CREATE_ORGANIZATION = url2 + "/CreateOrganization";

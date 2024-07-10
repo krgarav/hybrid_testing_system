@@ -99,7 +99,7 @@ const Result = (props) => {
                 }
             } catch (error) {
                 setLoader(false);
-                toast.error("Something went wrong");
+                toast.error(error?.response?.data?.message);
             }
 
         }
@@ -124,7 +124,7 @@ const Result = (props) => {
                 }
             } catch (error) {
                 setLoader(false);
-                toast.error("Something went wrong");
+                toast.error(error?.response?.data?.message);
             }
 
         }
@@ -186,7 +186,7 @@ const Result = (props) => {
             }
         } catch (error) {
             setLoader(false);
-            toast.error("Something went wrong");
+            toast.error(error?.response?.data?.message);
         }
 
 

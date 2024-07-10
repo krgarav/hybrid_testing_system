@@ -194,7 +194,6 @@ const CreateQuestionUsingAi = (props) => {
                 setLoader(false);
                 if (data?.success) {
 
-                    console.log(data?.result);
                     setAiQuestions(data?.result);
                     toast.success(data?.message);
                     setModalShow(true);
@@ -216,9 +215,7 @@ const CreateQuestionUsingAi = (props) => {
 
     useEffect(() => {
         if (result.success == true) {
-            if (!another) {
-                navigate("/all-questions");
-            }
+
             setAnother(false);
             setClasss(null);
             setCourse(null);
@@ -273,93 +270,12 @@ const CreateQuestionUsingAi = (props) => {
 
 
     const handleTypeChange = (event) => {
-        console.log("fdfdfdfd")
-        console.log(event.target.value);
         setType(event.target.value);
     };
 
 
 
 
-    // const data = {
-    //     columns: [
-    //         {
-    //             label: "Serial No.",
-    //             field: "serialNo",
-    //             sort: "asc",
-    //             width: 50,
-    //         },
-    //         {
-    //             label: "Question",
-    //             field: "description",
-    //             sort: "asc",
-    //             width: 100,
-    //         },
-    //         ...(type === 'mcq' ? [ // Conditionally add options columns if type is 'mcq'
-    //             {
-    //                 label: "Option1",
-    //                 field: "option1",
-    //                 sort: "asc",
-    //                 width: 100,
-    //             },
-    //             {
-    //                 label: "Option2",
-    //                 field: "option2",
-    //                 sort: "asc",
-    //                 width: 100,
-    //             },
-    //             {
-    //                 label: "Option3",
-    //                 field: "option3",
-    //                 sort: "asc",
-    //                 width: 100,
-    //             },
-    //             {
-    //                 label: "Option4",
-    //                 field: "option4",
-    //                 sort: "asc",
-    //                 width: 100,
-    //             },
-    //         ] : []),
-    //         {
-    //             label: "Answer",
-    //             field: "answer",
-    //             sort: "asc",
-    //             width: 100,
-    //         },
-    //         {
-    //             label: "Actions",
-    //             field: "actions",
-    //             width: 100,
-    //             btn: true, // Indicate that the content should be treated as a button
-    //         },
-    //     ],
-    //     rows: aiQuestions?.map((row, index) => ({
-    //         ...row,
-    //         serialNo: index + 1, // Add 1 to start counting from 1
-    //         description: row.description,
-    //         ...(type === 'mcq' ? { // Conditionally spread options if type is 'mcq'
-    //             option1: row.options[0],
-    //             option2: row.options[1],
-    //             option3: row.options[2],
-    //             option4: row.options[3],
-    //         } : {}),
-    //         answer: row.answer,
-    //         actions: (
-    //             <>
-    //                 <div className="d-flex">
-    //                     <i style={{ color: "green", fontSize: "1.5rem", cursor: "pointer" }}>
-    //                         <MdAddTask />
-    //                     </i>
-    //                     {/* <button onClick={() => handleAdd(row)}></button>
-    //                     <button onClick={() => handleAdd(row)}>remove</button> */}
-    //                 </div>
-
-    //             </>
-    //         ),
-    //         clickEvent: () => handleRowClick(row),
-    //     }))
-    // };
 
 
     const columns = [
@@ -458,7 +374,6 @@ const CreateQuestionUsingAi = (props) => {
     const handleCellClick = (event) => {
         const columnIndex = event.target.cellIndex;
         const columnField = columns[columnIndex]?.field;
-        console.log(event.target)
         if (columnField !== 'actions') {
             const rowIndex = event.target.parentNode.rowIndex - 1; // Adjust for header row
             const clickedRow = rows[rowIndex];
@@ -466,7 +381,6 @@ const CreateQuestionUsingAi = (props) => {
         }
     };
     const handleRowClick = (row) => {
-        console.log(row)
         setDescription(row?.description);
         setOptions(row?.options);
         setAnswer(row?.answer);
@@ -476,7 +390,6 @@ const CreateQuestionUsingAi = (props) => {
     }
 
     const addOption = () => {
-        console.log(options)
         setOptions([...options, option]);
         setOption("");
     }
@@ -502,6 +415,112 @@ const CreateQuestionUsingAi = (props) => {
         toast.success("Question added successfully in the QB");
 
     }
+
+
+    // for add question in the qb 
+
+    function removeSpecificDivs(htmlString) {
+        // Parse the HTML string into a new DOM document
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+
+        // Selectors for the divs to remove based on class and id
+        const selectorsToRemove = [
+            'div.e-rte-content#defaultRTErte-view',
+            'div.e-content.e-lib.e-keyboard#defaultRTE_rte-edit-view'
+        ];
+
+        // Iterate over selectors and remove the matching elements
+        selectorsToRemove.forEach(selector => {
+            const elements = doc.querySelectorAll(selector);
+            elements.forEach(element => {
+                // Instead of removing the element, we replace it with its content
+                while (element.firstChild) {
+                    element.parentNode.insertBefore(element.firstChild, element);
+                }
+                element.parentNode.removeChild(element);
+            });
+        });
+
+        // Serialize the updated DOM back to a string
+        // Inner HTML of the body will contain the expected output
+        return doc.body.innerHTML;
+    }
+    const removeImgTag = (htmlContent) => {
+        // Create a temporary element to parse the HTML string
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = htmlContent;
+
+        // Find the image element
+        const imageElement = tempElement.querySelector('img');
+
+        // Check if the image element exists
+        if (imageElement) {
+            // Remove the image element
+            imageElement.parentNode.removeChild(imageElement);
+            // console.log("dsdsd", tempElement.innerHTML)
+            // Update the HTML content state
+            // setHtmlContent(tempElement.innerHTML);
+        }
+        console.log(tempElement.innerHTML);
+        return tempElement.innerHTML;
+    };
+    const handleAddQuestionToQb = async (e) => {
+        e.preventDefault();
+        // console.log("hello")
+        const rteValue = rteObj.getContent();
+        const res = rteObj.getContent();
+        let desc = res.outerHTML;
+        desc = removeSpecificDivs(desc);
+        let tempElement = document.createElement('div');
+        tempElement.innerHTML = res.outerHTML;
+        let textContent = tempElement.textContent || tempElement.innerText;
+
+        if (!classs || !course || !section || !subSection || !desc || !difficulty || !language || !type || !answer) {
+            setSpanDisplay("inline")
+
+        }
+        else {
+
+            console.log(classs);
+            console.log(course);
+            console.log(section);
+            console.log(subSection);
+            console.log(difficulty);
+            console.log(type);
+            console.log(language);
+            console.log(description);
+            console.log(options);
+            console.log(answer);
+
+            // const fetchedImageFiles = await fetchImageFile();
+            const formData = new FormData();
+            // fetchedImageFiles.forEach((image) => {
+            //     formData.append('Image', image);
+            // });
+            options?.forEach((option) => {
+                formData.append("Options", option);
+            });
+            formData.append('ClassId', classs.id);
+            formData.append('CourseId', course.id);
+            formData.append('SectionId', section.id);
+            formData.append('SubSectionId', subSection.id);
+            formData.append('Description', removeImgTag(desc));
+            formData.append('ContentText', textContent);
+            formData.append('DifficultyId', difficulty.id);
+            formData.append('languageId', language.id);
+            formData.append('Type', type);
+            formData.append('Answer', answer);
+
+            // setLoader(true);
+            // dispatch(addQuestion(formData));
+            // setLoader(false);
+        }
+    };
+
+
+
+
     // ***** code for rich text editor textarea ****************
 
 
@@ -759,6 +778,7 @@ const CreateQuestionUsingAi = (props) => {
                 </Col>
             </Row>
 
+            {/* Modal for list the question in the table  */}
             <Modal
                 show={modalShow}
                 size="lg"
@@ -783,6 +803,7 @@ const CreateQuestionUsingAi = (props) => {
                 </Modal.Footer>
             </Modal>
 
+            {/* Modal for the view seprate question  */}
             <Modal
                 show={secondModalShow}
                 size="lg"
@@ -1095,7 +1116,7 @@ const CreateQuestionUsingAi = (props) => {
                                             name="answer"
                                             id="answer1"
                                             value="true"
-                                            checked={answer === 'true'}
+                                            checked={answer.toLowerCase() === 'true'}
                                             onChange={(e) => setAnswer(e.target.value)}
                                         />
                                         <label className="form-check-label" htmlFor="exampleRadios2">
@@ -1109,11 +1130,11 @@ const CreateQuestionUsingAi = (props) => {
                                             name="answer"
                                             id="answer2"
                                             value="false"
-                                            checked={answer === 'false'}
+                                            checked={answer.toLowerCase() === 'false'}
                                             onChange={(e) => setAnswer(e.target.value)}
                                         />
                                         <label className="form-check-label" htmlFor="exampleRadios2">
-                                            false
+                                            False
                                         </label>
                                     </div>
                                 </div>
@@ -1124,11 +1145,13 @@ const CreateQuestionUsingAi = (props) => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button type="button" color="primary" onClick={() => { setSecondModalShow(false); setModalShow(true) }} className="waves-effect waves-light">Close</Button>{" "}
-                    <Button type="button" color="success" onClick={handleAdd} className="waves-effect waves-light">Add to the Bank</Button>{" "}
+                    <Button type="button" color="success" onClick={handleAddQuestionToQb} className="waves-effect waves-light">Add to the Bank</Button>{" "}
                     {/* <Button type="button" color="danger" onClick={() => { setDeleteModalShow(true); setModalShow(false) }} className="waves-effect waves-light">Delete</Button>{" "} */}
 
                 </Modal.Footer>
             </Modal>
+
+            {/* Modal for confirmation before delete  */}
             <Modal
                 show={deleteModalShow}
                 size="lg"

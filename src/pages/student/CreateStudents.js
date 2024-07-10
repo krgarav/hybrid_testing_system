@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { fetchQuestionPaper, setBreadcrumbItems } from "../../store/actions";
+import { fetchLanguage, fetchQuestionPaper, setBreadcrumbItems } from "../../store/actions";
 import { addSchool } from "store/school/action";
 import { useSelector } from "react-redux";
 import schoolesReducer from '../../store/school/reducer';
@@ -15,7 +15,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { ExamCenters, SchoolTypes, fetchSchoolTypes } from "helpers/school_helper";
 import { uploadStudents } from "helpers/student_helper";
-import { getAllMainExamPapers } from "helpers/center_helper";
+import { getAllMainExamPapers, getMainExamPapersByLanguage } from "helpers/center_helper";
 import Loader from "components/Loader/Loader";
 import { STUDENT_CSV_FILE_FORMAT } from "helpers/url_helper";
 
@@ -29,6 +29,8 @@ const CreateStudents = (props) => {
     const [allExams, setAllExams] = useState([]);
     const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
+    const [language, setLanguage] = useState(null);
+    const languages = useSelector(state => state.languagesReducer);
     // let questionPapers = useSelector(state => state.questionPapersReducer.questionPapers)
 
 
@@ -45,25 +47,19 @@ const CreateStudents = (props) => {
     }, [])
 
     useEffect(() => {
+        if (languages?.languages.length == 0) {
+            dispatch(fetchLanguage());
+        }
+
+    })
+
+    useEffect(() => {
         props.setBreadcrumbItems('Create Students', breadcrumbItems)
     })
 
-    const fetchAllExams = async () => {
-        console.log("Call hua")
-        try {
-            const result = await getAllMainExamPapers();
-            if (result?.success) {
-                console.log(result)
-                setAllExams(result?.result);
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
-    useEffect(() => {
-        fetchAllExams();
-    }, []);
+
+
     useEffect(() => {
         console.log("allexams", allExams);
     }, [allExams]);
@@ -83,7 +79,24 @@ const CreateStudents = (props) => {
     }
 
 
+    const handleSelectLanguage = selectedOption => {
+        setLanguage(selectedOption);
+        fetchAllExams(selectedOption.id);
+    };
 
+    const fetchAllExams = async (id) => {
+        try {
+            const result = await getMainExamPapersByLanguage(id);
+            if (result?.success) {
+                setAllExams(result?.result);
+            }
+            else {
+                console.log(result?.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
 
@@ -97,7 +110,8 @@ const CreateStudents = (props) => {
         else {
             const formData = new FormData();
             formData.append('File', file);
-            formData.append('PaperId', questionPaper.id)
+            formData.append('PaperId', questionPaper.id);
+            formData.append("languageId", language.id);
             setLoader(true);
             const result = await uploadStudents(formData);
             console.log(result);
@@ -114,10 +128,47 @@ const CreateStudents = (props) => {
         }
     };
 
+    // const handleDownloadFile = async () => {
+    //     try {
+
+    //         // Make a request to the API endpoint to download the ZIP file
+    //         const response = await axios.get(STUDENT_CSV_FILE_FORMAT, {
+    //             responseType: 'blob' // Set response type to 'blob' to receive binary data
+    //         });
+
+    //         const blob = new Blob([response.data], { type: response.headers['content-type'] });
+
+    //         // Create a URL for the blob data
+    //         const url = window.URL.createObjectURL(blob);
+
+    //         // Create a link element
+    //         const link = document.createElement('a');
+    //         link.href = url;
+
+    //         // Specify the filename for the downloaded file
+    //         link.setAttribute('download', 'stuents_file_format.csv');
+
+    //         // Append the link to the body
+    //         document.body.appendChild(link);
+
+    //         // Click the link to trigger the download
+    //         link.click();
+
+    //         // Clean up: remove the link and revoke the URL object
+    //         document.body.removeChild(link);
+    //         window.URL.revokeObjectURL(url);
+
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //         toast.error('An error occurred while downloading demo file');
+    //     }
+    // }
+
+
+
     const handleDownloadFile = async () => {
         try {
-
-            // Make a request to the API endpoint to download the ZIP file
+            // Make a request to the API endpoint to download the XLSX file
             const response = await axios.get(STUDENT_CSV_FILE_FORMAT, {
                 responseType: 'blob' // Set response type to 'blob' to receive binary data
             });
@@ -132,7 +183,7 @@ const CreateStudents = (props) => {
             link.href = url;
 
             // Specify the filename for the downloaded file
-            link.setAttribute('download', 'stuents_file_format.csv');
+            link.setAttribute('download', 'students_file_format.xlsx');
 
             // Append the link to the body
             document.body.appendChild(link);
@@ -146,9 +197,10 @@ const CreateStudents = (props) => {
 
         } catch (error) {
             console.error('Error:', error);
-            toast.error('An error occurred while downloading demo file');
+            toast.error('An error occurred while downloading the demo file');
         }
-    }
+    };
+
     return (
         <React.Fragment>
             {loader ? (
@@ -165,6 +217,28 @@ const CreateStudents = (props) => {
                             </div>
 
                             <form onSubmit={handleSubmit}>
+
+                                <Row className="mb-3" >
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Language Name
+                                    </label>
+                                    <div className="col-md-10">
+                                        <Select
+
+                                            value={language}
+                                            onChange={handleSelectLanguage}
+                                            options={languages?.languages?.result}
+                                            getOptionLabel={option => option.languageName}
+                                            getOptionValue={option => option.id.toString()}
+                                            classNamePrefix="select2-selection"
+                                        />
+                                        {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+
+                                </Row>
                                 <Row className="mb-3">
                                     <label
                                         htmlFor="example-text-input"
@@ -185,7 +259,6 @@ const CreateStudents = (props) => {
                                         {!questionPaper && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
                                 </Row>
-
                                 <Row className="mb-3">
                                     <label
                                         htmlFor="example-text-input"

@@ -126,7 +126,6 @@ const AllClasses = (props) => {
 
             {loader ? (
                 <>
-                    dsdsds
                     < Loader />
                 </>
             ) : ("")}

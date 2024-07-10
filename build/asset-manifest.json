@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.413e4339.css",
-    "main.js": "/static/js/main.01490a43.js",
+    "main.css": "/static/css/main.58e8da6f.css",
+    "main.js": "/static/js/main.27a5fe7c.js",
     "static/media/materialdesignicons-webfont.eot": "/static/media/materialdesignicons-webfont.52adde0de9840940801f.eot",
     "static/media/materialdesignicons-webfont.ttf?v=5.8.55": "/static/media/materialdesignicons-webfont.506bc8215df8660d8f04.ttf",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.371dbce0dd46bd4d2033.svg",
@@ -49,15 +49,17 @@
     "static/media/dripicons-v2.woff": "/static/media/dripicons-v2.f19dcc0358afed69d277.woff",
     "static/media/img-4.jpg": "/static/media/img-4.9723da35ca53e5dd0042.jpg",
     "static/media/fa-regular-400.woff": "/static/media/fa-regular-400.1069ea55beaa01060302.woff",
+    "static/media/1.png": "/static/media/1.1cecdbeb2d6162a29aeb.png",
     "static/media/fa-regular-400.woff2": "/static/media/fa-regular-400.1008b5226941c24f4468.woff2",
     "static/media/bg-1.png": "/static/media/bg-1.7694411d08a41ca3baef.png",
+    "static/media/hts_logo.png": "/static/media/hts_logo.960ae65a1071048c1155.png",
     "static/media/ios.png": "/static/media/ios.3b2a9cd23857d60b670b.png",
     "index.html": "/index.html",
-    "main.413e4339.css.map": "/static/css/main.413e4339.css.map",
-    "main.01490a43.js.map": "/static/js/main.01490a43.js.map"
+    "main.58e8da6f.css.map": "/static/css/main.58e8da6f.css.map",
+    "main.27a5fe7c.js.map": "/static/js/main.27a5fe7c.js.map"
   },
   "entrypoints": [
-    "static/css/main.413e4339.css",
-    "static/js/main.01490a43.js"
+    "static/css/main.58e8da6f.css",
+    "static/js/main.27a5fe7c.js"
   ]
 }

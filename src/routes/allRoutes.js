@@ -136,6 +136,7 @@ import RegisterOrganization from "pages/Organization/RegisterOrganization"
 import ProfileMenu from "components/CommonForBoth/TopbarDropdown/ProfileMenu"
 import Result from "pages/Exam Managment/Result"
 import CreateQuestionUsingAi from "pages/Question/CreateQuestionUsingAi"
+import AllStudents from "pages/student/AllStudents"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -185,7 +186,7 @@ const userRoutes = [
 
   // question paper
   { path: "/upload-students", component: <CreateStudents /> },
-  // { path: "/all-students", component: <AllSchool /> },
+  { path: "/all-students", component: <AllStudents /> },
 
 
 

@@ -77,7 +77,7 @@ const AllLanguages = (props) => {
     const handleRowClick = (row) => {
 
         setModalShow(true);
-
+        console.log(row)
         setId(row.id);
         setLanguageName(row.languageName);
     }

@@ -39,8 +39,8 @@ const StudentLogin = props => {
                 toast.error(data.message);
             }
         } catch (error) {
-            toast.error("something went wrong");
-            console.log("error.response.data.message")
+            toast.error(error?.response?.data?.message);
+            console.log(error?.response?.data);
         }
 
     }

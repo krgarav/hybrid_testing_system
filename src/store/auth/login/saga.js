@@ -11,6 +11,7 @@ import {
   postJwtLogin,
 } from "../../../helpers/fakebackend_helper";
 import { toast } from "react-toastify";
+import { LOGOUT_URL } from "helpers/url_helper";
 
 const fireBaseBackend = getFirebaseBackend();
 
@@ -104,7 +105,7 @@ function* logoutUser({ payload: { history } }) {
       yield put(logoutUserSuccess(response));
     }
     // history('/login');
-    window.location.href = 'http://localhost:5173/login';
+    window.location.href = LOGOUT_URL;
   } catch (error) {
     yield put(apiError(error));
   }

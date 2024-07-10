@@ -147,7 +147,9 @@ export const UPDATE_SCHOOL = url_online + "/UpdateSchool"
 export const FETCH_ALL_SCHOOL = url_online + "/GetAllSchools"
 export const FETCHS_SCHOOL_TYPES = url_online + "/GetSchoolTypes"
 
-export const UPLOAD_STUDENTS = url_online + "/BulkStudentUpload";
+export const UPLOAD_STUDENTS = url_online + "/BulkStudentUploads";
+export const GET_ALL_STUDENT = url_online + "/GetAllStudents";
+export const GET_STUDENTS_FOR_MAPPING = url_online + "/GetStudentsForMapping";
 export const LOGIN_STUDENT = url_online + "/StudentLogin";
 
 
@@ -164,11 +166,19 @@ export const CENTER_ALLOCATION = url_online + "/GetCenterAllocated";
 export const TOTAL_SUTDENTS_CENTER_CAPACITY_COUNT = url_online + "/GetCountOfCenterStudents?PaperId=";
 export const ALLOCATE_ROLL_NUMBER_AND_PASSWORD = url_online + "/AllocateRollNoAndPassword?PaperId=";
 export const CREATE_MAIN_EXAM_PAPER = url_online + "/CreateMainExamPaper";
+export const UPDATE_MAIN_EXAM_PAPER = url_online + "/UpdateMainExamPaper"
 export const GET_ALL_MAIN_EXAM_PAPERS = url_online + "/GetMainExamPapers";
 export const DELETE_MAIN_EXAM_PAPER = url_online + "/DeleteMainExamPaper?Id=";
 export const GET_MAIN_EXAM_PAPERS_BY_LANGUAGE = url_online + "/GetExamPaperByLanguage?Id=";
+export const ASSIGN_EXAM_TO_STUDENTS = url_online + "/AssignExamToStudents";
 
 const url2 = "https://4wq09l1k-5290.inc1.devtunnels.ms"
+
+
+
+
+export const LOGOUT_URL = "http://localhost:5173/login";
+// export const LOGOUT_URL = "http://is10live.com/login";
 
 //organization
 export const CREATE_ORGANIZATION = url2 + "/CreateOrganization";

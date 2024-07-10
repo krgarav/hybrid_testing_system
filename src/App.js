@@ -31,6 +31,7 @@ import Instructions from 'pages/student/Instructions'
 import TestScreen from 'pages/student/testScreen'
 import TestSubmitted from 'pages/student/FinalSubmit'
 import Pages404 from 'pages/Extra Pages/pages-404'
+import { LOGOUT_URL } from 'helpers/url_helper'
 
 
 // Activating fake backend
@@ -50,7 +51,7 @@ fakeBackend()
 // init firebase backend
 // initFirebaseBackend(firebaseConfig)
 
-function useQuery() {
+export function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 const App = props => {
@@ -74,37 +75,28 @@ const App = props => {
   }
 
   const Layout = getLayout()
-  const [save, setSave] = useState(false);
+  const [save, setSave] = useState(true);
 
   const query = useQuery();
 
-  useEffect(() => {
-    if (localStorage.getItem('authUser')) {
-      setSave(true);
-    }
-    else {
+  // useEffect(() => {
+  //   if (localStorage.getItem('authUser')) {
+  //     setSave(true);
+  //   }
+  //   else {
 
 
-      const authUser = query.get('authtoken');
+  //     const authUser = query.get('authtoken');
 
-      if (!save) {
-        if (authUser) {
-          localStorage.setItem('authUser', authUser);
-          localStorage.removeItem('showSuccessToast');
-          toast.success('Login successful!');
-          setSave(true)
+  //     if (authUser) {
+  //       localStorage.setItem('authUser', authUser);
+  //       localStorage.removeItem('showSuccessToast');
+  //       toast.success('Login successful!');
+  //       setSave(true)
 
-        }
-        // else {
-        //   const storedAuthUser = localStorage.getItem('authUser');
-        //   if (!storedAuthUser) {
-
-        //     window.location.href = 'http://localhost:5173/login'; // Redirect to login if no auth data
-        //   }
-        // }
-      }
-    }
-  }, [query]);
+  //     }
+  //   }
+  // }, [query]);
 
   return (
     <React.Fragment>

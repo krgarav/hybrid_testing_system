@@ -14,6 +14,8 @@ export const fetchFilterQuestions = data => post(url.FETCH_FILTER_QUESTIONS, dat
 export const addQuestionToPaper = data => post(url.ADD_QUESTION_TO_PAPER, data);
 
 export const createMainExamPaper = data => post(url.CREATE_MAIN_EXAM_PAPER, data);
+export const updateMainExamPaper = data => put(url.UPDATE_MAIN_EXAM_PAPER, data);
+export const assingExamToStudent = data => post(url.ASSIGN_EXAM_TO_STUDENTS, data);
 
 export const getResult = id => get(url.GET_EXAM_RESULT + id);
 export const getResultDetails = data => get(url.GET_RESULT_DETAILS1 + data.studentId + url.GET_RESULT_DETAILS2 + data.examPaperId)

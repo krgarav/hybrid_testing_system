@@ -38,7 +38,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { MDBDataTable } from "mdbreact";
 import { MdAddTask } from "react-icons/md";
-
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 const CreateQuestionUsingAi = (props) => {
 
@@ -88,7 +88,7 @@ const CreateQuestionUsingAi = (props) => {
     const [options, setOptions] = useState([]);
     const [fromTable, setFromTable] = useState("")
     const [rowIndex, setRowIndex] = useState(0);
-
+    const [progress, setProgress] = useState(0);
     useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
@@ -175,6 +175,15 @@ const CreateQuestionUsingAi = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const progressInterval = setInterval(() => {
+            setProgress((oldProgress) => {
+                if (oldProgress >= 95) {
+                    clearInterval(progressInterval);
+                }
+                return Math.min(oldProgress + 5, 75);
+            });
+        }, 100);
         try {
 
 
@@ -192,8 +201,15 @@ const CreateQuestionUsingAi = (props) => {
                 let difficultyName = difficulty.difficultyName;
                 let languageName = language.languageName;
                 setLoader(true);
-                const { data } = await axios.post("http://13.233.103.1:4000/generateQuestionsUsingAi", { className, courseName, sectionName, subSectionName, difficultyName, languageName, type });
+                setProgress(0);
+                const { data } = await axios.post(
+                    "http://192.168.1.18:5000/generateQuestionsUsingAi",
+                    { className, courseName, sectionName, subSectionName, difficultyName, languageName, type },
+                );
+                clearInterval(progressInterval);
+                setProgress(100);
                 setLoader(false);
+
                 if (data?.success) {
 
                     setAiQuestions(data?.result);
@@ -203,7 +219,7 @@ const CreateQuestionUsingAi = (props) => {
                 else {
                     toast.error(data?.message);
                 }
-                // setLoader(true);
+                // 
 
 
 
@@ -351,10 +367,10 @@ const CreateQuestionUsingAi = (props) => {
         serialNo: index + 1, // Add 1 to start counting from 1
         description: row.description,
         ...(type === 'mcq' ? { // Conditionally spread options if type is 'mcq'
-            option1: row.options[0],
-            option2: row.options[1],
-            option3: row.options[2],
-            option4: row.options[3],
+            option1: row.options?.[0],
+            option2: row.options?.[1],
+            option3: row.options?.[2],
+            option4: row.options?.[3],
         } : {}),
         answer: row.answer,
         actions: (
@@ -623,8 +639,18 @@ const CreateQuestionUsingAi = (props) => {
     return (
         <React.Fragment>
             {loader ? (
-                <Loader />
-            ) : ("")}
+                // <Loader />
+                <>
+                    fdfdfdf
+                    < div className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" style={{ zIndex: 10050 }}>
+                        <div className="d-flex justify-content-center align-items-center" style={{ width: "25%", height: "6em", border: "", backgroundColor: "white", borderRadius: "5px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
+                            <ProgressBar now={progress} label={`${progress}%`} style={{ width: '70%', height: "2rem", fontSize: "1.5rem" }} />
+                        </div>
+                    </div>
+                </>
+            ) : ("")
+            }
+
             <Row>
                 <Col>
                     <Card>
@@ -1246,7 +1272,7 @@ const CreateQuestionUsingAi = (props) => {
                 </Modal.Footer>
             </Modal>
 
-        </React.Fragment>
+        </React.Fragment >
     )
 }
 

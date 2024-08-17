@@ -337,6 +337,8 @@ const CreateQuestion = (props) => {
         setType(event.target.value);
         setAnswer("");
     };
+
+
     const addOption = () => {
         setOptions([...options, option]);
         setOption("");
@@ -547,7 +549,7 @@ const CreateQuestion = (props) => {
                                                 id="type2"
                                                 value="short"
                                                 checked={type === 'short'}
-                                                onChange={handleTypeChange}
+                                                onClick={handleTypeChange}
                                             />
                                             <label className="form-check-label" htmlFor="exampleRadios2">
                                                 Short
@@ -561,7 +563,7 @@ const CreateQuestion = (props) => {
                                                 id="type1"
                                                 value="mcq"
                                                 checked={type === 'mcq'}
-                                                onChange={handleTypeChange}
+                                                onClick={handleTypeChange}
                                             />
                                             <label className="form-check-label" htmlFor="exampleRadios1">
                                                 MCQ
@@ -576,7 +578,7 @@ const CreateQuestion = (props) => {
                                                 id="type3"
                                                 value="true false"
                                                 checked={type === 'true false'}
-                                                onChange={handleTypeChange}
+                                                onClick={handleTypeChange}
                                             />
                                             <label className="form-check-label" htmlFor="exampleRadios2">
                                                 True False
@@ -590,7 +592,7 @@ const CreateQuestion = (props) => {
                                                 id="type4"
                                                 value="essay"
                                                 checked={type === 'essay'}
-                                                onChange={handleTypeChange}
+                                                onClick={handleTypeChange}
                                             />
                                             <label className="form-check-label" htmlFor="exampleRadios2">
                                                 Essay

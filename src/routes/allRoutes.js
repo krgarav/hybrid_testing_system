@@ -137,6 +137,7 @@ import ProfileMenu from "components/CommonForBoth/TopbarDropdown/ProfileMenu"
 import Result from "pages/Exam Managment/Result"
 import CreateQuestionUsingAi from "pages/Question/CreateQuestionUsingAi"
 import AllStudents from "pages/student/AllStudents"
+import ExamProctor from "pages/Exam Managment/ExamProctor"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -195,6 +196,8 @@ const userRoutes = [
   { path: "/all-exams", component: <AllExams /> },
   { path: "/center-alloction", component: <CenterAllocation /> },
   { path: "/result", component: <Result /> },
+  { path: "/proctoring/:roomId", component: <ExamProctor /> },
+
 
 
   { path: "/profile", component: <UserProfile /> },

@@ -12,6 +12,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useAuth } from 'context/authContext';
 import { url_online } from 'helpers/url_helper';
+import Loader from 'components/Loader/Loader';
 
 
 
@@ -21,13 +22,16 @@ const StudentLogin = props => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [loader, setLoader] = useState(false);
     const navigate = useNavigate();
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoader(true);
             const { data } = await axios.post(url_online + "/StudentLogin", { email, password });
+            setLoader(false);
             console.log(data);
             if (data?.success) {
                 localStorage.setItem("student", JSON.stringify(data));
@@ -39,6 +43,7 @@ const StudentLogin = props => {
                 toast.error(data.message);
             }
         } catch (error) {
+            setLoader(false);
             toast.error(error?.response?.data?.message);
             console.log(error?.response?.data);
         }
@@ -47,6 +52,9 @@ const StudentLogin = props => {
 
     return (
         <React.Fragment>
+            {loader ? (
+                <Loader />
+            ) : ("")}
             <div className="account-pages my-5 pt-sm-5">
                 <Container>
                     <Row className="justify-content-center">

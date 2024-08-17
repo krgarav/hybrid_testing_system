@@ -12,7 +12,7 @@ const Sidebar = props => {
   return (
     <React.Fragment>
       <div id="verticalDiv" className={`vertical-menu custom-scrollbar`} >
-        <div data-simplebar className="">
+        <div data-simplebar className="" style={{ width: "15rem" }}>
           {props.type !== "condensed" ? <SidebarContent /> : <SidebarContent />}
         </div>
       </div>

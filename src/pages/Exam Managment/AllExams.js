@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Row, Col, Card, CardBody, CardTitle, Button, CardText, CardHeader, CardFooter, } from "reactstrap"
 import { Modal } from "react-bootstrap";
 import { format } from 'date-fns';
@@ -22,7 +22,10 @@ import { getStudentsForMapping } from "helpers/student_helper";
 import { MDBDataTable } from "mdbreact";
 import { MdAddTask } from "react-icons/md";
 import { success } from "toastr";
-
+import { APP_ID, DOWNLOAD_EXAM_PAPER } from "helpers/url_helper";
+import axios from "axios";
+import AgoraRTC from 'agora-rtc-sdk-ng';
+import AgoraRTM from 'agora-rtm-sdk';
 const AllQuestionExams = (props) => {
     document.title = "Question Bank | All Questions";
 
@@ -36,6 +39,7 @@ const AllQuestionExams = (props) => {
     const [studentModal, setStudentModal] = useState(false);
     const [page, setPage] = useState(1);
     const [examId, setExamId] = useState("");
+    const [paperId, setPaperId] = useState("");
 
     const breadcrumbItems = [
         { title: "Question Exams", link: "#" },
@@ -54,14 +58,15 @@ const AllQuestionExams = (props) => {
     })
 
     const fetchAllExams = async () => {
-        console.log("Call hua")
         try {
+            setLoader(true);
             const result = await getAllMainExamPapers();
+            setLoader(false);
             if (result?.success) {
-                console.log(result)
                 setAllExams(result?.result);
             }
         } catch (error) {
+            setLoader(false);
             console.log(error)
         }
     }
@@ -69,9 +74,7 @@ const AllQuestionExams = (props) => {
     useEffect(() => {
         fetchAllExams();
     }, []);
-    useEffect(() => {
-        console.log("allexams", allExams);
-    }, [allExams]);
+
 
 
 
@@ -84,7 +87,6 @@ const AllQuestionExams = (props) => {
     };
 
     const handleDeleteClick = async (data) => {
-        console.log(data)
         setSelectedQuestionPaper(data);
         setModalShow(true);
 
@@ -99,10 +101,8 @@ const AllQuestionExams = (props) => {
 
     const deletePaper = async () => {
         let Id = selectedQuestionPaper.id;
-        // console.log()
         setLoader(true);
         const result = await deleteMainExamPaper(Id);
-        console.log(result);
         if (result?.success) {
             setLoader(false);
             setModalShow(false);
@@ -128,7 +128,6 @@ const AllQuestionExams = (props) => {
 
     const handleStartExam = async (data) => {
         try {
-            console.log(data);
             data.examStart = !data.examStart;
             setLoader(true)
             const result = await updateMainExamPaper(data)
@@ -230,7 +229,6 @@ const AllQuestionExams = (props) => {
 
     const assingExam = async (studentIds) => {
         try {
-            console.log(examId, studentIds)
             setLoader(true);
             const data = await assingExamToStudent({ examId, studentIds });
             setLoader(false);
@@ -255,8 +253,30 @@ const AllQuestionExams = (props) => {
     const handleAssingAll = () => {
         const studentIds = students.map((row, i) => row.id);
         assingExam(studentIds);
-        console.log(studentIds);
     }
+
+    const downloadFile = async (data) => {
+        try {
+            setLoader(true)
+            const response = await axios.get(DOWNLOAD_EXAM_PAPER + data?.id, {
+                responseType: 'blob', // Important to set the response type to blob
+            });
+            setLoader(false);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = data.examName; // Replace with the desired file name
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Failed to download file:', error);
+        }
+    };
+
+
+
     return (
         <React.Fragment>
             {loader ? (
@@ -265,9 +285,10 @@ const AllQuestionExams = (props) => {
 
 
             <Row>
+
                 {allExams?.map((data, i) => (
                     <>
-                        <Col lg={4} key={i}>
+                        <Col lg={3} key={i}>
                             <Card>
                                 {/* <CardHeader>UPSC</CardHeader> */}
                                 <CardBody className="mt-0 pt-0">
@@ -276,6 +297,7 @@ const AllQuestionExams = (props) => {
                                         <div className="d-flex">
 
                                             {/* <button type='button' className="text-primary" onClick={() => handleCardClick(data)} style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }}> <i className="mdi mdi-book-edit-outline "></i></button> */}
+                                            <button type='button' className="text-info" onClick={() => downloadFile(data)} style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }}> <i className="mdi mdi-download"></i></button>
                                             <button type='button' className="text-danger" onClick={() => handleDeleteClick(data)} style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }}> <i className="mdi mdi-delete "></i></button>
                                         </div>
                                     </div>
@@ -288,12 +310,15 @@ const AllQuestionExams = (props) => {
                                         Total Shifts: {data.shiftData.length}
                                         <br />
                                         <br />
-                                        {data.onlineExam}
-                                        {/* {data.onlineExam ? isCurrentTimeBetween(data.shiftData) ? <Button type="button" color="primary" className="waves-effect waves-light">Start</Button> : "" : ""} */}
-                                        {data.onlineExam ? <Button type="button" color="primary" className="waves-effect waves-lightme-2" onClick={() => handleStartExam(data)}>{data?.examStart ? "Stop" : "Start"}</Button> : ""}
-                                        {/* {isCurrentTimeBetween(data.shiftData) ?(shift<button type='button' className="text-danger"  > start</button> : ""} */}
+                                        <div className="d-flex flex-wrap gap-1">
+                                            {data.onlineExam}
+                                            {/* {data.onlineExam ? isCurrentTimeBetween(data.shiftData) ? <Button type="button" color="primary" className="waves-effect waves-light">Start</Button> : "" : ""} */}
+                                            {data.onlineExam ? <Button type="button" color="primary" className="waves-effect waves-lightme-2 mt-1" onClick={() => handleStartExam(data)}>{data?.examStart ? "Stop" : "Start"}</Button> : ""}
+                                            {/* {isCurrentTimeBetween(data.shiftData) ?(shift<button type='button' className="text-danger"  > start</button> : ""} */}
 
-                                        <Button type="button" color="primary" className="waves-effect waves-light ms-3" onClick={() => handleMore(data)}>Assign Student</Button>
+                                            {data.onlineExam ? <Button type="button" color="primary" className="waves-effect waves-light mt-1" onClick={() => handleMore(data)}>Assign Student</Button> : ""}
+                                            {data.onlineExam ? <Button type="button" color="primary" className="waves-effect waves-lightme-2 mt-1" onClick={() => navigate(`/proctoring/${data?.id}`)}>Proctoring</Button> : ""}
+                                        </div>
                                     </CardText>
                                 </CardBody>
 

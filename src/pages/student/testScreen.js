@@ -13,14 +13,16 @@ import { Button, } from "reactstrap";
 import { Modal } from "react-bootstrap";
 import ios from "../../assets/images/ios.png";
 import { useAuth } from "context/authContext";
-import { IMAGE_FETCH } from "helpers/url_helper";
+import { APP_ID, IMAGE_FETCH } from "helpers/url_helper";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { saveExamAnswers } from "helpers/test_helper";
 import { success } from "toastr";
 import io from 'socket.io-client';
 import classes from "./testscreen.module.css"
-
+import AgoraRTC from 'agora-rtc-sdk-ng';
+import AgoraRTM from 'agora-rtm-sdk';
+import Loader from "components/Loader/Loader";
 
 
 const TestScreen = () => {
@@ -34,6 +36,7 @@ const TestScreen = () => {
   const [mediaStream, setMediaStream] = useState(null);
   const [recorder, setRecorder] = useState(null);
   const [timeFinish, setTimeFinish] = useState(false);
+  const [loader, setLoader] = useState(false);
   const socket = useRef(null);
   let isAlertShown = false;
 
@@ -135,7 +138,7 @@ const TestScreen = () => {
     let answer = [];
 
     let student = JSON.parse(localStorage.getItem('student'));
-    let studentId = student.studentId;
+    let studentId = student?.studentId;
     paperId = student?.examSet[0][0].paperId;
 
     Object.values(answers).forEach(d => {
@@ -148,7 +151,9 @@ const TestScreen = () => {
     let v = Object.keys(visited).length
     let s = Object.keys(submit).length
     let ua = question?.length - v;
+    setLoader(true);
     let result = await saveExamAnswers({ paperId, questionId, answer, studentId })
+    setLoader(false);
     if (result?.success) {
       toast.success(result.message);
       localStorage.removeItem("student")
@@ -184,46 +189,46 @@ const TestScreen = () => {
 
 
   const handleVisibilityChange = () => {
-    if (document.visibilityState === 'hidden') {
-      if (!isAlertShown) {
-        if (warningCount1 + warningCount2 === 2) {
-          let a = Object.keys(answers).length;
-          let v = Object.keys(visited).length;
-          let s = Object.keys(submit).length;
-          let ua = question?.length - v;
+    // if (document.visibilityState === 'hidden') {
+    //   if (!isAlertShown) {
+    //     if (warningCount1 + warningCount2 === 2) {
+    //       let a = Object.keys(answers).length;
+    //       let v = Object.keys(visited).length;
+    //       let s = Object.keys(submit).length;
+    //       let ua = question?.length - v;
 
-          localStorage.removeItem("student");
-          navigate(`/finalsubmit/${s}/${v}/${ua}`);
-          warningCount1 = 0;
-        } else {
-          alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
-          isAlertShown = true;
-          warningCount1++;
-        }
-      }
-    } else {
-      isAlertShown = false; // Reset flag when visibility changes back to visible
-    }
+    //       localStorage.removeItem("student");
+    //       navigate(`/finalsubmit/${s}/${v}/${ua}`);
+    //       warningCount1 = 0;
+    //     } else {
+    //       alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
+    //       isAlertShown = true;
+    //       warningCount1++;
+    //     }
+    //   }
+    // } else {
+    //   isAlertShown = false; // Reset flag when visibility changes back to visible
+    // }
   };
 
   const handleWindowBlur = () => {
-    if (warningCount1 + warningCount2 === 2) {
-      let a = Object.keys(answers).length;
-      let v = Object.keys(visited).length;
-      let s = Object.keys(submit).length;
-      let ua = question?.length - v;
+    // if (warningCount1 + warningCount2 === 2) {
+    //   let a = Object.keys(answers).length;
+    //   let v = Object.keys(visited).length;
+    //   let s = Object.keys(submit).length;
+    //   let ua = question?.length - v;
 
-      localStorage.removeItem("student");
-      navigate(`/finalsubmit/${s}/${v}/${ua}`);
-      warningCount2 = 0;
-    } else {
-      isAlertShown = false; // Reset flag when window blur event occurs
-      if (!isAlertShown) {
-        alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
-        isAlertShown = true;
-        warningCount2++;
-      }
-    }
+    //   localStorage.removeItem("student");
+    //   navigate(`/finalsubmit/${s}/${v}/${ua}`);
+    //   warningCount2 = 0;
+    // } else {
+    //   isAlertShown = false; // Reset flag when window blur event occurs
+    //   if (!isAlertShown) {
+    //     alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
+    //     isAlertShown = true;
+    //     warningCount2++;
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -296,7 +301,7 @@ const TestScreen = () => {
 
   // useEffect(() => {
   //   // Setup the socket connection to the server
-  //   socket.current = io('http://192.168.0.139:5000', {
+  //   socket.current = io('http://192.168.0.139:4500', {
   //     // socket.current = io('http://localhost:5000', {
   //     reconnection: true,
   //     reconnectionDelay: 2000,
@@ -308,8 +313,8 @@ const TestScreen = () => {
   //   // Function to handle data availability
   //   const handleDataAvailable = event => {
   //     if (event.data && event.data.size > 0) {
-  //       console.log(`Sending data: ${event.data.size} bytes`);
-  //       socket.current.emit('video_data', event.data);
+  //       // console.log(`Sending data: ${event.data.size} bytes`);
+  //       // socket.current.emit('video_data', event.data);
   //     }
   //   };
 
@@ -357,6 +362,9 @@ const TestScreen = () => {
   //   socket.current.on('disconnect', (reason) => {
   //     console.warn('Socket disconnected:', reason);
   //   });
+  //   socket.current.on('connect', () => {
+  //     console.log('Socket connected successfully');
+  //   });
 
   //   // Cleanup function
   //   return () => {
@@ -377,7 +385,7 @@ const TestScreen = () => {
 
   // useEffect(() => {
   //   // Setup the socket connection to the server
-  //   socket.current = io('http://192.168.0.139:5000', {
+  //   socket.current = io('http://192.168.0.139:4500', {
   //     reconnection: true,
   //     reconnectionDelay: 2000,
   //   });
@@ -478,6 +486,105 @@ const TestScreen = () => {
   // }, []);
 
 
+  // let first = true;
+
+  // useEffect(() => {
+  //   // Setup the socket connection to the server
+  //   socket.current = io('http://192.168.0.139:4500', {
+  //     reconnection: true,
+  //     reconnectionDelay: 2000,
+  //   });
+
+  //   let mediaRecorder;
+  //   let recordedChunks = [];
+
+  //   // Function to handle data availability
+  //   const handleDataAvailable = (event) => {
+  //     if (event.data && event.data.size > 0) {
+  //       // console.log(`Sending data: ${event.data.size} bytes`);
+  //       socket.current.emit('video_data', event.data);
+  //     }
+  //   };
+
+  //   const requestCameraAccess = async () => {
+  //     try {
+  //       // Request access to the webcam
+  //       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  //       console.log("stream");
+
+  //       // Initialize MediaRecorder with the stream
+  //       mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+
+  //       // Event handler for when recorded data is available
+  //       mediaRecorder.ondataavailable = handleDataAvailable;
+
+  //       // Start recording the video stream in chunks of 2 seconds
+  //       mediaRecorder.start(2000);
+
+  //       // Stop recording and reset every 2 seconds to send continuous data
+  //       const interval = setInterval(() => {
+  //         if (mediaRecorder.state === "recording") {
+  //           mediaRecorder.stop();
+  //           mediaRecorder.start(2000);
+  //         }
+  //       }, 2000);
+
+  //       // Cleanup interval on unmount
+  //       return () => clearInterval(interval);
+  //     } catch (error) {
+  //       console.error('Error accessing the webcam', error.name);
+
+  //       // If permission denied, show alert message and blur/disable the page
+  //       if (error instanceof DOMException || error.name === 'NotAllowedError') {
+  //         alert('Please allow access to the camera for the test.');
+  //         document.body.style.filter = 'blur(5px)';
+  //         document.body.style.pointerEvents = 'none';
+  //       }
+
+  //       if (first) {
+  //         first = false;
+  //       } else {
+  //         // Handle denied access on subsequent attempts
+  //         alert('Access to camera denied. Please refresh the page and grant access to continue.');
+  //         document.body.style.filter = 'blur(5px)';
+  //         document.body.style.pointerEvents = 'none';
+  //       }
+  //     }
+  //   };
+
+  //   const accessInterval = setInterval(requestCameraAccess, 2000);
+
+  //   // Handling results from the server
+  //   socket.current.on('result', (result) => {
+  //     console.log('Received result from server:', result);
+  //     // Here you can handle the result, such as displaying it or processing further
+  //   });
+
+  //   // Handle socket connection errors
+  //   socket.current.on('connect_error', (err) => {
+  //     console.error('Socket connection error:', err);
+  //   });
+
+  //   socket.current.on('reconnect_error', (err) => {
+  //     console.error('Socket reconnection error:', err);
+  //   });
+
+  //   socket.current.on('disconnect', (reason) => {
+  //     console.warn('Socket disconnected:', reason);
+  //   });
+
+  //   // Cleanup function
+  //   return () => {
+  //     clearInterval(accessInterval);
+  //     if (mediaRecorder && mediaRecorder.state !== "inactive") {
+  //       mediaRecorder.stop();
+  //     }
+  //     if (socket.current) {
+  //       socket.current.disconnect();
+  //     }
+  //   };
+  // }, []);
+
 
 
   useEffect(() => {
@@ -490,9 +597,68 @@ const TestScreen = () => {
 
 
 
+  // proctoring code 
+  const localVideoRef = useRef(null);
+  const rtcClient = useRef(null);
+  const localStream = useRef(null);
+  const rtmClient = useRef(null);
+  const rtmChannel = useRef(null);
+  const studentName = "StudentName"; // Replace with actual student name
+  const roomId = JSON.parse(localStorage.getItem('student'))?.examSet[0][0]?.paperId;
+
+
+  useEffect(() => {
+    toast.success("room id", roomId)
+    const initAgora = async () => {
+      try {
+        // Initialize RTC client
+        rtcClient.current = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+
+        await rtcClient.current.join(APP_ID, `${roomId}`, null, null);
+
+        localStream.current = await AgoraRTC.createMicrophoneAndCameraTracks();
+        localStream.current[1].play(localVideoRef.current);
+
+        await rtcClient.current.publish(localStream.current);
+
+        // Initialize RTM client
+        rtmClient.current = AgoraRTM.createInstance(APP_ID);
+        await rtmClient.current.login({ token: null, uid: String(rtcClient.current.uid) });
+        rtmChannel.current = await rtmClient.current.createChannel(`${roomId}`);
+        await rtmChannel.current.join();
+
+        // Send the student name via RTM
+        const message = JSON.stringify({ type: 'student-name', name: studentName, uid: rtcClient.current.uid });
+        await rtmChannel.current.sendMessage({ text: message });
+
+      } catch (error) {
+        console.error('Agora initialization failed:', error);
+      }
+    };
+
+
+    initAgora();
+
+    return () => {
+      if (rtcClient.current) {
+        rtcClient.current.leave().catch(error => console.error('Leave failed:', error));
+        if (localStream.current) {
+          localStream.current[1].close();
+        }
+      }
+      if (rtmClient.current) {
+        rtmClient.current.logout().catch(error => console.error('Logout failed:', error));
+      }
+    };
+  }, [roomId]);
 
   return (
     <>
+      {loader ? (
+        <Loader />
+      ) : ("")}
+
+
       <div className="" ref={fullScreenRef} style={{ height: "100vh", backgroundColor: "white" }}>
         <div className={`container-fluid d-flex justify-content-between  py-3 px-4 ${classes.headbar}`} style={{ backgroundColor: "rgb(129 207 118)" }}  >
           <div className="">
@@ -692,6 +858,9 @@ const TestScreen = () => {
               </div>
             </div>
             <QuestionSelector visited={visited} submit={submit} question={question} jumpQuestion={jumpQuestion} />
+            <div style={{ height: "200px" }} className="d-flex justify-content-end">
+              <div ref={localVideoRef} style={{ width: '300px', height: '300px', backgroundColor: 'black', border: "10px solid gray", borderRadius: "1rem", margin: ".5rem" }}></div>
+            </div>
           </div>
         </div>
       </div>

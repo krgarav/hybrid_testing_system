@@ -86,6 +86,8 @@ const CreateQuestionUsingAi = (props) => {
     const [editOptionText, setEditOptionText] = useState("Edit Options");
     const [optionsEditDisplay, setOptionsEditDisplay] = useState("none");
     const [options, setOptions] = useState([]);
+    const [fromTable, setFromTable] = useState("")
+    const [rowIndex, setRowIndex] = useState(0);
 
     useEffect(() => {
         const blurDiv = document.getElementById("blur");
@@ -190,7 +192,7 @@ const CreateQuestionUsingAi = (props) => {
                 let difficultyName = difficulty.difficultyName;
                 let languageName = language.languageName;
                 setLoader(true);
-                const { data } = await axios.post("http://43.204.221.68:4000/generateQuestionsUsingAi", { className, courseName, sectionName, subSectionName, difficultyName, languageName, type });
+                const { data } = await axios.post("http://13.233.103.1:4000/generateQuestionsUsingAi", { className, courseName, sectionName, subSectionName, difficultyName, languageName, type });
                 setLoader(false);
                 if (data?.success) {
 
@@ -216,14 +218,14 @@ const CreateQuestionUsingAi = (props) => {
     useEffect(() => {
         if (result.success == true) {
 
-            setAnother(false);
-            setClasss(null);
-            setCourse(null);
-            setSection(null);
-            setSubSection(null);
-            setDifficulty(null);
-            setLanguage(null);
-            setType("short");
+            // setAnother(false);
+            // setClasss(null);
+            // setCourse(null);
+            // setSection(null);
+            // setSubSection(null);
+            // setDifficulty(null);
+            // setLanguage(null);
+            // setType("short");
             dispatch(setSuccessFalseQuestion());
         }
         setLoader(false);
@@ -270,11 +272,20 @@ const CreateQuestionUsingAi = (props) => {
 
 
     const handleTypeChange = (event) => {
+        console.log("jfkdjfkdjfk")
         setType(event.target.value);
     };
 
 
-
+    const removeQuestionAtIndex = (index) => {
+        setAiQuestions(prevQuestions => {
+            if (index < 0 || index >= prevQuestions.length) {
+                console.error('Index out of bounds');
+                return prevQuestions;
+            }
+            return [...prevQuestions.slice(0, index), ...prevQuestions.slice(index + 1)];
+        });
+    };
 
 
 
@@ -353,7 +364,15 @@ const CreateQuestionUsingAi = (props) => {
                         onClick={(e) => {
                             e.stopPropagation(); // Stop event bubbling to parent elements
                             // Add specific action click logic here
-                            toast.success("Question added in QB successfully")
+                            console.log(row);
+                            setDescription(row?.description);
+                            setOptions(row?.options);
+                            setAnswer(row?.answer);
+                            setModalShow(false);
+
+                            handleAddQuestionToQb2();
+                            removeQuestionAtIndex(index);
+
                         }}
                     >
                         <MdAddTask />
@@ -371,11 +390,14 @@ const CreateQuestionUsingAi = (props) => {
     };
 
 
+
+
     const handleCellClick = (event) => {
         const columnIndex = event.target.cellIndex;
         const columnField = columns[columnIndex]?.field;
         if (columnField !== 'actions') {
             const rowIndex = event.target.parentNode.rowIndex - 1; // Adjust for header row
+            setRowIndex(rowIndex);
             const clickedRow = rows[rowIndex];
             handleRowClick(clickedRow);
         }
@@ -465,9 +487,58 @@ const CreateQuestionUsingAi = (props) => {
         console.log(tempElement.innerHTML);
         return tempElement.innerHTML;
     };
+
+    const handleAddQuestionToQb2 = async () => {
+        // console.log("hello")
+        try {
+
+
+            setModalShow(true);
+
+
+            console.log('ClassId', classs.id);
+            console.log('CourseId', course.id);
+            console.log('SectionId', section.id);
+            console.log('SubSectionId', subSection.id);
+            console.log('DifficultyId', difficulty.id)
+            console.log('languageId', language.id);
+            console.log('Description', description);
+            console.log('Type', type);
+            console.log("otpions", options);
+            console.log('Answer', answer);
+
+            // const fetchedImageFiles = await fetchImageFile();
+            const formData = new FormData();
+            // fetchedImageFiles.forEach((image) => {
+            //     formData.append('Image', image);
+            // });
+            options?.forEach((option) => {
+                formData.append("Options", option);
+            });
+            formData.append('ClassId', classs.id);
+            formData.append('CourseId', course.id);
+            formData.append('SectionId', section.id);
+            formData.append('SubSectionId', subSection.id);
+            formData.append('Description', description);
+            formData.append('ContentText', description);
+            formData.append('DifficultyId', difficulty.id);
+            formData.append('languageId', language.id);
+            formData.append('Type', type);
+            formData.append('Answer', answer);
+
+            setLoader(true);
+            dispatch(addQuestion(formData));
+            setLoader(false);
+
+        } catch (error) {
+            console.log(error)
+            toast.error(error?.response?.data?.message);
+        }
+    };
+
     const handleAddQuestionToQb = async (e) => {
         e.preventDefault();
-        // console.log("hello")
+        removeQuestionAtIndex(rowIndex);
         const rteValue = rteObj.getContent();
         const res = rteObj.getContent();
         let desc = res.outerHTML;
@@ -512,9 +583,11 @@ const CreateQuestionUsingAi = (props) => {
             formData.append('Type', type);
             formData.append('Answer', answer);
 
-            // setLoader(true);
-            // dispatch(addQuestion(formData));
-            // setLoader(false);
+            setLoader(true);
+            dispatch(addQuestion(formData));
+            setLoader(false);
+            setSecondModalShow(false)
+            setModalShow(true)
         }
     };
 

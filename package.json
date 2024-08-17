@@ -17,6 +17,8 @@
     "@testing-library/user-event": "^14.5.1",
     "@toast-ui/react-chart": "^4.7.1",
     "@vtaits/react-color-picker": "^1.0.2",
+    "agora-rtc-sdk-ng": "^4.21.0",
+    "agora-rtm-sdk": "^2.1.10",
     "apexcharts": "^3.44.0",
     "availity-reactstrap-validation": "^2.7.1",
     "axios": "^1.6.2",

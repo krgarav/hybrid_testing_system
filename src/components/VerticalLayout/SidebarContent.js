@@ -25,7 +25,7 @@ const SidebarContent = props => {
 
 
   useEffect(() => {
-    let a = JSON.parse(localStorage.getItem("authUser"))?.menuAccess[0];
+    let a = JSON.parse(localStorage.getItem("authUser"))?.menuAccess?.[0];
     setAccess(a);
   }, []);
 

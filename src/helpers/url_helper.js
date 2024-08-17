@@ -5,7 +5,10 @@ export const BACKEND_SPRING = false;
 // let url_online = "http://192.168.0.184:8080";
 // export const BACKEND_SPRING = true;
 
+export const LOGOUT_URL = "http://localhost:5173/login";
+// export const LOGOUT_URL = "http://is10live.com/login";
 
+export const APP_ID = '885a7b065d604da2b81ab5199b715d33';
 
 //REGISTER
 export const POST_FAKE_REGISTER = "/post-fake-register"
@@ -23,7 +26,7 @@ export const STUDENT_REGISTER = url_online + "/RegisterStudent";
 // using node
 // export const CREATE_CLASS = "http://localhost:8000/api/v1/class/create-class"
 // export const DELETE_CLASS = "http://localhost:8000/api/v1/class/delete-class/"
-// export const UPDATE_CLASS = "http://localhost:8000/api/v1/class/update-class/"
+// export const UPDATE_CLASS = "http://localhost:8000/api/v1/class/update-class/" 
 // export const FETCH_ALL_CLASSES = "http://localhost:8000/api/v1/class/get-class"
 
 // using .Net
@@ -159,6 +162,7 @@ export const GET_EXAM_RESULT = url_online + "/GetExamResult?Id="
 export const GET_RESULT_DETAILS1 = url_online + "/GetResultDetails?StudentId="
 export const GET_RESULT_DETAILS2 = "&ExamPaperId="
 export const SEND_EXAM_RESULT = url_online + "/SendExamResult?ExamPaperId="
+export const DOWNLOAD_EXAM_PAPER = url_online + "/DownloadExamPaperQuestions?paperId="
 
 // exam managment
 export const FETCH_ALL_CENTERS = url_online + "/GetAllCenters";
@@ -177,8 +181,7 @@ const url2 = "https://4wq09l1k-5290.inc1.devtunnels.ms"
 
 
 
-// export const LOGOUT_URL = "http://localhost:5173/login";
-export const LOGOUT_URL = "http://is10live.com/login";
+
 
 //organization
 export const CREATE_ORGANIZATION = url2 + "/CreateOrganization";

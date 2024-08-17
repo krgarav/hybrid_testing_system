@@ -30,7 +30,7 @@ const AuthProvider = ({ children }) => {
             setAuth({
                 ...auth,
                 user: userData,
-                access: parseData?.menuAccess[0],
+                access: parseData?.menuAccess?.[0],
                 token: parseData?.token,
             })
         }

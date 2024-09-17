@@ -9,7 +9,7 @@ import {
 
 const Breadcrumb = props => {
 
-  const itemLength = (props.breadcrumbItems || []).length || 1;
+  const itemLength = (props.breadcrumbItems || [])?.length || 1;
 
   return (
     <Row>

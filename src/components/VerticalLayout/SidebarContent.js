@@ -95,7 +95,7 @@ const SidebarContent = props => {
   }, []);
 
   const removeActivation = (items) => {
-    for (var i = 0; i < items.length; ++i) {
+    for (var i = 0; i < items?.length; ++i) {
       var item = items[i];
       const parent = items[i].parentElement;
 
@@ -144,7 +144,7 @@ const SidebarContent = props => {
     const items = ul.getElementsByTagName("a");
     removeActivation(items);
 
-    for (let i = 0; i < items.length; ++i) {
+    for (let i = 0; i < items?.length; ++i) {
       if (pathName === items[i].pathname) {
         matchingMenuItem = items[i];
         break;

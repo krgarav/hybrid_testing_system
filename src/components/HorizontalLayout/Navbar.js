@@ -28,7 +28,7 @@ const Navbar = props => {
     var ul = document.getElementById("navigation");
     var items = ul.getElementsByTagName("a");
     removeActivation(items);
-    for (var i = 0; i < items.length; ++i) {
+    for (var i = 0; i < items?.length; ++i) {
       if (pathName === items[i].pathname) {
         matchingMenuItem = items[i];
         break;
@@ -40,7 +40,7 @@ const Navbar = props => {
   });
 
   const removeActivation = (items) => {
-    for (var i = 0; i < items.length; ++i) {
+    for (var i = 0; i < items?.length; ++i) {
       var item = items[i];
       const parent = items[i].parentElement;
       if (item && item.classList.contains("active")) {

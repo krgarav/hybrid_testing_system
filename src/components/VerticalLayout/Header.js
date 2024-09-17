@@ -20,6 +20,9 @@ import ios from "../../assets/images/hts_logo.png";
 import ios1 from "../../assets/images/1.png";
 import logoLightPng from "../../assets/images/logo-light.png"
 import logoDark from "../../assets/images/logo-dark.png"
+import gold from "../../assets/images/golden.png"
+import bronze from "../../assets/images/bronze.png"
+import silver from "../../assets/images/silver.png"
 
 //i18n
 import { withTranslation } from "react-i18next"
@@ -127,7 +130,7 @@ const Header = props => {
     }
   }
 
-
+  const pack = JSON.parse(localStorage.getItem("authUser"))?.packageName;
   const logo = JSON.parse(localStorage.getItem("authUser")).orgLogo;
   useEffect(() => {
     console.log(logo)
@@ -166,6 +169,24 @@ const Header = props => {
             </button>
 
           </div>
+          {
+            pack == "bronze" &&
+            <>
+              <img src={bronze} alt="" height="40" />
+            </>
+          }
+          {
+            pack == "silver" &&
+            <>
+              <img src={silver} alt="" height="40" />
+            </>
+          }
+          {
+            pack == "gold" &&
+            <>
+              <img src={gold} alt="" height="40" />
+            </>
+          }
           <div className="d-flex">
 
 

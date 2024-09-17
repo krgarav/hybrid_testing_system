@@ -203,7 +203,7 @@ const CreateQuestionUsingAi = (props) => {
                 setLoader(true);
                 setProgress(0);
                 const { data } = await axios.post(
-                    "http://192.168.1.18:5000/generateQuestionsUsingAi",
+                    "http://192.168.1.36:5000/generateQuestionsUsingAi",
                     { className, courseName, sectionName, subSectionName, difficultyName, languageName, type },
                 );
                 clearInterval(progressInterval);

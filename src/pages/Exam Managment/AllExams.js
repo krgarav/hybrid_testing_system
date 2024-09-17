@@ -307,7 +307,7 @@ const AllQuestionExams = (props) => {
                                         <br />
                                         Offline: {data.offlineExam ? "yes" : "false"}
                                         <br />
-                                        Total Shifts: {data.shiftData.length}
+                                        Total Shifts: {data.shiftData?.length}
                                         <br />
                                         <br />
                                         <div className="d-flex flex-wrap gap-1">

@@ -46,6 +46,7 @@ const AllUsers = (props) => {
     const [examCenterManagementAccess, setExamCenterManagementAccess] = useState(false);
     const [studentManagementAccess, setStudentManagementAccess] = useState(false);
     const [languageAccess, setLanguageAccess] = useState(false);
+    const [qbWorkflowAccess, setQbWorkFlowAccess] = useState(false);
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [loader, setLoader] = useState(false);
     const [id, setId] = useState({});
@@ -172,7 +173,7 @@ const AllUsers = (props) => {
         else {
             let userType = type.typeName
             setLoader(true);
-            dispatch(updateUser({ id, position, userType, classAccess, courseAccess, sectionAccess, subSectionAccess, difficultyAccess, languageAccess, questionAccess, questionBulkAccess, questionPaperAccess, userManagementAccess, schoolManagementAccess, examCenterManagementAccess, studentManagementAccess }))
+            dispatch(updateUser({ id, position, userType, classAccess, courseAccess, sectionAccess, subSectionAccess, difficultyAccess, languageAccess, questionAccess, questionBulkAccess, questionPaperAccess, userManagementAccess, schoolManagementAccess, examCenterManagementAccess, studentManagementAccess, qbWorkflowAccess }))
 
         }
     };
@@ -217,6 +218,7 @@ const AllUsers = (props) => {
     const handleExamCenterManagementRights = (e) => { examCenterManagementAccess === false ? setExamCenterManagementAccess(true) : setExamCenterManagementAccess(false) }
     const handleStudentManagementRights = (e) => { studentManagementAccess === false ? setStudentManagementAccess(true) : setStudentManagementAccess(false) }
     const handleLanguageRights = (e) => { languageAccess === false ? setLanguageAccess(true) : setLanguageAccess(false) }
+    const handleQbWorkflowRights = (e) => { qbWorkflowAccess === false ? setQbWorkFlowAccess(true) : setQbWorkFlowAccess(false) }
 
 
     return (
@@ -563,6 +565,21 @@ const AllUsers = (props) => {
                                     value={1}
                                     onChange={handleStudentManagementRights}
                                     checked={studentManagementAccess ? 'checked' : ''}
+                                />
+                            </div>
+                        </div>
+                        <div className="mb-3 col-md-4 col-12 d-flex align-items-center">
+                            <label htmlFor="student_Management_access" className="col-md-6 col-form-label">
+                                QB Workflow Access
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    type="checkbox"
+                                    id="student_Management_access"
+                                    name="student_Management_access"
+                                    value={1}
+                                    onChange={handleQbWorkflowRights}
+                                    checked={qbWorkflowAccess ? 'checked' : ''}
                                 />
                             </div>
                         </div>

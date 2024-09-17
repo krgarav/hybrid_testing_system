@@ -33,7 +33,7 @@ import { toast } from "react-toastify";
 const UserProfile = () => {
 
   //meta title
-  document.title = "Profile | Skote - React Admin & Dashboard Template";
+  document.title = "Profile | IOS - HTS";
 
   const dispatch = useDispatch();
 

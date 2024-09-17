@@ -47,7 +47,7 @@ const CreateStudents = (props) => {
     }, [])
 
     useEffect(() => {
-        if (languages?.languages.length == 0) {
+        if (languages?.languages?.length == 0) {
             dispatch(fetchLanguage());
         }
 

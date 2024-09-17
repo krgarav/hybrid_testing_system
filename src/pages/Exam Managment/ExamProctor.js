@@ -60,6 +60,7 @@ const ExamProctor = (props) => {
 
                 rtmChannel.current.on('ChannelMessage', ({ text }, senderId) => {
                     toast.success("Message received");
+                    console.log("text jfkdjfkdj", text)
                     handleMessage(text, senderId);
                 });
 

@@ -113,19 +113,19 @@ const CreateQuestionPaper = (props) => {
     const languages = useSelector(state => state.languagesReducer);
 
     useEffect(() => {
-        if (classes?.classes.length == 0) {
+        if (classes?.classes?.length == 0) {
             dispatch(fetchClass());
         }
 
     })
     useEffect(() => {
-        if (difficultys?.difficultys.length == 0) {
+        if (difficultys?.difficultys?.length == 0) {
             dispatch(fetchDifficulty());
         }
 
     })
     useEffect(() => {
-        if (languages?.languages.length == 0) {
+        if (languages?.languages?.length == 0) {
             dispatch(fetchLanguage());
         }
 

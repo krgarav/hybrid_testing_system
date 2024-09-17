@@ -51,7 +51,7 @@ const Login = props => {
 
     const languages = useSelector(state => state.languagesReducer);
     useEffect(() => {
-        if (languages?.languages.length == 0) {
+        if (languages?.languages?.length == 0) {
             dispatch(fetchLanguage());
         }
 
@@ -133,7 +133,7 @@ const Login = props => {
             if (password !== confirmPassword) {
                 toast.error("Pasword and confirm password did not match");
             }
-            else if (password.length < 8) {
+            else if (password?.length < 8) {
                 toast.error("Password must contain at least 8 letters or numbers");
             }
             else if (!/^\d{10}$|^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(phoneNumber)) {

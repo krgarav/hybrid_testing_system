@@ -65,7 +65,7 @@ const CreateSubSection = (props) => {
     }, [])
 
     useEffect(() => {
-        if (sections?.sections.length == 0) {
+        if (sections?.sections?.length == 0) {
             dispatch(fetchSection());
         }
     })

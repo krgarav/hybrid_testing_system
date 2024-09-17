@@ -47,10 +47,10 @@ const AllDifficultys = (props) => {
         }
     }, [])
     useEffect(() => {
-        if (classes?.classes.length == 0) {
+        if (classes?.classes?.length == 0) {
             dispatch(fetchClass());
         }
-        if (result?.difficultys.length == 0) {
+        if (result?.difficultys?.length == 0) {
             dispatch(fetchDifficulty());
         }
 

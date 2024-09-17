@@ -33,14 +33,15 @@ const SidebarContent = props => {
     setDisplay({
       ...display, ["classs"]: access?.classAccess, ["course"]: access?.courseAccess, ["section"]: access?.sectionAccess, ["subSection"]: access?.subSectionAccess,
       ["difficulty"]: access?.difficultyAccess, ["language"]: access?.languageAccess, ["question"]: access?.questionAccess, ["questionPaper"]: access?.questionPaperAccess, ["schoolManagment"]: access?.
-        schoolAccess, ["userManagment"]: access?.userManagementAccess, ["studentManagment"]: access?.studentManagementAccess, ["centerManagment"]: access?.examCenterAccess,
+        schoolAccess, ["userManagment"]: access?.userManagementAccess, ["studentManagment"]: access?.studentManagementAccess, ["centerManagment"]: access?.examCenterAccess, ["qbWorkflow"]: access?.qbWorkflowAccess
+      ,
     })
 
   }, [access])
 
 
   useEffect(() => {
-    if (display.classs || display.course || display.section || display.subSection || display.difficulty || display.question) {
+    if (display.classs || display.course || display.section || display.subSection || display.difficulty || display.question || display.qbWorkflow) {
       setQuestionBankDisplay("block");
     }
     if (display.questionPaper || display.schoolManagment || display.centerManagment || display.studentManagment) {
@@ -314,7 +315,7 @@ const SidebarContent = props => {
             </li>
 
 
-            <li style={{ "display": "block" }}>
+            <li style={{ "display": display.qbWorkflow === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect"  >
 
                 <i className="fas fa-dice-d6"></i>

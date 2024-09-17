@@ -17,7 +17,9 @@ const Authmiddleware = (props) => {
     }
     else {
 
-      // window.location.href = LOGOUT_URL;
+      window.location.href = LOGOUT_URL;
+
+
       return null; // Or optionally return a loading indicator or message
     }
     // return (

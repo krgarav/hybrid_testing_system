@@ -66,6 +66,9 @@ const TestScreen = () => {
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const [modalShow, setModalShow] = useState(false);
+  const [startTime, setStartTime] = useState(Date.now()); // To track when the question started
+  const [timeSpent, setTimeSpent] = useState([]); // To store time spent on each question
+
   // const [warningCount, setWarningCount] = useState(1);
   let warningCount1 = 0;
   let warningCount2 = 0;
@@ -75,6 +78,25 @@ const TestScreen = () => {
 
   const submitQuestion = (ans) => {
 
+    const endTime = Date.now();
+    const timeTaken = (endTime - startTime) / 1000; // Calculate time taken in seconds for the current question
+
+    // Store the time spent for the current question
+    setTimeSpent((prevTimes) => {
+      const updatedTimes = [...prevTimes];
+
+      // Check if time for the current question index already exists
+      if (updatedTimes[currentQuestionIndex]) {
+        updatedTimes[currentQuestionIndex] += timeTaken; // Add time to existing time
+      } else {
+        updatedTimes[currentQuestionIndex] = timeTaken; // Store time if it doesn't exist
+      }
+
+      return updatedTimes;
+    });
+
+
+    console.log(answers);
     ans.userAnswer = answer;
     setAnswers({ ...answers, [currentQuestionIndex]: ans });
     setSubmit({ ...submit, [currentQuestionIndex]: true })
@@ -83,29 +105,92 @@ const TestScreen = () => {
     setAnswer(answers[currentQuestionIndex + 1]?.userAnswer ? answers[currentQuestionIndex + 1]?.userAnswer : "")
     setNextVisible(false);
 
+    setStartTime(Date.now())
+
   }
 
   const submitLastQuestion = (ans) => {
+    const endTime = Date.now();
+    const timeTaken = (endTime - startTime) / 1000; // Calculate time taken in seconds for the current question
+
+    // Store the time spent for the current question
+    setTimeSpent((prevTimes) => {
+      const updatedTimes = [...prevTimes];
+
+      // Check if time for the current question index already exists
+      if (updatedTimes[currentQuestionIndex]) {
+        updatedTimes[currentQuestionIndex] += timeTaken; // Add time to existing time
+      } else {
+        updatedTimes[currentQuestionIndex] = timeTaken; // Store time if it doesn't exist
+      }
+
+      return updatedTimes;
+    });
+
 
     ans.userAnswer = answer;
     setAnswers({ ...answers, [currentQuestionIndex]: ans });
     setSubmit({ ...submit, [currentQuestionIndex]: true });
 
+    setStartTime(Date.now())
+
 
   }
   const handleSkipQuestion = () => {
+
+    const endTime = Date.now();
+    const timeTaken = (endTime - startTime) / 1000; // Calculate time taken in seconds for the current question
+
+    // Store the time spent for the current question
+    setTimeSpent((prevTimes) => {
+      const updatedTimes = [...prevTimes];
+
+      // Check if time for the current question index already exists
+      if (updatedTimes[currentQuestionIndex]) {
+        updatedTimes[currentQuestionIndex] += timeTaken; // Add time to existing time
+      } else {
+        updatedTimes[currentQuestionIndex] = timeTaken; // Store time if it doesn't exist
+      }
+
+      return updatedTimes;
+    });
+
+
     setCurrentQuestionIndex(currentQuestionIndex + 1);
     setVisited({ ...visited, [currentQuestionIndex + 1]: true })
     // setAnswer("")
     setAnswer(answers[currentQuestionIndex + 1]?.userAnswer ? answers[currentQuestionIndex + 1]?.userAnswer : "")
     setNextVisible(false);
+
+    setStartTime(Date.now())
   }
 
+
   const jumpQuestion = (index) => {
+    const endTime = Date.now();
+    const timeTaken = (endTime - startTime) / 1000; // Calculate time taken in seconds for the current question
+
+    // Store the time spent for the current question
+    setTimeSpent((prevTimes) => {
+      const updatedTimes = [...prevTimes];
+
+      // Check if time for the current question index already exists
+      if (updatedTimes[currentQuestionIndex]) {
+        updatedTimes[currentQuestionIndex] += timeTaken; // Add time to existing time
+      } else {
+        updatedTimes[currentQuestionIndex] = timeTaken; // Store time if it doesn't exist
+      }
+
+      return updatedTimes;
+    });
+
+
     setCurrentQuestionIndex(index);
     setVisited({ ...visited, [index]: true })
     setAnswer(answers[index]?.userAnswer ? answers[index]?.userAnswer : "")
     setNextVisible(false);
+
+    setStartTime(Date.now())
   }
 
 
@@ -189,46 +274,46 @@ const TestScreen = () => {
 
 
   const handleVisibilityChange = () => {
-    // if (document.visibilityState === 'hidden') {
-    //   if (!isAlertShown) {
-    //     if (warningCount1 + warningCount2 === 2) {
-    //       let a = Object.keys(answers).length;
-    //       let v = Object.keys(visited).length;
-    //       let s = Object.keys(submit).length;
-    //       let ua = question?.length - v;
+    if (document.visibilityState === 'hidden') {
+      if (!isAlertShown) {
+        if (warningCount1 + warningCount2 === 2) {
+          let a = Object.keys(answers).length;
+          let v = Object.keys(visited).length;
+          let s = Object.keys(submit).length;
+          let ua = question?.length - v;
 
-    //       localStorage.removeItem("student");
-    //       navigate(`/finalsubmit/${s}/${v}/${ua}`);
-    //       warningCount1 = 0;
-    //     } else {
-    //       alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
-    //       isAlertShown = true;
-    //       warningCount1++;
-    //     }
-    //   }
-    // } else {
-    //   isAlertShown = false; // Reset flag when visibility changes back to visible
-    // }
+          localStorage.removeItem("student");
+          navigate(`/finalsubmit/${s}/${v}/${ua}`);
+          warningCount1 = 0;
+        } else {
+          alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
+          isAlertShown = true;
+          warningCount1++;
+        }
+      }
+    } else {
+      isAlertShown = false; // Reset flag when visibility changes back to visible
+    }
   };
 
   const handleWindowBlur = () => {
-    // if (warningCount1 + warningCount2 === 2) {
-    //   let a = Object.keys(answers).length;
-    //   let v = Object.keys(visited).length;
-    //   let s = Object.keys(submit).length;
-    //   let ua = question?.length - v;
+    if (warningCount1 + warningCount2 === 2) {
+      let a = Object.keys(answers).length;
+      let v = Object.keys(visited).length;
+      let s = Object.keys(submit).length;
+      let ua = question?.length - v;
 
-    //   localStorage.removeItem("student");
-    //   navigate(`/finalsubmit/${s}/${v}/${ua}`);
-    //   warningCount2 = 0;
-    // } else {
-    //   isAlertShown = false; // Reset flag when window blur event occurs
-    //   if (!isAlertShown) {
-    //     alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
-    //     isAlertShown = true;
-    //     warningCount2++;
-    //   }
-    // }
+      localStorage.removeItem("student");
+      navigate(`/finalsubmit/${s}/${v}/${ua}`);
+      warningCount2 = 0;
+    } else {
+      isAlertShown = false; // Reset flag when window blur event occurs
+      if (!isAlertShown) {
+        alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
+        isAlertShown = true;
+        warningCount2++;
+      }
+    }
   };
 
   useEffect(() => {
@@ -297,293 +382,8 @@ const TestScreen = () => {
 
 
 
-  // its working code of the face recognization
-
-  // useEffect(() => {
-  //   // Setup the socket connection to the server
-  //   socket.current = io('http://192.168.0.139:4500', {
-  //     // socket.current = io('http://localhost:5000', {
-  //     reconnection: true,
-  //     reconnectionDelay: 2000,
-  //   });
-
-  //   let mediaRecorder;
-  //   let recordedChunks = [];
-
-  //   // Function to handle data availability
-  //   const handleDataAvailable = event => {
-  //     if (event.data && event.data.size > 0) {
-  //       // console.log(`Sending data: ${event.data.size} bytes`);
-  //       // socket.current.emit('video_data', event.data);
-  //     }
-  //   };
-
-  //   // Request access to the webcam
-  //   navigator.mediaDevices.getUserMedia({ video: true })
-  //     .then(stream => {
-  //       // Initialize MediaRecorder with the stream
-  //       mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
-
-  //       // Event handler for when recorded data is available
-  //       mediaRecorder.ondataavailable = handleDataAvailable;
-
-  //       // Start recording the video stream in chunks of 2 seconds
-  //       mediaRecorder.start(2000);
-
-  //       // Stop recording and reset every 2 seconds to send continuous data
-  //       const interval = setInterval(() => {
-  //         if (mediaRecorder.state === "recording") {
-  //           mediaRecorder.stop();
-  //           mediaRecorder.start(2000);
-  //         }
-  //       }, 2000);
-
-  //       // Cleanup interval on unmount
-  //       return () => clearInterval(interval);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error accessing the webcam', error);
-  //     });
-
-  //   // Handling results from the server
-  //   socket.current.on('result', result => {
-  //     console.log('Received result from server:', result);
-  //     // Here you can handle the result, such as displaying it or processing further
-  //   });
-  //   // Handle socket connection errors
-  //   socket.current.on('connect_error', (err) => {
-  //     console.error('Socket connection error:', err);
-  //   });
-
-  //   socket.current.on('reconnect_error', (err) => {
-  //     console.error('Socket reconnection error:', err);
-  //   });
-
-  //   socket.current.on('disconnect', (reason) => {
-  //     console.warn('Socket disconnected:', reason);
-  //   });
-  //   socket.current.on('connect', () => {
-  //     console.log('Socket connected successfully');
-  //   });
-
-  //   // Cleanup function
-  //   return () => {
-  //     if (mediaRecorder && mediaRecorder.state !== "inactive") {
-  //       mediaRecorder.stop();
-  //     }
-  //     if (socket.current) {
-  //       socket.current.disconnect();
-  //     }
-  //   };
-  // }, []);
 
 
-
-  // yha tak hai 
-
-  // let first = true;
-
-  // useEffect(() => {
-  //   // Setup the socket connection to the server
-  //   socket.current = io('http://192.168.0.139:4500', {
-  //     reconnection: true,
-  //     reconnectionDelay: 2000,
-  //   });
-
-  //   let mediaRecorder;
-  //   let recordedChunks = [];
-
-
-  //   // Function to handle data availability
-  //   const handleDataAvailable = event => {
-  //     if (event.data && event.data.size > 0) {
-  //       console.log(`Sending data: ${event.data.size} bytes`);
-  //       socket.current.emit('video_data', event.data);
-  //     }
-  //   };
-
-  //   const setupMediaRecorder = () => {
-  //     // Request access to the webcam
-  //     navigator.mediaDevices.getUserMedia({ video: true })
-  //       .then(stream => {
-  //         console.log("stream")
-  //         // Initialize MediaRecorder with the stream
-  //         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
-
-  //         // Event handler for when recorded data is available
-  //         mediaRecorder.ondataavailable = handleDataAvailable;
-
-  //         // Start recording the video stream in chunks of 5 seconds
-  //         mediaRecorder.start(2000);
-
-  //         // Stop recording and reset every 5 seconds to send continuous data
-  //         const interval = setInterval(() => {
-  //           if (mediaRecorder.state === "recording") {
-  //             mediaRecorder.stop();
-  //             mediaRecorder.start(2000);
-  //           }
-  //         }, 2000);
-
-  //         // Cleanup interval on unmount
-  //         return () => clearInterval(interval);
-  //       })
-  //       .catch(error => {
-  //         console.log("kdjfkdjfkd----->", error.name)
-  //         console.error('Error accessing the webcam', error.name);
-  //         // If permission denied, show alert message and blur/disable the page
-  //         if (error instanceof DOMException || error.name === 'NotAllowedError') {
-  //           alert('Please allow access to the camera for the test.');
-  //           document.body.style.filter = 'blur(5px)';
-  //           document.body.style.pointerEvents = 'none';
-  //         }
-  //       });
-
-  //     if (first) {
-  //       first = false;
-  //     }
-  //     // Listen for changes in camera state
-  //     if (!mediaRecorder && !first) {
-  //       // Listen for changes in camera state
-  //       alert('Access to camera denied. Please refresh the page and grant access to continue.');
-  //       document.body.style.filter = 'blur(5px)';
-  //       document.body.style.pointerEvents = 'none';
-  //       // mediaRecorder.onstop = () => {
-
-  //       // };
-  //     }
-
-  //   };
-
-  //   setupMediaRecorder();
-
-  //   // Handling results from the server
-  //   socket.current.on('result', result => {
-  //     console.log('Received result from server:', result);
-  //     // Here you can handle the result, such as displaying it or processing further
-  //   });
-  //   // Handle socket connection errors
-  //   socket.current.on('connect_error', (err) => {
-  //     console.error('Socket connection error:', err);
-  //   });
-
-  //   socket.current.on('reconnect_error', (err) => {
-  //     console.error('Socket reconnection error:', err);
-  //   });
-
-  //   socket.current.on('disconnect', (reason) => {
-  //     console.warn('Socket disconnected:', reason);
-  //   });
-
-  //   // Cleanup function
-  //   return () => {
-  //     if (mediaRecorder && mediaRecorder.state !== "inactive") {
-  //       mediaRecorder.stop();
-  //     }
-  //     if (socket.current) {
-  //       socket.current.disconnect();
-  //     }
-  //   };
-  // }, []);
-
-
-  // let first = true;
-
-  // useEffect(() => {
-  //   // Setup the socket connection to the server
-  //   socket.current = io('http://192.168.0.139:4500', {
-  //     reconnection: true,
-  //     reconnectionDelay: 2000,
-  //   });
-
-  //   let mediaRecorder;
-  //   let recordedChunks = [];
-
-  //   // Function to handle data availability
-  //   const handleDataAvailable = (event) => {
-  //     if (event.data && event.data.size > 0) {
-  //       // console.log(`Sending data: ${event.data.size} bytes`);
-  //       socket.current.emit('video_data', event.data);
-  //     }
-  //   };
-
-  //   const requestCameraAccess = async () => {
-  //     try {
-  //       // Request access to the webcam
-  //       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  //       console.log("stream");
-
-  //       // Initialize MediaRecorder with the stream
-  //       mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
-
-  //       // Event handler for when recorded data is available
-  //       mediaRecorder.ondataavailable = handleDataAvailable;
-
-  //       // Start recording the video stream in chunks of 2 seconds
-  //       mediaRecorder.start(2000);
-
-  //       // Stop recording and reset every 2 seconds to send continuous data
-  //       const interval = setInterval(() => {
-  //         if (mediaRecorder.state === "recording") {
-  //           mediaRecorder.stop();
-  //           mediaRecorder.start(2000);
-  //         }
-  //       }, 2000);
-
-  //       // Cleanup interval on unmount
-  //       return () => clearInterval(interval);
-  //     } catch (error) {
-  //       console.error('Error accessing the webcam', error.name);
-
-  //       // If permission denied, show alert message and blur/disable the page
-  //       if (error instanceof DOMException || error.name === 'NotAllowedError') {
-  //         alert('Please allow access to the camera for the test.');
-  //         document.body.style.filter = 'blur(5px)';
-  //         document.body.style.pointerEvents = 'none';
-  //       }
-
-  //       if (first) {
-  //         first = false;
-  //       } else {
-  //         // Handle denied access on subsequent attempts
-  //         alert('Access to camera denied. Please refresh the page and grant access to continue.');
-  //         document.body.style.filter = 'blur(5px)';
-  //         document.body.style.pointerEvents = 'none';
-  //       }
-  //     }
-  //   };
-
-  //   const accessInterval = setInterval(requestCameraAccess, 2000);
-
-  //   // Handling results from the server
-  //   socket.current.on('result', (result) => {
-  //     console.log('Received result from server:', result);
-  //     // Here you can handle the result, such as displaying it or processing further
-  //   });
-
-  //   // Handle socket connection errors
-  //   socket.current.on('connect_error', (err) => {
-  //     console.error('Socket connection error:', err);
-  //   });
-
-  //   socket.current.on('reconnect_error', (err) => {
-  //     console.error('Socket reconnection error:', err);
-  //   });
-
-  //   socket.current.on('disconnect', (reason) => {
-  //     console.warn('Socket disconnected:', reason);
-  //   });
-
-  //   // Cleanup function
-  //   return () => {
-  //     clearInterval(accessInterval);
-  //     if (mediaRecorder && mediaRecorder.state !== "inactive") {
-  //       mediaRecorder.stop();
-  //     }
-  //     if (socket.current) {
-  //       socket.current.disconnect();
-  //     }
-  //   };
-  // }, []);
 
 
 
@@ -603,12 +403,11 @@ const TestScreen = () => {
   const localStream = useRef(null);
   const rtmClient = useRef(null);
   const rtmChannel = useRef(null);
-  const studentName = "StudentName"; // Replace with actual student name
+  const studentName = "Student"; // Replace with actual student name
   const roomId = JSON.parse(localStorage.getItem('student'))?.examSet[0][0]?.paperId;
 
 
   useEffect(() => {
-    toast.success("room id", roomId)
     const initAgora = async () => {
       try {
         // Initialize RTC client
@@ -652,13 +451,126 @@ const TestScreen = () => {
     };
   }, [roomId]);
 
+
+
+
+
+  // code for Ai Proctoring 
+
+
+
+  const videoRef = useRef(null); // For video capture, but not for displaying
+  const canvasRef = useRef(null);
+  const messageOverlayRef = useRef("null");
+  const socketRef = useRef(null);
+  const contextRef = useRef(null);
+  const [faceMessage, setFaceMessage] = useState("");
+  const [faceMessageShow, setFaceMessageShow] = useState(false);
+
+
+  useEffect(() => {
+    // Initialize socket connection
+    socketRef.current = io.connect('http://192.168.1.36:5000'); // Adjust to your Flask-SocketIO backend
+
+    // Request access to the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream; // Set the stream to the hidden video element
+        }
+      })
+      .catch((err) => {
+        console.error('Error accessing the camera: ', err);
+      });
+
+    // Set up canvas and context after video metadata is loaded
+    const videoElement = videoRef.current;
+    const canvasElement = canvasRef.current;
+
+    const handleLoadedMetadata = () => {
+      if (videoElement && canvasElement) {
+        canvasElement.width = videoElement.videoWidth;
+        canvasElement.height = videoElement.videoHeight;
+        contextRef.current = canvasElement.getContext('2d');
+      }
+    };
+
+    if (videoElement) {
+      videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
+    }
+
+    // Capture video frame and send it to the server every 200ms
+    const captureInterval = setInterval(() => {
+      if (contextRef.current && videoElement) {
+        contextRef.current.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+        const frame = canvasElement.toDataURL('image/jpeg').split(',')[1]; // Extract base64 data part
+        // console.log("video_data", frame)
+        socketRef.current.emit('video_data', frame); // Send the video frame to the server
+      }
+    }, 100); // Capture every 200ms (5 frames per second)
+
+    // Receive messages from the server and display them in the overlay
+    socketRef.current.on('message', (data) => {
+      if (messageOverlayRef.current) {
+        messageOverlayRef.current.textContent = data.text;
+      }
+    });
+
+    // Receive face detection results and draw a bounding box on the canvas
+    socketRef.current.on('result', (data) => {
+      console.log(data.result)
+      console.log(data.success)
+      if (data?.result?.No_faces == 1) {
+        setFaceMessage("Warning Your face is not visible in camera");
+        setFaceMessageShow(true);
+      }
+      else {
+        setFaceMessageShow(false);
+        setFaceMessage("")
+      }
+      console.log("current question index ", currentQuestionIndex)
+      if (contextRef.current && canvasElement) {
+        contextRef.current.clearRect(0, 0, canvasElement.width, canvasElement.height); // Clear canvas
+        if (data.face) {
+          const { x, y, width, height } = data.face;
+          contextRef.current.strokeStyle = 'red';
+          contextRef.current.lineWidth = 2;
+          contextRef.current.strokeRect(x, y, width, height); // Draw bounding box around the face
+        }
+      }
+    });
+
+    // Cleanup event listeners and intervals on component unmount
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      }
+      clearInterval(captureInterval);
+      socketRef.current.disconnect();
+    };
+  }, []);
+
+
+
+
+  useEffect(() => {
+    console.log("timeSpent ", timeSpent)
+  }, [timeSpent])
+
   return (
     <>
       {loader ? (
         <Loader />
       ) : ("")}
-
-
+      <div>
+        {/* Hidden video element for capturing frames */}
+        <video ref={videoRef} style={{ display: 'none' }} autoPlay />
+        <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* Also hiding the canvas */}
+        <div id="messageOverlay" ref={messageOverlayRef} /> {/* Overlay for server messages */}
+      </div>
+      <div class="alert alert-danger text-center mb-0" role="alert" style={{ display: faceMessageShow ? "block" : "none" }}>
+        {faceMessage}
+      </div>
       <div className="" ref={fullScreenRef} style={{ height: "100vh", backgroundColor: "white" }}>
         <div className={`container-fluid d-flex justify-content-between  py-3 px-4 ${classes.headbar}`} style={{ backgroundColor: "rgb(129 207 118)" }}  >
           <div className="">

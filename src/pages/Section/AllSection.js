@@ -53,7 +53,7 @@ const AllSections = (props) => {
 
 
     useEffect(() => {
-        if (courses?.courses.length == 0) {
+        if (courses?.courses?.length == 0) {
             dispatch(fetchCourse());
         }
         if (sections?.sections?.length == 0) {

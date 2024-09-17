@@ -41,7 +41,7 @@ const AllClasses = (props) => {
 
     useEffect(() => {
         props.setBreadcrumbItems('All Classes', breadcrumbItems)
-        if (result?.classes.length == 0) {
+        if (result?.classes?.length == 0) {
             dispatch(fetchClass());
         }
 

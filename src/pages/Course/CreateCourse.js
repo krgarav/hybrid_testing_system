@@ -65,7 +65,7 @@ const CreateCourse = (props) => {
     }, [])
 
     useEffect(() => {
-        if (classes?.classes.length == 0) {
+        if (classes?.classes?.length == 0) {
             dispatch(fetchClass());
         }
     })

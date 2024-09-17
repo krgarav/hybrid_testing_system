@@ -88,16 +88,16 @@ const AllQuestions = (props) => {
 
 
     useEffect(() => {
-        if (classes?.classes.length == 0) {
+        if (classes?.classes?.length == 0) {
             dispatch(fetchClass());
         }
-        if (questions?.questions.length == 0) {
+        if (questions?.questions?.length == 0) {
             dispatch(fetchQuestion());
         }
-        if (difficultys?.difficultys.length == 0) {
+        if (difficultys?.difficultys?.length == 0) {
             dispatch(fetchDifficulty());
         }
-        if (languages?.languages.length == 0) {
+        if (languages?.languages?.length == 0) {
             dispatch(fetchLanguage());
         }
 
@@ -228,20 +228,20 @@ const AllQuestions = (props) => {
 
         setId(row.id);
         let result = await fetchSingleQuestion(row?.id);
-        setDescription(result?.result[0].description);
-        setAnswer(result?.result[0].answer)
-        setType(result?.result[0].type);
+        setDescription(result?.result[0]?.description);
+        setAnswer(result?.result[0]?.answer)
+        setType(result?.result[0]?.type);
 
 
-        setCourse(result?.result[0].course);
-        setSection(result?.result[0].section);
-        setSubSection(result?.result[0].subSection);
-        setDifficulty(result?.result[0].difficulty);
-        setLanguage(result?.result[0].language);
+        setCourse(result?.result[0]?.course);
+        setSection(result?.result[0]?.section);
+        setSubSection(result?.result[0]?.subSection);
+        setDifficulty(result?.result[0]?.difficulty);
+        setLanguage(result?.result[0]?.language);
 
         let imagesHTML;
         if (BACKEND_SPRING) {
-            setClasss(result?.result[0].classs);
+            setClasss(result?.result[0]?.classs);
             if (result?.result[0].type == "mcq") {
                 let arr = [];
                 result?.result[0]?.optionResult?.map((d) => {
@@ -259,10 +259,10 @@ const AllQuestions = (props) => {
             ).join('');
         }
         else {
-            setClasss(result?.result[0].class);
+            setClasss(result?.result[0]?.class);
 
 
-            if (result?.result[0].type == "mcq") {
+            if (result?.result[0]?.type == "mcq") {
                 let arr = [];
                 result?.optionResult?.map((d) => {
                     arr.push(d.optionName);
@@ -390,6 +390,7 @@ const AllQuestions = (props) => {
         setLoader(true);
         dispatch(deleteQuestion(id));
     }
+
     const handleSelectClass = selectedOption => {
         setClasss(selectedOption);
         setCourses([]);
@@ -487,8 +488,17 @@ const AllQuestions = (props) => {
                 <Col className="col-12">
                     <Card>
                         <CardBody>
-                            <CardTitle className="h4">All Questions </CardTitle>
+                            <div className="d-flex justify-content-between">
+                                <CardTitle className="h4">All Questions </CardTitle>
+                                <div className="">
 
+                                    <h5>Total Questions: 3000</h5>
+                                    <h5>Balance Questions: 500</h5>
+                                    <div className="d-flex justify-content-end">
+                                        <Button type="button" color="info" className="waves-effect waves-light">Top Up</Button>{" "}
+                                    </div>
+                                </div>
+                            </div>
                             <div id="MBDTableDiv" >
                                 <MDBDataTable className="table-row-hover" responsive bordered data={data} style={{ cursor: 'pointer' }} noBottomColumns />
 

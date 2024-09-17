@@ -46,10 +46,10 @@ const AllCourses = (props) => {
         }
     }, [])
     useEffect(() => {
-        if (classes?.classes.length == 0) {
+        if (classes?.classes?.length == 0) {
             dispatch(fetchClass());
         }
-        if (result?.courses.length == 0) {
+        if (result?.courses?.length == 0) {
             dispatch(fetchCourse());
         }
 

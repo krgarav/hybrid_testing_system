@@ -138,6 +138,10 @@ import Result from "pages/Exam Managment/Result"
 import CreateQuestionUsingAi from "pages/Question/CreateQuestionUsingAi"
 import AllStudents from "pages/student/AllStudents"
 import ExamProctor from "pages/Exam Managment/ExamProctor"
+import Workflow from "pages/QBWorkflow/Workflow"
+import Package from "pages/Package/Package"
+import PaymentFailPage from "pages/Package/PaymentFailPage"
+import PaymentSuccessPage from "pages/Package/PaymentSuccessPage"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -177,6 +181,9 @@ const userRoutes = [
   { path: "/all-question-papers", component: <AllQuestionPapers /> },
   { path: "/exam-details/:id", component: <ExamPaperDetails /> },
 
+  // QB Workflow 
+  { path: "/qb-workflow", component: <Workflow /> },
+
   // question paper
   { path: "/create-new-user", component: <CreateUser /> },
   { path: "/all-users", component: <AllUsers /> },
@@ -202,6 +209,10 @@ const userRoutes = [
 
   { path: "/profile", component: <UserProfile /> },
 
+  { path: "/package", component: <Package /> },
+
+  { path: "/paymentFail", component: <PaymentFailPage /> },
+  { path: "/paymentSuccess", component: <PaymentSuccessPage /> },
 
 
 

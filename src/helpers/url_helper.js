@@ -1,12 +1,12 @@
 let url = "http://192.168.0.54:82/api/";
-export let url_online = "http://13.51.59.133";
+export let url_online = "https://api1.is10live.com";
 // export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
-// let url_online = "http://192.168.0.184:8080";
-// export const BACKEND_SPRING = true;
 
+
+// export const LOGOUT_URL = "http://192.168.1.22:5173/login";
 export const LOGOUT_URL = "http://localhost:5173/login";
-// export const LOGOUT_URL = "http://is10live.com/login";
+// export const LOGOUT_URL = "https://is10live.com/login";
 
 export const APP_ID = '885a7b065d604da2b81ab5199b715d33';
 
@@ -22,27 +22,12 @@ export const POST_FAKE_JWT_PASSWORD_FORGET = "/jwt-forget-pwd"
 export const SOCIAL_LOGIN = "/social-login"
 export const STUDENT_REGISTER = url_online + "/RegisterStudent";
 
-// class
-// using node
-// export const CREATE_CLASS = "http://localhost:8000/api/v1/class/create-class"
-// export const DELETE_CLASS = "http://localhost:8000/api/v1/class/delete-class/"
-// export const UPDATE_CLASS = "http://localhost:8000/api/v1/class/update-class/" 
-// export const FETCH_ALL_CLASSES = "http://localhost:8000/api/v1/class/get-class"
-
 // using .Net
 export const CREATE_CLASS = url_online + "/CreateClass"
 export const DELETE_CLASS = url_online + "/RemoveClass?Id="
 export const UPDATE_CLASS = url_online + "/UpdateClass"
 export const FETCH_ALL_CLASSES = url_online + "/GetClass"
-// export const FETCH_ALL_CLASSES = "http://localhost:8080/api/MasterApi/GetAllClasses"
 
-// course
-// using node 
-// export const CREATE_COURSE = "http://localhost:8000/api/v1/course/create-course"
-// export const DELETE_COURSE = "http://localhost:8000/api/v1/course/delete-course/"
-// export const UPDATE_COURSE = "http://localhost:8000/api/v1/course/update-course/"
-// export const FETCH_ALL_COURSES = "http://localhost:8000/api/v1/course/get-course"
-// export const FETCH_ALL_COURSE_CLASS_BASED = "http://localhost:8000/api/v1/course/get-course-based-on-class"
 
 // using .net
 export const CREATE_COURSE = url_online + "/CreateCourse"
@@ -51,13 +36,7 @@ export const UPDATE_COURSE = url_online + "/UpdateCourse"
 export const FETCH_ALL_COURSES = url_online + "/GetCourse"
 export const FETCH_ALL_COURSE_BY_CLASS = url_online + "/GetCourseByClass?id="
 
-// section
-// using node 
-// export const CREATE_SECTION = "http://localhost:8000/api/v1/section/create-section"
-// export const DELETE_SECTION = "http://localhost:8000/api/v1/section/delete-section/"
-// export const UPDATE_SECTION = "http://localhost:8000/api/v1/section/update-section/"
-// export const FETCH_ALL_SECTIONS = "http://localhost:8000/api/v1/section/get-section"
-// export const FETCH_ALL_SECTION_COURSE_BASED = "http://localhost:8000/api/v1/section/get-section-based-on-course"
+
 
 
 // using .net 
@@ -66,14 +45,7 @@ export const DELETE_SECTION = url_online + "/RemoveSection?Id="
 export const UPDATE_SECTION = url_online + "/UpdateSection"
 export const FETCH_ALL_SECTIONS = url_online + "/GetSection"
 export const FETCH_ALL_SECTION_BY_COURSE = url_online + "/GetSectionByCourse"
-// export const FETCH_ALL_SECTION_BY_COURSE = "https://1gl7npqf-5290.inc1.devtunnels.ms/api/MasterAPI/GetSectionByCourse"
 
-// sub section
-// using node 
-// export const CREATE_SUBSECTION = "http://localhost:8000/api/v1/subSection/create-subSection"
-// export const DELETE_SUBSECTION = "http://localhost:8000/api/v1/subSection/delete-subSection/"
-// export const UPDATE_SUBSECTION = "http://localhost:8000/api/v1/subSection/update-subSection/"
-// export const FETCH_ALL_SUBSECTIONS = "http://localhost:8000/api/v1/subSection/get-subSection"
 
 // using .net 
 export const CREATE_SUBSECTION = url_online + "/CreateSubSection"
@@ -94,12 +66,7 @@ export const CREATE_LANGUAGE = url_online + "/AddLanguage"
 export const DELETE_LANGUAGE = url_online + "/RemoveLanguage?Id="
 export const UPDATE_LANGUAGE = url_online + "/UpdateLanguage"
 export const FETCH_ALL_LANGUAGES = url_online + "/GetLanguages"
-// question
-// using node 
-// export const CREATE_QUESTION = "http://localhost:8000/api/v1/question/create-question"
-// export const DELETE_QUESTION = "http://localhost:8000/api/v1/question/delete-question/"
-// export const UPDATE_QUESTION = "http://localhost:8000/api/v1/question/update-question/"
-// export const FETCH_ALL_QUESTIONS = "http://localhost:8000/api/v1/question/get-question"
+
 
 // using .net
 // export const CREATE_QUESTION = url_online + "QuestionBankAPI/CreateQuestion"
@@ -128,7 +95,13 @@ export const DELETE_QUESTION_FROM_PAPER = url_online + "/DeleteExamQuestion?Pape
 export const FETCH_FILTER_QUESTIONS = url_online + "/GetFilterQuestions";
 export const ADD_QUESTION_TO_PAPER = url_online + "/AddQuestionToPaper";
 
+// QB Workflow
 
+export const CREATE_WORKFLOW_TREE = url_online + "/CreateUserTree";
+export const UPDATE_WORKFLOW_TREE = url_online + "/UpdateUserTree";
+export const DELETE_WORKFLOW_TREE = url_online + "/DeleteUserTree?Id=   ";
+export const GET_ALL_WORKFLOW_TREE = url_online + "/GetUserTree";
+export const GET_SINGLE_WORKFLOW_TREE = url_online + "/GetUserTreeById?id="
 
 
 // USER 
@@ -176,6 +149,21 @@ export const DELETE_MAIN_EXAM_PAPER = url_online + "/DeleteMainExamPaper?Id=";
 export const GET_MAIN_EXAM_PAPERS_BY_LANGUAGE = url_online + "/GetExamPaperByLanguage?Id=";
 export const ASSIGN_EXAM_TO_STUDENTS = url_online + "/AssignExamToStudents";
 
+
+// Payments
+export const INITIATE_CHECKOUT_PAYMENT = url_online + "/InitiateCheckoutPayment";
+
+
+
+
+
+
+
+
+
+
+
+
 const url2 = "https://4wq09l1k-5290.inc1.devtunnels.ms"
 
 
@@ -187,6 +175,12 @@ const url2 = "https://4wq09l1k-5290.inc1.devtunnels.ms"
 export const CREATE_ORGANIZATION = url2 + "/CreateOrganization";
 export const GET_ORGANIZATION_BY_ID = url_online + "/GetOrganizationById?Id=";
 export const UPDATE_ORGANIZATION = url_online + "/UpdateOrganization";
+
+
+
+
+
+
 
 //PROFILE
 export const POST_EDIT_JWT_PROFILE = "/post-jwt-profile"

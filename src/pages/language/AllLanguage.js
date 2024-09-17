@@ -41,10 +41,10 @@ const AllLanguages = (props) => {
 
 
     useEffect(() => {
-        if (classes?.classes.length == 0) {
+        if (classes?.classes?.length == 0) {
             dispatch(fetchClass());
         }
-        if (result?.languages.length == 0) {
+        if (result?.languages?.length == 0) {
             dispatch(fetchLanguage());
         }
 

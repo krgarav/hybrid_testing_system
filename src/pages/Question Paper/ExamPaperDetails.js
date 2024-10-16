@@ -47,7 +47,7 @@ const ExamPaperDetails = (props) => {
     const [language, setLanguage] = useState(null);
     const [loader, setLoader] = useState(false);
     const languages = useSelector(state => state.languagesReducer);
-
+    const [loader2, setLoader2] = useState(true);
     const typesOptions = [
         { id: 1, name: "short" },
         { id: 2, name: "mcq" },
@@ -136,10 +136,13 @@ const ExamPaperDetails = (props) => {
 
     const fetchQuestion = async () => {
         try {
+            setLoader2(true);
             const qp = await fetchAllQuestionOfPaper(params.id);
             setQuestionPaper(qp);
         } catch (error) {
             toast.error("something went wrong");
+        } finally {
+            setLoader2(false);
         }
 
     }
@@ -430,6 +433,9 @@ const ExamPaperDetails = (props) => {
 
     return (
         <React.Fragment>
+            {loader2 ? (
+                <Loader />
+            ) : ("")}
             {loader ? (
                 <Loader />
             ) : ("")}
@@ -678,10 +684,40 @@ const ExamPaperDetails = (props) => {
                         <Col className="col-12">
                             <Card>
                                 <CardBody >
+                                    <div className="d-flex flex-wrap mb-3">
+                                        <div className="" style={{ border: "1px solid #dee2e6", borderRadius: "5px", padding: ".3rem 1.5rem", fontSize: "1rem", fontWeight: "500", background: "#575050", color: "white" }}>{classs?.className}</div>
+                                        {course?.map((cour) => (
+                                            <>
+                                                <div className="" style={{ border: "1px solid #dee2e6", borderRadius: "5px", padding: ".3rem 1.5rem", fontSize: "1rem", fontWeight: "500", background: "#575050", color: "white" }}>{cour?.courseName}</div>
+                                            </>
+                                        ))}
+                                        {section?.map((sect) => (
+                                            <>
+                                                <div className="" style={{ border: "1px solid #dee2e6", borderRadius: "5px", padding: ".3rem 1.5rem", fontSize: "1rem", fontWeight: "500", background: "#575050", color: "white" }}>{sect?.sectionName}</div>
+                                            </>
+                                        ))}
+                                        {subSection?.map((subSect) => (
+                                            <>
+                                                <div className="" style={{ border: "1px solid #dee2e6", borderRadius: "5px", padding: ".3rem 1.5rem", fontSize: "1rem", fontWeight: "500", background: "#575050", color: "white" }}>{subSect?.subSectionName}</div>
+                                            </>
+                                        ))}
+                                        {selectedDifficultys?.map((diff) => (
+                                            <>
+                                                <div className="" style={{ border: "1px solid #dee2e6", borderRadius: "5px", padding: ".3rem 1.5rem", fontSize: "1rem", fontWeight: "500", background: "#575050", color: "white" }}>{diff?.difficultyName}</div>
+                                            </>
+                                        ))}
+                                        {selectedTypes?.map((typ) => (
+                                            <>
+                                                <div className="" style={{ border: "1px solid #dee2e6", borderRadius: "5px", padding: ".3rem 1.5rem", fontSize: "1rem", fontWeight: "500", background: "#575050", color: "white" }}>{typ?.name}</div>
+                                            </>
+                                        ))}
+                                        <div className="" style={{ border: "1px solid #dee2e6", borderRadius: "5px", padding: ".3rem 1.5rem", fontSize: "1rem", fontWeight: "500", background: "#575050", color: "white" }}>{language?.languageName}</div>
+                                    </div>
                                     <div className="d-flex justify-content-between">
                                         <CardTitle className="h4">All Questions</CardTitle>
                                     </div>
                                     <MDBDataTable className="table-row-hover" responsive bordered data={FilterQuestionData} style={{ cursor: 'pointer' }} noBottomColumns />
+
                                 </CardBody>
                             </Card>
                         </Col>

@@ -51,6 +51,7 @@ const AllStudents = (props) => {
 
     const fetchStudents = async () => {
         try {
+            setLoader(true);
             const data = await getAllStudents();
             console.log(data.result);
             setStudents(data?.result)
@@ -60,6 +61,8 @@ const AllStudents = (props) => {
         } catch (error) {
             console.log(error);
             toast.error("Somethng went wrong");
+        } finally {
+            setLoader(false);
         }
     }
 

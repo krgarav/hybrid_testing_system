@@ -142,6 +142,9 @@ import Workflow from "pages/QBWorkflow/Workflow"
 import Package from "pages/Package/Package"
 import PaymentFailPage from "pages/Package/PaymentFailPage"
 import PaymentSuccessPage from "pages/Package/PaymentSuccessPage"
+import WorkflowTask from "pages/QBWorkflow/WorkflowTask"
+import QcQuestions from "pages/QBWorkflow/QcQuestions"
+import QcReturnQuestion from "pages/Question/QcReturnQuestion"
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -175,6 +178,8 @@ const userRoutes = [
   { path: "/create-question-using-ai", component: <CreateQuestionUsingAi /> },
   { path: "/create-question-using-csv", component: <BulkCreateQuestion /> },
   { path: "/all-questions", component: <AllQuestions /> },
+  { path: "/qc-return-questions", component: <QcReturnQuestion /> },
+
 
   // question paper
   { path: "/create-question-paper", component: <CreateQuestionPaper /> },
@@ -183,6 +188,8 @@ const userRoutes = [
 
   // QB Workflow 
   { path: "/qb-workflow", component: <Workflow /> },
+  { path: "/workflow-task", component: <WorkflowTask /> },
+  { path: "/qc-questions/:userId", component: <QcQuestions /> },
 
   // question paper
   { path: "/create-new-user", component: <CreateUser /> },

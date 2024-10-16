@@ -132,10 +132,19 @@ const CreateQuestionPaper = (props) => {
     })
     const fetchCourses = async () => {
         if (classs) {
-            let id = classs.id;
+            try {
+                setLoader(true);
+                let id = classs.id;
 
-            let result = await fetchAllCoursesByClass(id);
-            setCourses(result);
+                let result = await fetchAllCoursesByClass(id);
+                setCourses(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
+
         }
     }
     useEffect(() => {
@@ -144,14 +153,23 @@ const CreateQuestionPaper = (props) => {
 
     const fetchSections = async () => {
         if (course) {
-            let id = course.id;
-            let a = [];
-            course.map(d => {
-                a.push(d.id);
-            })
+            try {
+                setLoader(true);
+                let id = course.id;
+                let a = [];
+                course.map(d => {
+                    a.push(d.id);
+                })
 
-            let result = await fetchAllSectionsByCourse(a);
-            setSections(result);
+                let result = await fetchAllSectionsByCourse(a);
+                setSections(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
+
         }
     }
     useEffect(() => {
@@ -160,14 +178,22 @@ const CreateQuestionPaper = (props) => {
 
     const fetchSubSections = async () => {
         if (section) {
-            // let id = section.id;
-            let a = [];
-            section.map(d => {
-                a.push(d.id);
-            })
+            try {
+                setLoader(true);
+                let a = [];
+                section.map(d => {
+                    a.push(d.id);
+                })
 
-            let result = await fetchAllSubSectionsBySection(a);
-            setSubSections(result);
+                let result = await fetchAllSubSectionsBySection(a);
+                setSubSections(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
+
         }
     }
     useEffect(() => {
@@ -267,7 +293,7 @@ const CreateQuestionPaper = (props) => {
     useEffect(() => {
         if (questionPaper.success == true) {
             if (!another) {
-                navigate("/all-question-papers");
+                // navigate("/all-question-papers");
             }
             setAnother(false);
             setExamName("")

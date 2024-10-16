@@ -86,11 +86,11 @@ class MonthlyEarnings extends Component {
 
                         <Row className="text-center mt-4">
                             <Col xs="6">
-                                <h5 className="font-size-20">5</h5>
+                                <h5 className="font-size-20">{this.props.data?.totalExamCenters}</h5>
                                 <p className="text-muted">Centers</p>
                             </Col>
                             <Col xs="6">
-                                <h5 className="font-size-20">4500</h5>
+                                <h5 className="font-size-20">{this.props.data?.totalSittingCapacity}</h5>
                                 <p className="text-muted">Total Capacity</p>
                             </Col>
                         </Row>

@@ -81,11 +81,14 @@ const CreateStudents = (props) => {
 
     const handleSelectLanguage = selectedOption => {
         setLanguage(selectedOption);
+        setQuestionPaper(null)
         fetchAllExams(selectedOption.id);
     };
 
     const fetchAllExams = async (id) => {
         try {
+            setLoader(true);
+
             const result = await getMainExamPapersByLanguage(id);
             if (result?.success) {
                 setAllExams(result?.result);
@@ -94,8 +97,12 @@ const CreateStudents = (props) => {
                 console.log(result?.message);
             }
         } catch (error) {
-            console.log(error);
+            console.log(error)
+            toast.error(error?.response?.data?.message || "something went wrong");
+        } finally {
+            setLoader(false);
         }
+
     }
 
 

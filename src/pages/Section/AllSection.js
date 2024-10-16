@@ -32,6 +32,7 @@ const AllSections = (props) => {
     const courses = useSelector(state => state.coursesReducer)
     const sections = useSelector(state => state.sectionsReducer);
 
+    const [loader2, setLoader2] = useState(true);
 
     const breadcrumbItems = [
         { title: "Section", link: "#" },
@@ -52,14 +53,20 @@ const AllSections = (props) => {
     })
 
 
+
+
     useEffect(() => {
-        if (courses?.courses?.length == 0) {
-            dispatch(fetchCourse());
+        setLoader2(true);
+        dispatch(fetchCourse());
+        dispatch(fetchSection());
+
+    }, []);
+
+    useEffect(() => {
+        if (sections?.sections?.success == true) {
+            setLoader2(false);
         }
-        if (sections?.sections?.length == 0) {
-            dispatch(fetchSection());
-        }
-    })
+    }, [sections?.sections]);
 
 
     const data = {
@@ -157,6 +164,9 @@ const AllSections = (props) => {
     return (
         <React.Fragment>
             {loader ? (
+                <Loader />
+            ) : ("")}
+            {loader2 ? (
                 <Loader />
             ) : ("")}
             <Row>

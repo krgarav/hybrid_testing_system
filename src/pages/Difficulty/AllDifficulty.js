@@ -28,7 +28,7 @@ const AllDifficultys = (props) => {
     const dispatch = useDispatch();
     const result = useSelector(state => state.difficultysReducer)
     const classes = useSelector(state => state.classesReducer)
-
+    const [loader2, setLoader2] = useState(true);
 
     const breadcrumbItems = [
         { title: "Difficulty", link: "#" },
@@ -46,15 +46,20 @@ const AllDifficultys = (props) => {
             blurDiv.click()
         }
     }, [])
-    useEffect(() => {
-        if (classes?.classes?.length == 0) {
-            dispatch(fetchClass());
-        }
-        if (result?.difficultys?.length == 0) {
-            dispatch(fetchDifficulty());
-        }
 
-    })
+
+    useEffect(() => {
+        setLoader2(true);
+        dispatch(fetchClass());
+        dispatch(fetchDifficulty());
+
+    }, []);
+
+    useEffect(() => {
+        if (result?.difficultys?.success == true) {
+            setLoader2(false);
+        }
+    }, [result?.difficultys]);
 
 
     const data = {
@@ -116,6 +121,9 @@ const AllDifficultys = (props) => {
     return (
         <React.Fragment>
             {loader ? (
+                <Loader />
+            ) : ("")}
+            {loader2 ? (
                 <Loader />
             ) : ("")}
             <Row  >

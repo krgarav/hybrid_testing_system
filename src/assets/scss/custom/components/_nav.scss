@@ -2,49 +2,56 @@
 // _nav.scss
 // 
 
-.nav-link{
-  &.hover{
+.nav-link {
+  &.hover {
     color: var(--#{$prefix}primary);
   }
 }
 
-.nav-tabs,.nav-pills {
-  .nav-link{
-    &.hover{
+.nav-tabs,
+.nav-pills {
+  .nav-link {
+    &.hover {
       color: var(--#{$prefix}primary);
     }
-    &.active{
+
+    &.active {
       background-color: var(--#{$prefix}primary);
     }
   }
- 
-  > li {
-      > a {
-          color: var(--#{$prefix}body-color);
-          font-weight: $font-weight-medium;
-      }
+
+  >li {
+    >a {
+      color: var(--#{$prefix}body-color);
+      font-weight: $font-weight-medium;
+    }
   }
 }
 
 .nav-pills {
-  > a {
-      color: var(--#{$prefix}body-color);;  
-      font-weight: $font-weight-medium;
+  >a {
+    color: var(--#{$prefix}body-color);
+    ;
+    font-weight: $font-weight-medium;
   }
 }
 
-.nav-tabs{
+.nav-tabs {
   border-color: var(--#{$prefix}border-color) !important;
-  .nav-link{
-      color: $gray-600 !important;
-      &:focus, &:hover{
-          border-color:var(--#{$prefix}border-color) !important;
-      }
-      &.active{
-        color: var(--#{$prefix}body-color);
-          background-color: transparent!important;
-          border-color: var(--#{$prefix}border-color) !important;
-      }
+
+  .nav-link {
+    color: $gray-600 !important;
+
+    &:focus,
+    &:hover {
+      border-color:var(--#{$prefix}border-color) !important;
+    }
+
+    &.active {
+      color: var(--#{$prefix}body-color);
+      background-color: transparent !important;
+      border-color: var(--#{$prefix}border-color) !important;
+    }
   }
 }
 
@@ -54,6 +61,7 @@
   .nav-item {
     position: relative;
     color: $dark;
+
     .nav-link {
       border: none;
 
@@ -69,9 +77,10 @@
         transform: scale(0);
       }
 
-      &.active{
+      &.active {
         color: var(--#{$prefix}primary);
-        &:after{
+
+        &:after {
           transform: scale(1);
         }
       }
@@ -83,6 +92,7 @@
 .tabs-custom-justify {
   justify-content: center;
   border-bottom: 1px solid var(--#{$prefix}border-color);
+
   .nav-link {
     color: lighten($gray-600, 10%);
     padding: .5rem 0.5rem;
@@ -90,7 +100,9 @@
     font-weight: $font-weight-medium;
     border-bottom: 1px solid transparent;
     transition: all 0.3s;
-    &.active, &:hover {
+
+    &.active,
+    &:hover {
       border-bottom: 1px solid $primary;
       background-color: transparent !important;
       color: $primary;
@@ -106,15 +118,16 @@
 
 // vertical nav
 
-.vertical-nav{
-  .nav{
-      .nav-link{
-          padding: 24px 16px;
-          text-align: center;
-          margin-bottom: 8px;
-          .nav-icon{
-              font-size: 24px;
-          }
+.vertical-nav {
+  .nav {
+    .nav-link {
+      padding: 24px 16px;
+      text-align: center;
+      margin-bottom: 8px;
+
+      .nav-icon {
+        font-size: 24px;
       }
+    }
   }
 }

@@ -28,7 +28,7 @@ const AllLanguages = (props) => {
     const dispatch = useDispatch();
     const result = useSelector(state => state.languagesReducer)
     const classes = useSelector(state => state.classesReducer)
-
+    const [loader2, setLoader2] = useState(true);
 
     const breadcrumbItems = [
         { title: "Language", link: "#" },
@@ -40,16 +40,19 @@ const AllLanguages = (props) => {
     })
 
 
+
+
     useEffect(() => {
-        if (classes?.classes?.length == 0) {
-            dispatch(fetchClass());
-        }
-        if (result?.languages?.length == 0) {
-            dispatch(fetchLanguage());
-        }
+        setLoader2(true);
+        dispatch(fetchLanguage());
 
-    })
+    }, []);
 
+    useEffect(() => {
+        if (result?.languages?.success == true) {
+            setLoader2(false);
+        }
+    }, [result?.languages]);
 
     const data = {
         columns: [
@@ -108,6 +111,9 @@ const AllLanguages = (props) => {
     return (
         <React.Fragment>
             {loader ? (
+                <Loader />
+            ) : ("")}
+            {loader2 ? (
                 <Loader />
             ) : ("")}
             <Row >

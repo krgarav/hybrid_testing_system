@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import { deleteQuestionPaper } from "helpers/questionPaper_helper";
 import { toast } from "react-toastify";
 import Loader from "components/Loader/Loader";
+import { DOWNLOAD_QUESTION_PAPER_WITH_ANSWER, DOWNLOAD_QUESTION_PAPER_WITHOUT_ANSWER } from "helpers/url_helper";
+import axios from "axios";
 
 const AllQuestionPapers = (props) => {
     document.title = "Question Bank | All Questions";
@@ -28,8 +30,9 @@ const AllQuestionPapers = (props) => {
     const [modalShow, setModalShow] = useState(false);
     const [loader, setLoader] = useState(false);
     const [selectedQuestionPaper, setSelectedQuestionPaper] = useState(null);
-
-
+    const [loader2, setLoader2] = useState(true);
+    const [downloadModal, setDownloadModal] = useState(false);
+    const [paper, setPaper] = useState(null);
 
     const breadcrumbItems = [
         { title: "Question Papers", link: "#" },
@@ -58,7 +61,18 @@ const AllQuestionPapers = (props) => {
     }, []);
 
 
+    useEffect(() => {
+        setLoader2(true);
+        dispatch(fetchQuestionPaper());
 
+    }, []);
+
+    useEffect(() => {
+        if (questionPapers?.success == true) {
+
+            setLoader2(false);
+        }
+    }, [questionPapers]);
 
 
 
@@ -101,11 +115,51 @@ const AllQuestionPapers = (props) => {
         }
     }
 
-
+    const downloadPaperWithAnswer = async (data) => {
+        try {
+            setLoader(true);
+            const response = await axios.get(DOWNLOAD_QUESTION_PAPER_WITH_ANSWER + paper?.id, {
+                responseType: 'blob', // Important to set the response type to blob
+            });
+            setLoader(false);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${paper?.examName || 'download'}PaperWithAnswer.docx`; // Replace with the desired file name
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Failed to download file:', error);
+        }
+    };
+    const downloadPaperWithoutAnswer = async (data) => {
+        try {
+            setLoader(true)
+            const response = await axios.get(DOWNLOAD_QUESTION_PAPER_WITHOUT_ANSWER + paper?.id, {
+                responseType: 'blob', // Important to set the response type to blob
+            });
+            setLoader(false);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${paper?.examName || 'download'}PaperWithoutAnswer.docx`; // Replace with the desired file name
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Failed to download file:', error);
+        }
+    };
 
     return (
         <React.Fragment>
             {loader ? (
+                <Loader />
+            ) : ("")}
+            {loader2 ? (
                 <Loader />
             ) : ("")}
             <Row>
@@ -119,6 +173,7 @@ const AllQuestionPapers = (props) => {
                                         <CardTitle className="h4 mt-3">{data.examName}</CardTitle>
                                         <div className="d-flex">
 
+                                            <button type='button' className="text-info" onClick={() => { setDownloadModal(true); setPaper(data) }} style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }}> <i className="mdi mdi-download"></i></button>
                                             <button type='button' className="text-primary" onClick={() => handleCardClick(data)} style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }}> <i className="mdi mdi-book-edit-outline "></i></button>
                                             <button type='button' className="text-danger" onClick={() => handleDeleteClick(data)} style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }}> <i className="mdi mdi-delete "></i></button>
                                         </div>
@@ -143,6 +198,28 @@ const AllQuestionPapers = (props) => {
 
             </Row>
 
+            <Modal
+                show={downloadModal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Body>
+
+                    <h4>
+                        Download Question Paper.
+                    </h4>
+
+                    <div className="d-flex justify-content-center mt-5">
+                        <button type="button" className="btn btn-secondary me-3" onClick={downloadPaperWithAnswer}>With Answer</button>
+                        <button type="button" className="btn btn-secondary me-3" onClick={downloadPaperWithoutAnswer}>Without Answer</button>
+                    </div>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button type="button" color="primary" onClick={() => setDownloadModal(false)} className="waves-effect waves-light">Close</Button>{" "}
+                </Modal.Footer>
+            </Modal>
             <Modal
                 show={modalShow}
                 size="lg"

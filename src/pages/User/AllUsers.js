@@ -53,7 +53,7 @@ const AllUsers = (props) => {
     const dispatch = useDispatch();
     const users = useSelector(state => state.userReducer.users);
     const user = useSelector(state => state.userReducer);
-
+    const [loader2, setLoader2] = useState(true);
 
     const breadcrumbItems = [
         { title: "User", link: "#" },
@@ -81,6 +81,18 @@ const AllUsers = (props) => {
         }
 
     })
+
+    useEffect(() => {
+        setLoader2(true);
+        dispatch(fetchUser());
+
+    }, []);
+
+    useEffect(() => {
+        if (users?.success == true) {
+            setLoader2(false);
+        }
+    }, [users]);
 
     useEffect(() => {
         fetchUserTypes();
@@ -223,6 +235,9 @@ const AllUsers = (props) => {
 
     return (
         <React.Fragment>
+            {loader2 ? (
+                <Loader />
+            ) : ("")}
             {loader ? (
                 <Loader />
             ) : ("")}

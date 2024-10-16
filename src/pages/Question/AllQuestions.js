@@ -25,38 +25,50 @@ const AllQuestions = (props) => {
     document.title = "Question Bank | All Questions";
     const [modalShow, setModalShow] = useState(false);
     const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
+    const [description1, setDescription1] = useState("");
+    const [description2, setDescription2] = useState("");
     const [code, setCode] = useState("");
     const [id, setId] = useState({});
     const [classs, setClasss] = useState(null);
     const [type, setType] = useState('short');
     const [difficulty, setDifficulty] = useState(null);
-    const [language, setLanguage] = useState(null);
-    const [answer, setAnswer] = useState("");
+    const [language1, setLanguage1] = useState(null);
+    const [language2, setLanguage2] = useState(null);
+    const [answer1, setAnswer1] = useState("");
+    const [answer2, setAnswer2] = useState("");
     const [course, setCourse] = useState(null);
     const [courses, setCourses] = useState([]);
     const [section, setSection] = useState(null);
     const [sections, setSections] = useState([]);
     const [subSection, setSubSection] = useState(null);
     const [subSections, setSubSections] = useState([]);
-    const [option, setOption] = useState("");
-    const [options, setOptions] = useState([]);
-    const [oldImages, setOldImages] = useState([]);
-    const [editOptionText, setEditOptionText] = useState("Edit Options");
-    const [optionsEditDisplay, setOptionsEditDisplay] = useState("none");
+    const [option1, setOption1] = useState("");
+    const [option2, setOption2] = useState("");
+    const [options1, setOptions1] = useState([]);
+    const [options2, setOptions2] = useState([]);
+    const [oldImages1, setOldImages1] = useState([]);
+    const [oldImages2, setOldImages2] = useState([]);
+    const [editOptionText1, setEditOptionText1] = useState("Edit Options");
+    const [optionsEditDisplay1, setOptionsEditDisplay1] = useState("none");
+    const [editOptionText2, setEditOptionText2] = useState("Edit Options");
+    const [optionsEditDisplay2, setOptionsEditDisplay2] = useState("none");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [loader, setLoader] = useState(false);
     const [deleteModalShow, setDeleteModalShow] = useState(false);
     const dispatch = useDispatch();
     const questions = useSelector(state => state.questionsReducer);
     const classes = useSelector(state => state.classesReducer);
+    const [biligual, setBiligual] = useState(false);
+    const [questionId1, setQuestionId1] = useState(null);
+    const [questionId2, setQuestionId2] = useState(null);
     // const courses = useSelector(state => state.coursesReducer);
     // const sections = useSelector(state => state.sectionsReducer);
     // const subSections = useSelector(state => state.subSectionsReducer);
     const difficultys = useSelector(state => state.difficultysReducer)
     const languages = useSelector(state => state.languagesReducer);
     const { width } = useWindowSize();
-
+    const [loader2, setLoader2] = useState(true);
+    let pack = JSON.parse(localStorage.getItem("authUser"))?.packageName;
     const breadcrumbItems = [
         { title: "Question", link: "#" },
         { title: "All Questions", link: "#" },
@@ -87,21 +99,22 @@ const AllQuestions = (props) => {
     })
 
 
-    useEffect(() => {
-        if (classes?.classes?.length == 0) {
-            dispatch(fetchClass());
-        }
-        if (questions?.questions?.length == 0) {
-            dispatch(fetchQuestion());
-        }
-        if (difficultys?.difficultys?.length == 0) {
-            dispatch(fetchDifficulty());
-        }
-        if (languages?.languages?.length == 0) {
-            dispatch(fetchLanguage());
-        }
 
-    }, [])
+
+    useEffect(() => {
+        setLoader2(true);
+        dispatch(fetchClass());
+        dispatch(fetchQuestion());
+        dispatch(fetchDifficulty());
+        dispatch(fetchLanguage());
+
+    }, []);
+
+    useEffect(() => {
+        if (questions?.questions?.success == true) {
+            setLoader2(false);
+        }
+    }, [questions?.questions]);
 
     const fetchCourses = async () => {
         if (classs) {
@@ -143,9 +156,9 @@ const AllQuestions = (props) => {
     }, [section]);
 
 
-    const fetchImageFile = async () => {
+    const fetchImageFile = async (obj) => {
 
-        const tempDiv = rteObj.getContent();
+        const tempDiv = obj.getContent();
         const objectElements = tempDiv.querySelectorAll('.e-rte-image');
 
         if (objectElements.length > 0) {
@@ -208,11 +221,15 @@ const AllQuestions = (props) => {
                 width: 200,
             },
         ],
-        rows: questions?.questions?.result?.map((row, index) => ({
-            ...row,
-            serialNo: index + 1, // Add 1 to start counting from 1
-            clickEvent: () => handleRowClick(row)
-        }))
+        rows: questions?.questions?.result?.flatMap((row, index) =>
+            row.bilingualQuestions?.map((bilingualQuestion, bilingualIndex) => ({
+                serialNo: `${index + 1}.${bilingualIndex + 1}`, // Serial number based on question and its bilingual variant
+                type: row.type,
+                contentText: bilingualQuestion.contentText,
+                answer: bilingualQuestion.answer,
+                clickEvent: () => handleRowClick(row)
+            }))
+        )
     };
 
     // Modify the data for the "Question" field if bulkCreated is 0
@@ -228,53 +245,60 @@ const AllQuestions = (props) => {
 
         setId(row.id);
         let result = await fetchSingleQuestion(row?.id);
-        setDescription(result?.result[0]?.description);
-        setAnswer(result?.result[0]?.answer)
         setType(result?.result[0]?.type);
 
-
+        setClasss(result?.result[0]?.class);
         setCourse(result?.result[0]?.course);
         setSection(result?.result[0]?.section);
         setSubSection(result?.result[0]?.subSection);
         setDifficulty(result?.result[0]?.difficulty);
-        setLanguage(result?.result[0]?.language);
+        const bilingualQuestions = result?.result[0]?.bilingualQuestions || [];
+        const hasSecondQuestion = bilingualQuestions.length > 1;
 
-        let imagesHTML;
-        if (BACKEND_SPRING) {
-            setClasss(result?.result[0]?.classs);
-            if (result?.result[0].type == "mcq") {
-                let arr = [];
-                result?.result[0]?.optionResult?.map((d) => {
-
-                    arr.push(d.optionName);
-                })
-                console.log(arr)
-                setTest(arr);
-                setOptions(arr);
-
+        // Function to set bilingual question data
+        const setBilingualData = (index, setAnswer, setDescription, setLanguage, setQuestionId) => {
+            if (bilingualQuestions[index]) {
+                setQuestionId(bilingualQuestions[index].id)
+                setAnswer(bilingualQuestions[index].answer);
+                setDescription(bilingualQuestions[index].description);
+                setLanguage(bilingualQuestions[index].language[0]);
             }
-            imagesHTML = result?.result[0].imageResult?.map(url =>
-                `<img  className="e-rte-image" src="${IMAGE_FETCH + url.imagePath}"  style={{ height: '20px', width: '10px' }} alt="Descriptive Text"/>`
-                // `<img className="e-rte-image" src={"${IMAGE_FETCH}${url.imagePath}"} style={{ height: '200px', width: '100px' }} alt="Descriptive Text" />`
-            ).join('');
+        };
+
+        // Set data for the first and second bilingual questions
+        setBilingualData(0, setAnswer1, setDescription1, setLanguage1, setQuestionId1);
+
+        if (hasSecondQuestion) {
+            setBilingualData(1, setAnswer2, setDescription2, setLanguage2, setQuestionId2);
+            setBiligual(true);
+        } else {
+            setBiligual(false);
         }
-        else {
-            setClasss(result?.result[0]?.class);
 
+        // Function to set options for bilingual questions
+        const setOptionsData = (index, setOptionsFunc) => {
+            const options = bilingualQuestions[index]?.options?.map(option => option.optionName) || [];
+            setOptionsFunc(options);
+        };
 
-            if (result?.result[0]?.type == "mcq") {
-                let arr = [];
-                result?.optionResult?.map((d) => {
-                    arr.push(d.optionName);
-                })
-                setOptions(arr);
+        // Set options if the type is "mcq"
+        if (result?.result[0]?.type === "mcq") {
+            setOptionsData(0, setOptions1);
+            if (hasSecondQuestion) {
+                setOptionsData(1, setOptions2);
             }
-            imagesHTML = result?.imageResult?.map(url =>
-                `<img  className="e-rte-image" src="${IMAGE_FETCH + url.imagePath}"  style={{ height: '20px', width: '10px' }} alt="Descriptive Text"/>`
-                // `<img className="e-rte-image" src={"${IMAGE_FETCH}${url.imagePath}"} style={{ height: '200px', width: '100px' }} alt="Descriptive Text" />`
-            ).join('');
         }
-        setOldImages(imagesHTML);
+
+        // Function to generate image HTML
+        const generateImagesHTML = (index) => {
+            return bilingualQuestions[index]?.imagePath?.map(url =>
+                `<img class="e-rte-image" src="${IMAGE_FETCH + url}" style="height: 20px; width: 10px;" alt="Descriptive Text"/>`
+            ).join('') || '';
+        };
+
+        // Set the images for the first and second bilingual questions
+        setOldImages1(generateImagesHTML(0));
+        setOldImages2(hasSecondQuestion ? generateImagesHTML(1) : '');
         setModalShow(true);
     }
 
@@ -330,29 +354,78 @@ const AllQuestions = (props) => {
     const handleUpdate = async () => {
         // const rteValue = rteObj.getText();
         // Get the HTML content from rteObj.getContent()
-        const res = rteObj.getContent();
-        let desc = res.outerHTML;
+        const rteValue = rteObj1.getContent();
+        const res1 = rteObj1.getContent();
+        let desc1 = res1.outerHTML;
+        desc1 = removeSpecificDivs(desc1);
+        let tempElement1 = document.createElement('div');
+        tempElement1.innerHTML = res1.outerHTML;
+        let textContent1 = tempElement1.textContent || tempElement1.innerText;
 
-        // Remove the specified div and update the HTML content
-        desc = removeSpecificDivs(desc);
 
-        let tempElement = document.createElement('div');
-        tempElement.innerHTML = res.outerHTML;
-        let textContent = tempElement.textContent || tempElement.innerText;
-        if (!classs || !course || !section || !subSection || !desc || !difficulty || !language || !type || !answer) {
+        let rteValue2, desc2, textContent2;
+
+        if (biligual) {
+            rteValue2 = rteObj2.getContent();
+            const res2 = rteObj2.getContent();
+            desc2 = res2.outerHTML;
+            desc2 = removeSpecificDivs(desc2);
+            let tempElement2 = document.createElement('div');
+            tempElement2.innerHTML = res2.outerHTML;
+            textContent2 = tempElement2.textContent || tempElement2.innerText;
+        }
+        if (!classs || !course || !section || !subSection || !desc1 || !difficulty || !language1 || !type || !answer1) {
             setSpanDisplay("inline")
 
         }
         else {
 
-            const fetchedImageFiles = await fetchImageFile();
+
             const formData = new FormData();
-            fetchedImageFiles.forEach((image) => {
-                formData.append('Image', image);
+            const fetchedImageFiles1 = await fetchImageFile(rteObj1);
+            let fetchedImageFiles2;
+
+            if (biligual) {
+                fetchedImageFiles2 = await fetchImageFile(rteObj2);
+            }
+            console.log(language1)
+            const bilingualData = [
+                {
+                    "id": questionId1,
+                    "contentText": textContent1,
+                    "description": desc1,
+                    "answer": answer1,
+                    "languageName": language1.languageName,
+                    "languageId": language1.id,
+                    "options": options1,
+                }
+            ];
+
+            if (biligual) {
+                bilingualData.push({
+                    id: questionId2,
+                    "contentText": textContent2,
+                    "description": desc2,
+                    "answer": answer2,
+                    "languageName": language2.languageName,
+                    "languageId": language2.id,
+                    "options": options2,
+                });
+            }
+
+            fetchedImageFiles1.forEach((image) => {
+                formData.append('Image1', image);
             });
-            options?.forEach((option) => {
-                formData.append("Options", option);
-            });
+
+            if (biligual) {
+                fetchedImageFiles2.forEach((image) => {
+                    formData.append('Image2', image);
+                });
+            }
+
+            console.log(bilingualData);
+
+            formData.append('Bilingual', JSON.stringify(bilingualData));
             formData.append('Id', id);
             formData.append('ClassId', classs.id);
             formData.append('Class', JSON.stringify(classs))
@@ -362,18 +435,14 @@ const AllQuestions = (props) => {
             formData.append('Section', JSON.stringify(section));
             formData.append('SubSectionId', subSection.id);
             formData.append('SubSection', JSON.stringify(subSection));
-            formData.append('Description', removeImgTag(desc));
-            formData.append('ContentText', textContent);
             formData.append('DifficultyId', difficulty.id);
-            formData.append('languageId', language.id);
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
-            formData.append('Answer', answer);
 
             setLoader(true);
-            dispatch(updateQuestion(formData));
-            dispatch(fetchQuestion());
-            console.log(questions)
+            dispatch(updateQuestion(formData)).then(() => {
+                dispatch(fetchQuestion());
+            });
         }
     }
     useEffect(() => {
@@ -421,31 +490,49 @@ const AllQuestions = (props) => {
         setDifficulty(selectedOption);
     };
     const handleSelectLanguage = selectedOption => {
-        setLanguage(selectedOption);
+        setLanguage1(selectedOption);
     };
     const handleTypeChange = (event) => {
         setType(event.target.value);
-        setAnswer("");
+        setAnswer1("");
     };
     const addOption = () => {
-        console.log(options)
-        setOptions([...options, option]);
-        setOption("");
+        setOptions1([...options1, option1]);
+        setOption1("");
+    }
+    const addOption2 = () => {
+        setOptions2([...options2, option2]);
+        setOption2("");
     }
     const handleSetOptionsClick = () => {
-        if (optionsEditDisplay == "none") {
-            setOptionsEditDisplay("inline-block");
-            setEditOptionText("Done");
+        if (optionsEditDisplay1 == "none") {
+            setOptionsEditDisplay1("inline-block");
+            setEditOptionText1("Done");
         }
         else {
-            setOptionsEditDisplay("none");
-            setEditOptionText("Edit Options");
+            setOptionsEditDisplay1("none");
+            setEditOptionText1("Edit Options");
+        }
+    }
+    const handleSetOptionsClick2 = () => {
+        if (optionsEditDisplay2 == "none") {
+            setOptionsEditDisplay2("inline-block");
+            setEditOptionText2("Done");
+        }
+        else {
+            setOptionsEditDisplay2("none");
+            setEditOptionText2("Edit Options");
         }
     }
     const removeOption = (index) => {
-        const newOptions = [...options];
+        const newOptions = [...options1];
         newOptions.splice(index, 1);
-        setOptions(newOptions);
+        setOptions1(newOptions);
+    };
+    const removeOption2 = (index) => {
+        const newOptions = [...options2];
+        newOptions.splice(index, 1);
+        setOptions2(newOptions);
     };
 
 
@@ -468,10 +555,12 @@ const AllQuestions = (props) => {
         link: ['Open', 'Edit', 'UnLink']
     };
 
-    let rteObj;
+    let rteObj1;
+    let rteObj2;
     // set the value to Rich Text Editor
     // let template = `<div style="display:block;"><p style="margin-right:10px">${description} ${oldImages}</p></div>`;
-    let template = description + oldImages;
+    let template1 = description1 + oldImages1;
+    let template2 = description2 + oldImages2;
     // let template = description;
 
 
@@ -484,16 +573,19 @@ const AllQuestions = (props) => {
             {loader ? (
                 <Loader />
             ) : ("")}
+            {loader2 ? (
+                <Loader />
+            ) : ("")}
             <Row>
                 <Col className="col-12">
                     <Card>
                         <CardBody>
                             <div className="d-flex justify-content-between">
                                 <CardTitle className="h4">All Questions </CardTitle>
-                                <div className="">
+                                <div className="d-flex flex-column align-items-end">
 
-                                    <h5>Total Questions: 3000</h5>
-                                    <h5>Balance Questions: 500</h5>
+                                    <h5>Total Questions Limit: 3000</h5>
+                                    <h5>Questions Limit Left: {3000 - questions?.questions?.result?.length}</h5>
                                     <div className="d-flex justify-content-end">
                                         <Button type="button" color="info" className="waves-effect waves-light">Top Up</Button>{" "}
                                     </div>
@@ -631,7 +723,8 @@ const AllQuestions = (props) => {
                             </div>
 
                         </Row>}
-                        {languages && <Row className="mb-3">
+
+                        {languages && <Row className="mb-3" >
                             <label
                                 htmlFor="example-text-input"
                                 className="col-md-2 col-form-label"
@@ -641,84 +734,26 @@ const AllQuestions = (props) => {
                             <div className="col-md-10">
                                 <Select
 
-                                    value={language}
+                                    value={language1}
                                     onChange={handleSelectLanguage}
                                     options={languages?.languages?.result}
                                     getOptionLabel={option => option.languageName}
                                     getOptionValue={option => option.id.toString()}
                                     classNamePrefix="select2-selection"
+                                    menuPortalTarget={document.body}  // Ensure the dropdown is rendered in the body
+                                    styles={{
+                                        menuPortal: (base) => ({
+                                            ...base,
+                                            zIndex: 9999,  // Set a high z-index to appear above other elements
+                                        }),
+                                    }}
+
                                 />
-                                {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                {!language1 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                             </div>
 
                         </Row>}
-
-                        <Row className="mb-3">
-                            <label htmlFor="example-text-input" className="col-md-2 col-form-label">
-                                Question Type
-                            </label>
-                            <div className="col-md-10">
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="type"
-                                        id="type2"
-                                        value="short"
-                                        checked={type === 'short'}
-                                        onChange={handleTypeChange}
-                                    />
-                                    <label className="form-check-label" htmlFor="exampleRadios2">
-                                        Short
-                                    </label>
-                                </div>
-                                <div className="form-check form-check-inline mb-3">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="type"
-                                        id="type1"
-                                        value="mcq"
-                                        checked={type === 'mcq'}
-                                        onChange={handleTypeChange}
-                                    />
-                                    <label className="form-check-label" htmlFor="exampleRadios1">
-                                        MCQ
-                                    </label>
-                                </div>
-
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="type"
-                                        id="type3"
-                                        value="true false"
-                                        checked={type === 'true false'}
-                                        onChange={handleTypeChange}
-                                    />
-                                    <label className="form-check-label" htmlFor="exampleRadios2">
-                                        True False
-                                    </label>
-                                </div>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="type"
-                                        id="type4"
-                                        value="essay"
-                                        checked={type === 'essay'}
-                                        onChange={handleTypeChange}
-                                    />
-                                    <label className="form-check-label" htmlFor="exampleRadios2">
-                                        Essay
-                                    </label>
-                                </div>
-                            </div>
-                        </Row>
-
-                        <Row className="mb-3">
+                        <Row className="mb-3" >
                             <label
                                 htmlFor="example-text-input"
                                 className="col-md-2 col-form-label"
@@ -727,14 +762,14 @@ const AllQuestions = (props) => {
                             </label>
                             <div className="col-md-10">
                                 <div className="card">
-                                    <RichTextEditorComponent id="defaultRTE" ref={(scope) => { rteObj = scope; }} valueTemplate={template} toolbarSettings={toolbarSettings}>
+                                    <RichTextEditorComponent id="defaultRTE" ref={(scope) => { rteObj1 = scope; }} valueTemplate={template1} toolbarSettings={toolbarSettings}>
                                         <Inject services={[HtmlEditor, Toolbar, Link, Image, QuickToolbar]} />
                                     </RichTextEditorComponent>
-
+                                    {/* {!rteObj.getContent() && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>} */}
                                 </div>
                             </div>
                         </Row>
-                        {type === "short" && <Row className="mb-3">
+                        {type === "short" && <Row className="mb-3" >
                             <label
                                 htmlFor="example-text-input"
                                 className="col-md-2 col-form-label"
@@ -745,15 +780,15 @@ const AllQuestions = (props) => {
                                 <input type="text"
                                     className='form-control'
                                     placeholder="Enter Answer"
-                                    value={answer}
-                                    onChange={(e) => setAnswer(e.target.value)} />
-                                {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    value={answer1}
+                                    onChange={(e) => setAnswer1(e.target.value)} />
+                                {!answer1 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                             </div>
                         </Row>}
                         {type === "mcq" &&
                             <>
 
-                                <Row className="mb-3">
+                                <Row className="mb-3" >
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -763,15 +798,15 @@ const AllQuestions = (props) => {
                                     <div className="col-md-10">
                                         <input type="text"
                                             className='form-control col-md-4 mb-2'
-                                            onChange={(e) => { setOption(e.target.value) }}
+                                            onChange={(e) => { setOption1(e.target.value) }}
                                             placeholder="write a option"
-                                            value={option} />
+                                            value={option1} />
 
                                         <button type="button" className="btn btn-primary w-md me-2 " onClick={addOption}>Add Option</button>
-                                        <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick} >{editOptionText}</button>
+                                        <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick} >{editOptionText1}</button>
                                     </div>
                                 </Row>
-                                <Row className="mb-3">
+                                <Row className="mb-3" >
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
@@ -779,8 +814,9 @@ const AllQuestions = (props) => {
                                         Select Answer
                                     </label>
                                     <div className="col-md-10">
-                                        {options?.map((o, i) => (
+                                        {options1.map((o, i) => (
                                             <>
+                                                {/* <p>{o}</p> */}
                                                 <div className="form-check mb-3">
                                                     <input
                                                         className="form-check-input mt-1"
@@ -788,8 +824,8 @@ const AllQuestions = (props) => {
                                                         name="options"
                                                         id={i}
                                                         value={o}
-                                                        checked={answer === o}
-                                                        onChange={(e) => setAnswer(e.target.value)}
+                                                        checked={answer1 === o}
+                                                        onChange={(e) => setAnswer1(e.target.value)}
                                                     />
                                                     <label
                                                         className="form-check-label"
@@ -797,17 +833,18 @@ const AllQuestions = (props) => {
                                                     >
                                                         {o}
                                                     </label>
-                                                    <button type='button' className="text-danger" onClick={() => removeOption(i)} style={{ fontSize: "1rem", background: "none", border: "none", fontWeight: "bolder", display: `${optionsEditDisplay}` }}> <i className="mdi mdi-delete "></i></button>
+                                                    <button type='button' className="text-danger" onClick={() => removeOption(i)} style={{ fontSize: "1rem", background: "none", border: "none", fontWeight: "bolder", display: `${optionsEditDisplay1}` }}> <i className="mdi mdi-delete "></i></button>
 
                                                 </div>
+
                                             </>
                                         ))}
-                                        {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                        {!answer1 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
                                 </Row>
                             </>
                         }
-                        {type === "true false" && <Row className="mb-3">
+                        {type === "true false" && <Row className="mb-3" >
                             <label htmlFor="example-text-input" className="col-md-2 col-form-label">
                                 Answer
                             </label>
@@ -820,8 +857,8 @@ const AllQuestions = (props) => {
                                             name="answer"
                                             id="answer1"
                                             value="true"
-                                            checked={answer === 'true'}
-                                            onChange={(e) => setAnswer(e.target.value)}
+                                            checked={answer1 === 'true'}
+                                            onChange={(e) => setAnswer1(e.target.value)}
                                         />
                                         <label className="form-check-label" htmlFor="exampleRadios2">
                                             True
@@ -834,17 +871,185 @@ const AllQuestions = (props) => {
                                             name="answer"
                                             id="answer2"
                                             value="false"
-                                            checked={answer === 'false'}
-                                            onChange={(e) => setAnswer(e.target.value)}
+                                            checked={answer1 === 'false'}
+                                            onChange={(e) => setAnswer1(e.target.value)}
                                         />
                                         <label className="form-check-label" htmlFor="exampleRadios2">
                                             false
                                         </label>
                                     </div>
                                 </div>
-                                {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                {!answer1 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                             </div>
                         </Row>}
+
+                        {biligual && <div>
+                            <Row className="mb-3" >
+                                <label
+                                    htmlFor="example-text-input"
+                                    className="col-md-2 col-form-label"
+                                >
+                                    Language Name
+                                </label>
+                                <div className="col-md-10">
+                                    <Select
+
+                                        value={language2}
+                                        onChange={(selectedLanguage) => setLanguage2(selectedLanguage)}
+                                        options={languages?.languages?.result}
+                                        getOptionLabel={option => option.languageName}
+                                        getOptionValue={option => option.id.toString()}
+                                        classNamePrefix="select2-selection"
+                                        menuPortalTarget={document.body}  // Ensure the dropdown is rendered in the body
+                                        styles={{
+                                            menuPortal: (base) => ({
+                                                ...base,
+                                                zIndex: 9999,  // Set a high z-index to appear above other elements
+                                            }),
+                                        }}
+
+                                    />
+                                    {!language2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                </div>
+
+                            </Row>
+                            <Row className="mb-3" >
+                                <label
+                                    htmlFor="example-text-input"
+                                    className="col-md-2 col-form-label"
+                                >
+                                    Question Description
+                                </label>
+                                <div className="col-md-10">
+                                    <div className="card">
+                                        <RichTextEditorComponent id="defaultRTE" ref={(scope) => { rteObj2 = scope; }} valueTemplate={template2} toolbarSettings={toolbarSettings}>
+                                            <Inject services={[HtmlEditor, Toolbar, Link, Image, QuickToolbar]} />
+                                        </RichTextEditorComponent>
+                                        {/* {!rteObj.getContent() && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>} */}
+                                    </div>
+                                </div>
+                            </Row>
+                            {type === "short" && <Row className="mb-3" >
+                                <label
+                                    htmlFor="example-text-input"
+                                    className="col-md-2 col-form-label"
+                                >
+                                    Answer
+                                </label>
+                                <div className="col-md-10">
+                                    <input type="text"
+                                        className='form-control'
+                                        placeholder="Enter Answer"
+                                        value={answer2}
+                                        onChange={(e) => setAnswer2(e.target.value)} />
+                                    {!answer2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                </div>
+                            </Row>}
+                            {type === "mcq" &&
+                                <>
+
+                                    <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                        <label
+                                            htmlFor="example-text-input"
+                                            className="col-md-2 col-form-label"
+                                        >
+                                            {/* Answer */}
+                                        </label>
+                                        <div className="col-md-10">
+                                            <input type="text"
+                                                className='form-control col-md-4 mb-2'
+                                                onChange={(e) => { setOption2(e.target.value) }}
+                                                placeholder="write a option"
+                                                value={option2} />
+
+                                            <button type="button" className="btn btn-primary w-md me-2 " onClick={addOption2}>Add Option</button>
+                                            <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick2} >{editOptionText2}</button>
+                                        </div>
+                                    </Row>
+                                    <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                        <label
+                                            htmlFor="example-text-input"
+                                            className="col-md-2 col-form-label"
+                                        >
+                                            Select Answer
+                                        </label>
+                                        <div className="col-md-10">
+                                            {options2.map((o, i) => (
+                                                <>
+                                                    {/* <p>{o}</p> */}
+                                                    <div className="form-check mb-3">
+                                                        <input
+                                                            className="form-check-input mt-1"
+                                                            type="radio"
+                                                            name="options"
+                                                            id={i}
+                                                            value={o}
+                                                            checked={answer2 === o}
+                                                            onChange={(e) => setAnswer2(e.target.value)}
+                                                        />
+                                                        <label
+                                                            className="form-check-label"
+                                                            htmlFor="exampleRadios1"
+                                                        >
+                                                            {o}
+                                                        </label>
+                                                        <button type='button' className="text-danger" onClick={() => removeOption2(i)} style={{ fontSize: "1rem", background: "none", border: "none", fontWeight: "bolder", display: `${optionsEditDisplay2}` }}> <i className="mdi mdi-delete "></i></button>
+
+                                                    </div>
+
+                                                </>
+                                            ))}
+                                            {!answer2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                        </div>
+                                    </Row>
+                                </>
+                            }
+                            {type === "true false" && <Row className="mb-3" >
+                                <label htmlFor="example-text-input" className="col-md-2 col-form-label">
+                                    Answer
+                                </label>
+                                <div className="col-md-10">
+                                    <div className="">
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="answer"
+                                                id="answer1"
+                                                value="true"
+                                                checked={answer2 === 'true'}
+                                                onChange={(e) => setAnswer2(e.target.value)}
+                                            />
+                                            <label className="form-check-label" htmlFor="exampleRadios2">
+                                                True
+                                            </label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="answer"
+                                                id="answer2"
+                                                value="false"
+                                                checked={answer2 === 'false'}
+                                                onChange={(e) => setAnswer2(e.target.value)}
+                                            />
+                                            <label className="form-check-label" htmlFor="exampleRadios2">
+                                                false
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {!answer2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                </div>
+                            </Row>}
+                        </div>}
+                        {!biligual &&
+                            <Row className="mb-3">
+                                <div className="mt-4 d-flex justify-content-between">
+                                    <button type="button" className="text-info" style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }} onClick={() => setBiligual(true)}><i className="mdi mdi-plus"></i></button>
+                                </div>
+                            </Row>
+                        }
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

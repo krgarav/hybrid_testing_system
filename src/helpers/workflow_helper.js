@@ -9,4 +9,6 @@ export const updateWorkflowTree = data => put(url.UPDATE_WORKFLOW_TREE, data);
 export const deleteWorkflowTree = id => del(url.DELETE_WORKFLOW_TREE + id);
 export const fetchAllWorkflowTree = () => get(url.GET_ALL_WORKFLOW_TREE);
 export const fetchSingleWorkflowTree = () => get(url.GET_SINGLE_WORKFLOW_TREE);
-
+export const getChild = () => get(url.GET_USER_TREE_BY_USER);
+export const fetchQuestionForQc = id => get(url.GET_QUESTION_FOR_QC + id);
+export const returnQuestion = data => post(url.RETURN_QUESTION, data);

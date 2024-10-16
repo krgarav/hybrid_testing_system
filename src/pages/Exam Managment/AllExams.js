@@ -290,7 +290,6 @@ const AllQuestionExams = (props) => {
                     <>
                         <Col lg={3} key={i}>
                             <Card>
-                                {/* <CardHeader>UPSC</CardHeader> */}
                                 <CardBody className="mt-0 pt-0">
                                     <div className="d-flex justify-content-between">
                                         <CardTitle className="h4 mt-3">{data.examName}</CardTitle>

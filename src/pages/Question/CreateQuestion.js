@@ -34,6 +34,7 @@ import { fetchAllSubSectionsBySection } from "helpers/subSection_helper";
 import { useWindowSize } from 'react-use';
 import Loader from "components/Loader/Loader";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const CreateQuestion = (props) => {
 
@@ -65,17 +66,24 @@ const CreateQuestion = (props) => {
     const [sections, setSections] = useState([]);
     const [subSections, setSubSections] = useState([]);
     const [answer, setAnswer] = useState("");
+    const [answer2, setAnswer2] = useState("");
     const [difficulty, setDifficulty] = useState(null);
     const [language, setLanguage] = useState(null);
+    const [language2, setLanguage2] = useState(null);
     const [text, setText] = useState("");
     const [option, setOption] = useState("");
+    const [option2, setOption2] = useState("");
     const [options, setOptions] = useState([]);
+    const [options2, setOptions2] = useState([]);
     const [editOptionText, setEditOptionText] = useState("Edit Options");
+    const [editOptionText2, setEditOptionText2] = useState("Edit Options");
     const [optionsEditDisplay, setOptionsEditDisplay] = useState("none");
+    const [optionsEditDisplay2, setOptionsEditDisplay2] = useState("none");
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [auth, setAuth] = useAuth();
     const [loader, setLoader] = useState(false);
     const [another, setAnother] = useState(false);
+    const [biligual, setBiligual] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
@@ -111,10 +119,19 @@ const CreateQuestion = (props) => {
     })
     const fetchCourses = async () => {
         if (classs) {
-            let id = classs.id;
+            try {
+                setLoader(true);
+                let id = classs.id;
+                let result = await fetchAllCoursesByClass(id);
+                setCourses(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
 
-            let result = await fetchAllCoursesByClass(id);
-            setCourses(result);
+
         }
     }
     useEffect(() => {
@@ -123,10 +140,18 @@ const CreateQuestion = (props) => {
 
     const fetchSections = async () => {
         if (course) {
-            let id = course.id;
+            try {
+                setLoader(true);
+                let id = course.id;
+                let result = await fetchAllSectionsByCourse([id]);
+                setSections(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
 
-            let result = await fetchAllSectionsByCourse([id]);
-            setSections(result);
         }
     }
     useEffect(() => {
@@ -135,10 +160,18 @@ const CreateQuestion = (props) => {
 
     const fetchSubSections = async () => {
         if (section) {
-            let id = section.id;
+            try {
+                setLoader(true);
+                let id = section.id;
+                let result = await fetchAllSubSectionsBySection([id]);
+                setSubSections(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
 
-            let result = await fetchAllSubSectionsBySection([id]);
-            setSubSections(result);
         }
     }
     useEffect(() => {
@@ -146,9 +179,9 @@ const CreateQuestion = (props) => {
     }, [section]);
 
 
-    const fetchImageFile = async () => {
+    const fetchImageFile = async (obj) => {
 
-        const tempDiv = rteObj.getContent();
+        const tempDiv = obj.getContent();
         const objectElements = tempDiv.querySelectorAll('.e-rte-image');
 
         if (objectElements.length > 0) {
@@ -227,27 +260,72 @@ const CreateQuestion = (props) => {
         e.preventDefault();
         // console.log("hello")
         const rteValue = rteObj.getContent();
-        const res = rteObj.getContent();
-        let desc = res.outerHTML;
-        desc = removeSpecificDivs(desc);
-        let tempElement = document.createElement('div');
-        tempElement.innerHTML = res.outerHTML;
-        let textContent = tempElement.textContent || tempElement.innerText;
+        const res1 = rteObj.getContent();
+        let desc1 = res1.outerHTML;
+        desc1 = removeSpecificDivs(desc1);
+        let tempElement1 = document.createElement('div');
+        tempElement1.innerHTML = res1.outerHTML;
+        let textContent1 = tempElement1.textContent || tempElement1.innerText;
 
-        if (!classs || !course || !section || !subSection || !desc || !difficulty || !language || !type || !answer) {
+
+        let rteValue2, desc2, textContent2;
+
+        if (biligual) {
+            rteValue2 = rteObj2.getContent();
+            const res2 = rteObj2.getContent();
+            desc2 = res2.outerHTML;
+            desc2 = removeSpecificDivs(desc2);
+            let tempElement2 = document.createElement('div');
+            tempElement2.innerHTML = res2.outerHTML;
+            textContent2 = tempElement2.textContent || tempElement2.innerText;
+        }
+        if (!classs || !course || !section || !subSection || !desc1 || !difficulty || !language || !type || !answer) {
             setSpanDisplay("inline")
 
         }
         else {
 
-            const fetchedImageFiles = await fetchImageFile();
+            const fetchedImageFiles1 = await fetchImageFile(rteObj);
+            let fetchedImageFiles2;
+
+            if (biligual) {
+                fetchedImageFiles2 = await fetchImageFile(rteObj2);
+            }
+
+            const bilingualData = [
+                {
+                    "contentText": textContent1,
+                    "description": desc1,
+                    "answer": answer,
+                    "languageName": language.languageName,
+                    "languageId": language.id,
+                    "options": options,
+                }
+            ];
+
+            if (biligual) {
+                bilingualData.push({
+                    "contentText": textContent2,
+                    "description": desc2,
+                    "answer": answer2,
+                    "languageName": language2.languageName,
+                    "languageId": language2.id,
+                    "options": options2,
+                });
+            }
+
             const formData = new FormData();
-            fetchedImageFiles.forEach((image) => {
-                formData.append('Image', image);
+            fetchedImageFiles1.forEach((image) => {
+                formData.append('Image1', image);
             });
-            options.forEach((option) => {
-                formData.append("Options", option);
-            });
+
+            if (biligual) {
+                fetchedImageFiles2.forEach((image) => {
+                    formData.append('Image2', image);
+                });
+            }
+
+            formData.append('Bilingual', JSON.stringify(bilingualData));
             formData.append('ClassId', classs.id);
             formData.append('Class', JSON.stringify(classs))
             formData.append('CourseId', course.id);
@@ -256,13 +334,10 @@ const CreateQuestion = (props) => {
             formData.append('Section', JSON.stringify(section));
             formData.append('SubSectionId', subSection.id);
             formData.append('SubSection', JSON.stringify(subSection));
-            formData.append('Description', removeImgTag(desc));
-            formData.append('ContentText', textContent);
+
             formData.append('DifficultyId', difficulty.id);
-            formData.append('languageId', language.id);
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
-            formData.append('Answer', answer);
 
             setLoader(true);
             dispatch(addQuestion(formData));
@@ -343,6 +418,10 @@ const CreateQuestion = (props) => {
         setOptions([...options, option]);
         setOption("");
     }
+    const addOption2 = () => {
+        setOptions2([...options2, option2]);
+        setOption2("");
+    }
     const handleSetOptionsClick = () => {
         if (optionsEditDisplay == "none") {
             setOptionsEditDisplay("inline-block");
@@ -353,10 +432,25 @@ const CreateQuestion = (props) => {
             setEditOptionText("Edit Options");
         }
     }
+    const handleSetOptionsClick2 = () => {
+        if (optionsEditDisplay2 == "none") {
+            setOptionsEditDisplay2("inline-block");
+            setEditOptionText2("Done");
+        }
+        else {
+            setOptionsEditDisplay2("none");
+            setEditOptionText2("Edit Options");
+        }
+    }
     const removeOption = (index) => {
         const newOptions = [...options];
         newOptions.splice(index, 1);
         setOptions(newOptions);
+    };
+    const removeOption2 = (index) => {
+        const newOptions = [...options2];
+        newOptions.splice(index, 1);
+        setOptions2(newOptions);
     };
 
 
@@ -378,6 +472,7 @@ const CreateQuestion = (props) => {
     };
 
     let rteObj;
+    let rteObj2;
     // set the value to Rich Text Editor
     // let template = `<div style="display:block;"><p style="margin-right:10px"></p></div>`;
     let template = "";
@@ -514,27 +609,7 @@ const CreateQuestion = (props) => {
                                     </div>
 
                                 </Row>}
-                                {languages && <Row className="mb-3" style={{ width: "85%", }}>
-                                    <label
-                                        htmlFor="example-text-input"
-                                        className="col-md-2 col-form-label"
-                                    >
-                                        Language Name
-                                    </label>
-                                    <div className="col-md-10">
-                                        <Select
 
-                                            value={language}
-                                            onChange={handleSelectLanguage}
-                                            options={languages?.languages?.result}
-                                            getOptionLabel={option => option.languageName}
-                                            getOptionValue={option => option.id.toString()}
-                                            classNamePrefix="select2-selection"
-                                        />
-                                        {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
-                                    </div>
-
-                                </Row>}
 
                                 <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label htmlFor="example-text-input" className="col-md-2 col-form-label">
@@ -601,6 +676,35 @@ const CreateQuestion = (props) => {
                                     </div>
                                 </Row>
 
+                                {languages && <Row className="mb-3" style={{ width: "85%", }}>
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Language Name
+                                    </label>
+                                    <div className="col-md-10">
+                                        <Select
+
+                                            value={language}
+                                            onChange={handleSelectLanguage}
+                                            options={languages?.languages?.result}
+                                            getOptionLabel={option => option.languageName}
+                                            getOptionValue={option => option.id.toString()}
+                                            classNamePrefix="select2-selection"
+                                            menuPortalTarget={document.body}  // Ensure the dropdown is rendered in the body
+                                            styles={{
+                                                menuPortal: (base) => ({
+                                                    ...base,
+                                                    zIndex: 9999,  // Set a high z-index to appear above other elements
+                                                }),
+                                            }}
+
+                                        />
+                                        {!language && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+
+                                </Row>}
                                 <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
                                     <label
                                         htmlFor="example-text-input"
@@ -730,6 +834,174 @@ const CreateQuestion = (props) => {
                                         {!answer && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
                                 </Row>}
+
+                                {biligual && <div>
+                                    <Row className="mb-3" style={{ width: "85%", }}>
+                                        <label
+                                            htmlFor="example-text-input"
+                                            className="col-md-2 col-form-label"
+                                        >
+                                            Language Name
+                                        </label>
+                                        <div className="col-md-10">
+                                            <Select
+
+                                                value={language2}
+                                                onChange={(selectedLanguage) => setLanguage2(selectedLanguage)}
+                                                options={languages?.languages?.result}
+                                                getOptionLabel={option => option.languageName}
+                                                getOptionValue={option => option.id.toString()}
+                                                classNamePrefix="select2-selection"
+                                                menuPortalTarget={document.body}  // Ensure the dropdown is rendered in the body
+                                                styles={{
+                                                    menuPortal: (base) => ({
+                                                        ...base,
+                                                        zIndex: 9999,  // Set a high z-index to appear above other elements
+                                                    }),
+                                                }}
+
+                                            />
+                                            {!language2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                        </div>
+
+                                    </Row>
+                                    <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                        <label
+                                            htmlFor="example-text-input"
+                                            className="col-md-2 col-form-label"
+                                        >
+                                            Question Description
+                                        </label>
+                                        <div className="col-md-10">
+                                            <div className="card">
+                                                <RichTextEditorComponent id="defaultRTE" ref={(scope) => { rteObj2 = scope; }} valueTemplate={template} toolbarSettings={toolbarSettings}>
+                                                    <Inject services={[HtmlEditor, Toolbar, Link, Image, QuickToolbar]} />
+                                                </RichTextEditorComponent>
+                                                {/* {!rteObj.getContent() && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>} */}
+                                            </div>
+                                        </div>
+                                    </Row>
+                                    {type === "short" && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                        <label
+                                            htmlFor="example-text-input"
+                                            className="col-md-2 col-form-label"
+                                        >
+                                            Answer
+                                        </label>
+                                        <div className="col-md-10">
+                                            <input type="text"
+                                                className='form-control'
+                                                placeholder="Enter Answer"
+                                                value={answer2}
+                                                onChange={(e) => setAnswer2(e.target.value)} />
+                                            {!answer2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                        </div>
+                                    </Row>}
+                                    {type === "mcq" &&
+                                        <>
+
+                                            <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                                <label
+                                                    htmlFor="example-text-input"
+                                                    className="col-md-2 col-form-label"
+                                                >
+                                                    {/* Answer */}
+                                                </label>
+                                                <div className="col-md-10">
+                                                    <input type="text"
+                                                        className='form-control col-md-4 mb-2'
+                                                        onChange={(e) => { setOption2(e.target.value) }}
+                                                        placeholder="write a option"
+                                                        value={option2} />
+
+                                                    <button type="button" className="btn btn-primary w-md me-2 " onClick={addOption2}>Add Option</button>
+                                                    <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick2} >{editOptionText2}</button>
+                                                </div>
+                                            </Row>
+                                            <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                                <label
+                                                    htmlFor="example-text-input"
+                                                    className="col-md-2 col-form-label"
+                                                >
+                                                    Select Answer
+                                                </label>
+                                                <div className="col-md-10">
+                                                    {options2.map((o, i) => (
+                                                        <>
+                                                            {/* <p>{o}</p> */}
+                                                            <div className="form-check mb-3">
+                                                                <input
+                                                                    className="form-check-input mt-1"
+                                                                    type="radio"
+                                                                    name="options"
+                                                                    id={i}
+                                                                    value={o}
+                                                                    checked={answer2 === o}
+                                                                    onChange={(e) => setAnswer2(e.target.value)}
+                                                                />
+                                                                <label
+                                                                    className="form-check-label"
+                                                                    htmlFor="exampleRadios1"
+                                                                >
+                                                                    {o}
+                                                                </label>
+                                                                <button type='button' className="text-danger" onClick={() => removeOption2(i)} style={{ fontSize: "1rem", background: "none", border: "none", fontWeight: "bolder", display: `${optionsEditDisplay2}` }}> <i className="mdi mdi-delete "></i></button>
+
+                                                            </div>
+
+                                                        </>
+                                                    ))}
+                                                    {!answer2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                                </div>
+                                            </Row>
+                                        </>
+                                    }
+                                    {type === "true false" && <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                        <label htmlFor="example-text-input" className="col-md-2 col-form-label">
+                                            Answer
+                                        </label>
+                                        <div className="col-md-10">
+                                            <div className="">
+                                                <div className="form-check form-check-inline">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="radio"
+                                                        name="answer"
+                                                        id="answer1"
+                                                        value="true"
+                                                        checked={answer2 === 'true'}
+                                                        onChange={(e) => setAnswer2(e.target.value)}
+                                                    />
+                                                    <label className="form-check-label" htmlFor="exampleRadios2">
+                                                        True
+                                                    </label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="radio"
+                                                        name="answer"
+                                                        id="answer2"
+                                                        value="false"
+                                                        checked={answer2 === 'false'}
+                                                        onChange={(e) => setAnswer2(e.target.value)}
+                                                    />
+                                                    <label className="form-check-label" htmlFor="exampleRadios2">
+                                                        false
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {!answer2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                        </div>
+                                    </Row>}
+                                </div>}
+                                {!biligual &&
+                                    <Row className="mb-3">
+                                        <div className="mt-4 d-flex justify-content-between">
+                                            <button type="button" className="text-info" style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }} onClick={() => setBiligual(true)}><i className="mdi mdi-plus"></i></button>
+                                        </div>
+                                    </Row>
+                                }
 
                                 <Row className="mb-3">
                                     <div className="mt-4">

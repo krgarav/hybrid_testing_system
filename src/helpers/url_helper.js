@@ -1,12 +1,12 @@
 let url = "http://192.168.0.54:82/api/";
-export let url_online = "https://api1.is10live.com";
-// export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
+// export let url_online = "https://api1.is10live.com";
+export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
 
 
-// export const LOGOUT_URL = "http://192.168.1.22:5173/login";
-// export const LOGOUT_URL = "http://localhost:5173/login";
-export const LOGOUT_URL = "https://is10live.com/login";
+// export const LOGOUT_URL = "http://192.168.1.37:5173/login";
+export const LOGOUT_URL = "http://localhost:5173/login";
+// export const LOGOUT_URL = "https://is10live.com/login";
 
 export const APP_ID = '885a7b065d604da2b81ab5199b715d33';
 
@@ -94,15 +94,20 @@ export const FETCH_EXAM_PAPER = url_online + "/GetExamPapersById?Id=";
 export const DELETE_QUESTION_FROM_PAPER = url_online + "/DeleteExamQuestion?PaperId=";
 export const FETCH_FILTER_QUESTIONS = url_online + "/GetFilterQuestions";
 export const ADD_QUESTION_TO_PAPER = url_online + "/AddQuestionToPaper";
+export const DOWNLOAD_QUESTION_PAPER_WITH_ANSWER = url_online + "/DownloadQuestionPaperWithAnswer?paperId=";
+export const DOWNLOAD_QUESTION_PAPER_WITHOUT_ANSWER = url_online + "/DownloadQuestionPaperWithoutAnswer?paperId=";
+
 
 // QB Workflow
 
 export const CREATE_WORKFLOW_TREE = url_online + "/CreateUserTree";
 export const UPDATE_WORKFLOW_TREE = url_online + "/UpdateUserTree";
-export const DELETE_WORKFLOW_TREE = url_online + "/DeleteUserTree?Id=   ";
+export const DELETE_WORKFLOW_TREE = url_online + "/DeleteUserTree?Id=";
 export const GET_ALL_WORKFLOW_TREE = url_online + "/GetUserTree";
 export const GET_SINGLE_WORKFLOW_TREE = url_online + "/GetUserTreeById?id="
-
+export const GET_USER_TREE_BY_USER = url_online + "/GetUserTreeByUser";
+export const GET_QUESTION_FOR_QC = url_online + "/GetQuestionsForQC?moderatorId=";
+export const RETURN_QUESTION = url_online + "/UpdateQCforQuestion";
 
 // USER 
 // using .net
@@ -154,6 +159,8 @@ export const ASSIGN_EXAM_TO_STUDENTS = url_online + "/AssignExamToStudents";
 export const INITIATE_CHECKOUT_PAYMENT = url_online + "/InitiateCheckoutPayment";
 
 
+// Dashboard
+export const GET_DASHBOARD_DATA = url_online + "/DashboardData"
 
 
 

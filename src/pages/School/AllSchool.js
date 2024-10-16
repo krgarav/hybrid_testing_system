@@ -36,7 +36,7 @@ const AllSchool = (props) => {
     const [loader, setLoader] = useState(false);
     const dispatch = useDispatch();
     const result = useSelector(state => state.schoolReducer)
-
+    const [loader2, setLoader2] = useState(true);
     useEffect(() => {           /* For closing the sidebar if opened */
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
@@ -63,13 +63,20 @@ const AllSchool = (props) => {
     ]
 
     useEffect(() => {
-        props.setBreadcrumbItems('All School', breadcrumbItems)
-        console.log(result?.school?.length == 0);
-        if (result?.school?.length == 0) {
-            dispatch(fetchSchool());
-        }
-
+        props.setBreadcrumbItems('All School', breadcrumbItems);
     })
+
+    useEffect(() => {
+        setLoader2(true);
+        dispatch(fetchSchool());
+
+    }, []);
+
+    useEffect(() => {
+        if (result?.school?.success == true) {
+            setLoader2(false);
+        }
+    }, [result?.school]);
 
 
     const data = {
@@ -170,6 +177,9 @@ const AllSchool = (props) => {
     }
     return (
         <React.Fragment>
+            {loader2 ? (
+                <Loader />
+            ) : ("")}
             {loader ? (
                 <Loader />
             ) : ("")}

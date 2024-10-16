@@ -32,7 +32,7 @@ const AllSubSections = (props) => {
     const dispatch = useDispatch();
     const subSections = useSelector(state => state.subSectionsReducer)
     const sections = useSelector(state => state.sectionsReducer);
-
+    const [loader2, setLoader2] = useState(true);
 
     const breadcrumbItems = [
         { title: "Sub Section", link: "#" },
@@ -55,14 +55,20 @@ const AllSubSections = (props) => {
     })
 
 
+
+
     useEffect(() => {
-        if (sections?.sections?.length == 0) {
-            dispatch(fetchSection());
+        setLoader2(true);
+        dispatch(fetchSubSection());
+        dispatch(fetchSection());
+
+    }, []);
+
+    useEffect(() => {
+        if (subSections?.subSections?.success == true) {
+            setLoader2(false);
         }
-        if (subSections?.subSections?.length == 0) {
-            dispatch(fetchSubSection());
-        }
-    })
+    }, [subSections?.subSections]);
 
 
     const data = {
@@ -156,6 +162,10 @@ const AllSubSections = (props) => {
     return (
         <React.Fragment>
             {loader ? (
+                <Loader />
+            ) : ("")}
+
+            {loader2 ? (
                 <Loader />
             ) : ("")}
             <Row>

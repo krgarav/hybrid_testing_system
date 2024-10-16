@@ -69,6 +69,7 @@ const CreateQuestionUsingAi = (props) => {
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [auth, setAuth] = useAuth();
     const [loader, setLoader] = useState(false);
+    const [loader2, setLoader2] = useState(false);
     const [another, setAnother] = useState(false);
     const [aiQuestions, setAiQuestions] = useState([]);
     const [modalShow, setModalShow] = useState(false);
@@ -117,16 +118,20 @@ const CreateQuestionUsingAi = (props) => {
     })
     const fetchCourses = async () => {
         if (classs) {
+
             try {
-
-
+                setLoader2(true);
                 let id = classs.id;
-
                 let result = await fetchAllCoursesByClass(id);
                 setCourses(result);
             } catch (error) {
-
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader2(false);
             }
+
+
         }
     }
     useEffect(() => {
@@ -136,15 +141,17 @@ const CreateQuestionUsingAi = (props) => {
     const fetchSections = async () => {
         if (course) {
             try {
-
-
+                setLoader2(true);
                 let id = course.id;
-
                 let result = await fetchAllSectionsByCourse([id]);
                 setSections(result);
             } catch (error) {
-
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader2(false);
             }
+
         }
     }
     useEffect(() => {
@@ -153,16 +160,19 @@ const CreateQuestionUsingAi = (props) => {
 
     const fetchSubSections = async () => {
         if (section) {
+
             try {
-
-
+                setLoader2(true);
                 let id = section.id;
-
                 let result = await fetchAllSubSectionsBySection([id]);
                 setSubSections(result);
             } catch (error) {
-
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader2(false);
             }
+
         }
     }
     useEffect(() => {
@@ -203,7 +213,7 @@ const CreateQuestionUsingAi = (props) => {
                 setLoader(true);
                 setProgress(0);
                 const { data } = await axios.post(
-                    "http://192.168.1.36:5000/generateQuestionsUsingAi",
+                    "https://ai.is10live.com/generateQuestionsUsingAi",
                     { className, courseName, sectionName, subSectionName, difficultyName, languageName, type },
                 );
                 clearInterval(progressInterval);
@@ -638,6 +648,11 @@ const CreateQuestionUsingAi = (props) => {
     ];
     return (
         <React.Fragment>
+            {loader2 ? (
+                <Loader />
+
+            ) : ("")
+            }
             {loader ? (
                 // <Loader />
                 <>

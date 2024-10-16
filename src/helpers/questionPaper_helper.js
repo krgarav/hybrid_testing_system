@@ -22,7 +22,8 @@ export const getResultDetails = data => get(url.GET_RESULT_DETAILS1 + data.stude
 export const sendResult = id => post(url.SEND_EXAM_RESULT + id);
 
 
-
+export const downloadQuestionPaperWithAnswer = id => get(url.DOWNLOAD_QUESTION_PAPER_WITH_ANSWER + id);
+export const downloadQuestionPaperWithoutAnswer = id => get(url.DOWNLOAD_QUESTION_PAPER_WITHOUT_ANSWER + id);
 
 export const ExamTypes = [
     { id: 0, name: "Offline Exam" },

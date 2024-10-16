@@ -25,12 +25,15 @@ const AllClasses = (props) => {
     const dispatch = useDispatch();
     const [loader, setLoader] = useState(false);
     const result = useSelector(state => state.classesReducer)
-
+    const [loader2, setLoader2] = useState(true);
 
     const breadcrumbItems = [
         { title: "Class", link: "#" },
         { title: "All Classes", link: "#" },
     ]
+    useEffect(() => {
+        props.setBreadcrumbItems('All Classes', breadcrumbItems);
+    })
     useEffect(() => {
         const blurDiv = document.getElementById("blur");
         var width = window.innerWidth;
@@ -40,12 +43,16 @@ const AllClasses = (props) => {
     }, [])
 
     useEffect(() => {
-        props.setBreadcrumbItems('All Classes', breadcrumbItems)
-        if (result?.classes?.length == 0) {
-            dispatch(fetchClass());
-        }
+        setLoader2(true);
+        dispatch(fetchClass());
 
-    })
+    }, []);
+
+    useEffect(() => {
+        if (result?.classes?.success == true) {
+            setLoader2(false);
+        };
+    }, [result?.classes]);
 
 
     const [page, setPage] = useState(1);
@@ -124,6 +131,12 @@ const AllClasses = (props) => {
     return (
         <React.Fragment>
 
+            {loader2 ? (
+                <>
+                    dsds
+                    < Loader />
+                </>
+            ) : ("")}
             {loader ? (
                 <>
                     < Loader />

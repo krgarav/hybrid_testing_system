@@ -13,6 +13,9 @@ import { Link } from "react-router-dom"
 import { withTranslation } from "react-i18next"
 import { useAuth } from "context/authContext"
 
+const oldcolor = "#09f3df";
+// const color = "#000000";
+
 const SidebarContent = props => {
   const [auth] = useAuth();
   const [access, setAccess] = useState(null);
@@ -20,7 +23,28 @@ const SidebarContent = props => {
   const [examSystemDisplay, setExamSystemDisplay] = useState("none")
   const [administrationDisplay, setAdministrationDisplay] = useState("none")
   const [display, setDisplay] = useState({ classs: "", course: "", section: "", subSection: "", difficulty: "", question: "", questionPaper: "", schoolManagment: "", userManagment: "", studentManagment: "", centerManagment: "", language: "" });
+  const packName = JSON.parse(localStorage.getItem("authUser"))?.packageName;
+  const [color, setColor] = React.useState("");
+  const [color2, setColor2] = React.useState("");
+  const [color3, setColor3] = React.useState("");
 
+
+  useEffect(() => {
+    console.log("packName --->", packName);
+    if (packName == "gold") {
+      setColor("brown");
+      setColor2("black");
+      setColor3("white");
+    } else if (packName == "bronze") {
+      setColor("white");
+      setColor2("black");
+      setColor3("#6a6437");
+    } else if (packName == "silver") {
+      setColor("green");
+      setColor2("black");
+      setColor3("#6a6437");
+    }
+  }, []);
 
 
 
@@ -57,6 +81,10 @@ const SidebarContent = props => {
   const ref = useRef();
   const activateParentDropdown = useCallback((item) => {
     item.classList.add("active");
+    item.style.color = "white";
+
+    item.style.backgroundColor = packName == "green";
+
     const parent = item.parentElement;
     const parent2El = parent.childNodes[1];
 
@@ -74,8 +102,7 @@ const SidebarContent = props => {
         const parent3 = parent2.parentElement; // li tag
 
         if (parent3) {
-          parent3.classList.add("mm-active"); // li
-          parent3.childNodes[0].classList.add("mm-active"); //a
+          parent3.classList.add("mm-active"); // li  31
           const parent4 = parent3.parentElement; // ul
           if (parent4) {
             parent4.classList.add("mm-show"); // ul
@@ -101,6 +128,8 @@ const SidebarContent = props => {
 
       if (item && item.classList.contains("active")) {
         item.classList.remove("active");
+        item.style.backgroundColor = "";
+        item.style.color = "";
       }
       if (parent) {
         const parent2El =
@@ -187,16 +216,16 @@ const SidebarContent = props => {
               <Link to="/dashboard" className="waves-effect">
                 <i className="mdi mdi-view-dashboard"></i>
                 {/* <span className="badge rounded-pill bg-primary float-end">2</span> */}
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Dashboard")}</span>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("Dashboard")}</span>
               </Link>
             </li>
-            <li className="menu-title" style={{ "display": questionBankDisplay, fontSize: ".8rem", color: "white" }}>{props.t("Question Bank System")} </li>
+            <li className="menu-title" style={{ "display": questionBankDisplay, fontSize: ".8rem", color: color2 }}>{props.t("Question Bank System")} </li>
 
             <li style={{ "display": display.classs === true ? "block" : "none " }}>
 
               <Link to="/#" className="has-arrow waves-effect">
-                <i className="mdi mdi-calendar-check"></i>
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Class")}</span>
+                <i className="mdi mdi-calendar-check" style={{ color: color }}></i>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("Class")}</span>
               </Link>
 
               <ul className="sub-menu" >
@@ -212,8 +241,8 @@ const SidebarContent = props => {
 
             <li style={{ "display": display.course === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
-                <i className="fas fa-hdd"></i>
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Course")}</span>
+                <i className="fas fa-hdd" style={{ color: color }}></i>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("Course")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -228,8 +257,8 @@ const SidebarContent = props => {
             <li style={{ "display": display.section === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-book"></i>
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Section")}</span>
+                <i className="fas fa-book" style={{ color: color }}></i>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("Section")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -244,8 +273,8 @@ const SidebarContent = props => {
             <li style={{ "display": display.subSection === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-book"></i>
-                <span style={{ fontSize: "1rem", color: "#09f3df" }} >{props.t("Sub Section")}</span>
+                <i className="fas fa-book" style={{ color: color }}></i>
+                <span style={{ fontSize: "1rem", color: color }} >{props.t("Sub Section")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -260,8 +289,8 @@ const SidebarContent = props => {
             <li style={{ "display": display.difficulty === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-book"></i>
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Difficulty")}</span>
+                <i className="fas fa-book" style={{ color: color }}></i>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("Difficulty")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -276,8 +305,8 @@ const SidebarContent = props => {
             <li style={{ "display": display.language === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-book"></i>
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Language")}</span>
+                <i className="fas fa-book" style={{ color: color }}></i>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("Language")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -292,15 +321,18 @@ const SidebarContent = props => {
             <li style={{ "display": display.question === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect"  >
 
-                <i className="fas fa-dice-d6"></i>
+                <i className="fas fa-dice-d6" style={{ color: color }}></i>
 
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("Question")}</span>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("Question")}</span>
 
 
               </Link>
               <ul className="sub-menu" >
                 <li>
                   <Link to="/create-question">{props.t("Create Question")}</Link>
+                </li>
+                <li>
+                  <Link to="/qc-return-questions">{props.t("QC Return Question")}</Link>
                 </li>
                 <li>
                   <Link to="/create-question-using-ai">{props.t("Genrate Question Using Ai")}</Link>
@@ -317,16 +349,18 @@ const SidebarContent = props => {
 
             <li style={{ "display": display.qbWorkflow === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect"  >
+                <i className="fas fa-dice-d6" style={{ color: color }}></i>
 
-                <i className="fas fa-dice-d6"></i>
-
-                <span style={{ fontSize: "1rem", color: "#09f3df" }}>{props.t("QB Workflow")}</span>
+                <span style={{ fontSize: "1rem", color: color }}>{props.t("QB Workflow")}</span>
 
 
               </Link>
               <ul className="sub-menu" >
                 <li>
                   <Link to="/qb-workflow">{props.t("Workflow")}</Link>
+                </li>
+                <li>
+                  <Link to="/workflow-task">{props.t("Workflow Task")}</Link>
                 </li>
 
               </ul>
@@ -337,8 +371,8 @@ const SidebarContent = props => {
             <li style={{ "display": display.questionPaper === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-dice-d6"></i>
-                <span style={{ fontSize: ".9rem", color: "#09f3df" }}>{props.t("Question Paper")}</span>
+                <i className="fas fa-dice-d6" style={{ color: color }}></i>
+                <span style={{ fontSize: ".9rem", color: color }}>{props.t("Question Paper")}</span>
               </Link>
               <ul className="sub-menu"  >
                 <li>
@@ -349,13 +383,13 @@ const SidebarContent = props => {
                 </li>
               </ul>
             </li>
-            <li className="menu-title" style={{ "display": examSystemDisplay, fontSize: ".8rem", color: "white" }}>{props.t("Exam System")} </li>
+            <li className="menu-title" style={{ "display": examSystemDisplay, fontSize: ".8rem", color: color2 }}>{props.t("Exam System")} </li>
 
             <li style={{ "display": display.schoolManagment === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-dice-d6"></i>
-                <span style={{ fontSize: ".9rem", color: "#09f3df" }}>{props.t("School Managment")}</span>
+                <i className="fas fa-dice-d6" style={{ color: color }}></i>
+                <span style={{ fontSize: ".9rem", color: color }}>{props.t("School Managment")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -370,8 +404,8 @@ const SidebarContent = props => {
             <li style={{ "display": display.studentManagment === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-dice-d6"></i>
-                <span style={{ fontSize: ".9rem", color: "#09f3df" }}>{props.t("Studets Managment")}</span>
+                <i className="fas fa-dice-d6" style={{ color: color }}></i>
+                <span style={{ fontSize: ".9rem", color: color }}>{props.t("Studets Managment")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -386,8 +420,8 @@ const SidebarContent = props => {
             <li style={{ "display": display.centerManagment === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-dice-d6"></i>
-                <span style={{ fontSize: ".9rem", color: "#09f3df" }}>{props.t("Exam Managment")}</span>
+                <i className="fas fa-dice-d6" style={{ color: color }}></i>
+                <span style={{ fontSize: ".9rem", color: color }}>{props.t("Exam Managment")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -405,13 +439,13 @@ const SidebarContent = props => {
               </ul>
             </li>
 
-            <li className="menu-title" style={{ "display": administrationDisplay, fontSize: ".8rem", color: "white" }}>{props.t("Administration")} </li>
+            <li className="menu-title" style={{ "display": administrationDisplay, fontSize: ".8rem", color: color2 }}>{props.t("Administration")} </li>
 
             <li style={{ "display": display.userManagment === true ? "block" : "none " }}>
               <Link to="/#" className="has-arrow waves-effect">
 
-                <i className="fas fa-dice-d6"></i>
-                <span style={{ fontSize: ".9rem", color: "#09f3df" }}>{props.t("User Managment")}</span>
+                <i className="fas fa-dice-d6" style={{ color: color }}></i>
+                <span style={{ fontSize: ".9rem", color: color }}>{props.t("User Managment")}</span>
               </Link>
               <ul className="sub-menu" >
                 <li>
@@ -424,81 +458,7 @@ const SidebarContent = props => {
             </li>
 
 
-            {/* <li className="menu-title">Extras</li> */}
 
-            {/* <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="mdi mdi-account-box"></i>
-                <span>{props.t("Authentication")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/pages-login">{props.t("Login")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-register">{props.t("Register")}</Link>
-                </li>
-                <li>
-                  <Link to="/page-recoverpw">
-                    {props.t("Recover Password")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/auth-lock-screen">{props.t("Lock Screen")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="mdi mdi-text-box-multiple-outline"></i>
-                <span>{props.t("Extra Pages")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/pages-timeline">{props.t("Timeline")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-invoice">{props.t("Invoice")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-directory">{props.t("Directory")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-blank">{props.t("Blank Page")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-404">{props.t("Error 404")}</Link>
-                </li>
-                <li>
-                  <Link to="/pages-500">{props.t("Error 500")}</Link>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="mdi mdi-share-variant"></i>
-                <span>{props.t("Multi Level")}</span>
-              </Link>
-              <ul className="sub-menu">
-                <li>
-                  <Link to="/#">{props.t("Level 1.1")}</Link>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow">
-                    {props.t("Level 1.2")}
-                  </Link>
-                  <ul className="sub-menu">
-                    <li>
-                      <Link to="/#">{props.t("Level 2.1")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/#">{props.t("Level 2.2")}</Link>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li> */}
           </ul>
         </div>
       </SimpleBar>

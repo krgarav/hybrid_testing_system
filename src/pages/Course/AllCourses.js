@@ -26,6 +26,7 @@ const AllCourses = (props) => {
     const [classs, setClasss] = useState(null);
     const dispatch = useDispatch();
     const [loader, setLoader] = useState(false);
+    const [loader2, setLoader2] = useState(true);
     const result = useSelector(state => state.coursesReducer)
     const classes = useSelector(state => state.classesReducer)
 
@@ -45,15 +46,20 @@ const AllCourses = (props) => {
             blurDiv.click()
         }
     }, [])
-    useEffect(() => {
-        if (classes?.classes?.length == 0) {
-            dispatch(fetchClass());
-        }
-        if (result?.courses?.length == 0) {
-            dispatch(fetchCourse());
-        }
 
-    })
+
+    useEffect(() => {
+        setLoader2(true);
+        dispatch(fetchCourse());
+        dispatch(fetchClass());
+
+    }, []);
+
+    useEffect(() => {
+        if (result?.courses?.success == true) {
+            setLoader2(false);
+        };
+    }, [result?.courses]);
 
 
 
@@ -145,6 +151,11 @@ const AllCourses = (props) => {
     };
     return (
         <React.Fragment>
+
+
+            {loader2 ? (
+                <Loader />
+            ) : ("")}
             {loader ? (
                 <Loader />
             ) : ("")}

@@ -37,6 +37,9 @@ import { initiateCheckoutPayment } from "helpers/payment_helper";
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-toastify';
 import Select from "react-select"
+import './index.css';
+import ReactModal from 'react-modal';
+import { CustomModal } from './CustomModal';
 const stripePromise = loadStripe('pk_test_51Py89eP54OU5rCubDXmgEnqHwnbaW3zvdU9klN8JosgaBuek5hIIzimaQ7RiKOo9ZhFJzm9U4V0EjPXz2Eb72TVz001fnu5hzj');
 // import "./Header.module.css";
 const Layout = (props) => {
@@ -158,13 +161,18 @@ const Layout = (props) => {
 
 
   useEffect(() => {
-    let a = JSON.parse(localStorage.getItem("authUser"))?.packageName;
+    const timer = setTimeout(() => {
+      let a = JSON.parse(localStorage.getItem("authUser"))?.packageName;
 
+      if (a?.length <= 0) {
+        console.log("hello check length of a ---------------------------> ", a);
+        setFirstModal(true);
+      }
+      setCurrentPackage(a);
+    }, 3000); // Delay of 5000 milliseconds (5 seconds)
 
-    if (a?.length <= 0) {
-      setFirstModal(true);
-    }
-    setCurrentPackage(a);
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timer);
   }, []);
 
   const monthsData = [
@@ -235,6 +243,8 @@ const Layout = (props) => {
     }
   }
 
+  const closeModal = () => {
+  };
   return (
     <React.Fragment>
       {loader ? (
@@ -280,12 +290,13 @@ const Layout = (props) => {
 
 
       <Modal
-        show={firstModal}
+        show={false}
         size="lg"
+        style={{ maxWidth: '80%', width: '100%' }}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header >
+        <Modal.Header  >
           <Modal.Title id="contained-modal-title-vcenter">
             Buy Package
           </Modal.Title>
@@ -422,6 +433,9 @@ const Layout = (props) => {
       </Modal>
 
 
+      <CustomModal isOpen={firstModal} onRequestClose={closeModal} setPackageType={setPackageType} setSecondModal={setSecondModal} setFirstModal={setFirstModal} />
+
+
       <Modal
         show={secondModal}
         size="lg"
@@ -469,6 +483,8 @@ const Layout = (props) => {
 
               <Row className="mb-3">
                 <div className="mt-4 ">
+
+                  <button type="button" className="btn btn-secondary w-md me-2" onClick={() => { setSecondModal(false); setFirstModal(true) }}>Close</button>
                   <button type="button" className="btn btn-primary w-md" onClick={() => makePayment()}>Buy Now</button>
                 </div>
               </Row>

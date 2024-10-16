@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 import { connect } from "react-redux";
 import {
@@ -23,6 +23,9 @@ import { setBreadcrumbItems } from "../../store/actions";
 import { updateToken } from "helpers/api_helper";
 import { useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
+import { getDashboardData } from "helpers/dashboard_helper";
+import { use } from "i18next";
+import Loader from "components/Loader/Loader";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -42,40 +45,63 @@ const Dashboard = (props) => {
     props.setBreadcrumbItems('Dashboard', breadcrumbItems)
   },)
 
-
+  const [loader, setLoader] = useState(true);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     updateToken();
   }, []);
 
+  const getData = async () => {
+    try {
+      setLoader(true);
+      const result = await getDashboardData();
+      setData(result);
+
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoader(false);
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+
+
 
 
   const reports = [
-    { title: "Questions in QB", iconClass: "cube-outline", total: "1200", average: "+11%", badgecolor: "info", navigateLink: "/all-questions" },
-    { title: "School Register", iconClass: "buffer", total: "5", average: "+29%", badgecolor: "info", navigateLink: "/all-school" },
-    { title: "School Sitting Capacity", iconClass: "tag-text-outline", total: "4500", average: "0%", badgecolor: "info", navigateLink: "/dashboard" },
-    { title: "Student Registered", iconClass: "briefcase-check", total: "1000", average: "+89%", badgecolor: "info", navigateLink: "/dashboard" },
+    { title: "Questions in QB", iconClass: "cube-outline", total: data?.totalQuestions, average: "+11%", badgecolor: "info", navigateLink: "/all-questions" },
+    { title: "School Register", iconClass: "buffer", total: data?.totalSchools, average: "+29%", badgecolor: "info", navigateLink: "/all-school" },
+    { title: "School Sitting Capacity", iconClass: "tag-text-outline", total: data?.totalSittingCapacity, average: "0%", badgecolor: "info", navigateLink: "/dashboard" },
+    { title: "Student Registered", iconClass: "briefcase-check", total: data?.totalStudents, average: "+89%", badgecolor: "info", navigateLink: "/dashboard" },
   ]
 
   return (
     <React.Fragment>
-
+      {loader ? (
+        <Loader />
+      ) : ("")}
       {/*mimi widgets */}
       <Miniwidget reports={reports} />
 
       <Row>
         <Col xl="3">
           {/* Monthly Earnings */}
-          <MonthlyEarnings />
+          <MonthlyEarnings data={data} />
         </Col>
 
         <Col xl="6">
           {/* Email sent */}
-          <EmailSent />
+          <EmailSent data={data} />
         </Col>
 
         <Col xl="3">
-          <MonthlyEarnings2 />
+          <MonthlyEarnings2 data={data} />
         </Col>
 
       </Row>

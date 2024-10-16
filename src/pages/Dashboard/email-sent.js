@@ -60,21 +60,23 @@ class MonthlyEarnings extends Component {
     render() {
         return (
             <React.Fragment>
-                <Card>
+                < Card >
                     <CardBody>
                         <h4 className="card-title mb-4">Student Registerd</h4>
 
+
+
                         <Row className="text-center mt-4">
                             <Col xs="4">
-                                <h5 className="font-size-20">600</h5>
+                                <h5 className="font-size-20">{this.props.data?.totalStudents}</h5>
                                 <p className="text-muted">Old Student</p>
                             </Col>
                             <Col xs="4">
-                                <h5 className="font-size-20">250</h5>
+                                <h5 className="font-size-20">{this.props.data?.totalStudents}</h5>
                                 <p className="text-muted">Attempt Exam</p>
                             </Col>
                             <Col xs="4">
-                                <h5 className="font-size-20">150</h5>
+                                <h5 className="font-size-20">--</h5>
                                 <p className="text-muted">Last Month Registered</p>
                             </Col>
                         </Row>
@@ -84,7 +86,7 @@ class MonthlyEarnings extends Component {
                         </div>
                     </CardBody>
                 </Card>
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 }

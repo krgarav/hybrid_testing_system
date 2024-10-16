@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useState } from "react"
 import './App.css'
 
-import { Route, Routes, useLocation } from "react-router-dom"
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import { connect } from "react-redux"
 
 // Import Routes all
@@ -78,25 +78,23 @@ const App = props => {
   const [save, setSave] = useState(true);
 
   const query = useQuery();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const authUser = query.get('authtoken');
+    console.log(authUser)
+    if (authUser) {
+      localStorage.setItem('authUser', authUser);
+      localStorage.removeItem('showSuccessToast');
+      navigate("/dashboard");
+      toast.success('Login successful!');
 
-  // useEffect(() => {
-  //   if (localStorage.getItem('authUser')) {
-  //     setSave(true);
-  //   }
-  //   else {
+    }
 
+  }, []);
 
-  //     const authUser = query.get('authtoken');
-
-  //     if (authUser) {
-  //       localStorage.setItem('authUser', authUser);
-  //       localStorage.removeItem('showSuccessToast');
-  //       toast.success('Login successful!');
-  //       setSave(true)
-
-  //     }
-  //   }
-  // }, [query]);
+  useEffect(() => {
+    console.log("hello workldkfdkf -----------------------------> ")
+  }, []);
 
   return (
     <React.Fragment>

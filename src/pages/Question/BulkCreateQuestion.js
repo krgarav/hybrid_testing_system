@@ -107,10 +107,19 @@ const CreateQuestion = (props) => {
     })
     const fetchCourses = async () => {
         if (classs) {
-            let id = classs.id;
+            try {
+                setLoader(true);
+                let id = classs.id;
 
-            let result = await fetchAllCoursesByClass(id);
-            setCourses(result);
+                let result = await fetchAllCoursesByClass(id);
+                setCourses(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
+
         }
     }
     useEffect(() => {
@@ -119,10 +128,19 @@ const CreateQuestion = (props) => {
 
     const fetchSections = async () => {
         if (course) {
-            let id = course.id;
+            try {
+                setLoader(true);
+                let id = course.id;
 
-            let result = await fetchAllSectionsByCourse([id]);
-            setSections(result);
+                let result = await fetchAllSectionsByCourse([id]);
+                setSections(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
+
         }
     }
     useEffect(() => {
@@ -131,10 +149,19 @@ const CreateQuestion = (props) => {
 
     const fetchSubSections = async () => {
         if (section) {
-            let id = section.id;
+            try {
+                setLoader(true);
+                let id = section.id;
 
-            let result = await fetchAllSubSectionsBySection([id]);
-            setSubSections(result);
+                let result = await fetchAllSubSectionsBySection([id]);
+                setSubSections(result);
+            } catch (error) {
+                console.log(error);
+                toast.error(error?.response?.data?.message || "something went wrong");
+            } finally {
+                setLoader(false);
+            }
+
         }
     }
     useEffect(() => {

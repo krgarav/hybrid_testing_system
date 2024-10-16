@@ -470,7 +470,7 @@ const TestScreen = () => {
 
   useEffect(() => {
     // Initialize socket connection
-    socketRef.current = io.connect('http://192.168.1.36:5000'); // Adjust to your Flask-SocketIO backend
+    socketRef.current = io.connect('https://ai.is10live.com'); // Adjust to your Flask-SocketIO backend
 
     // Request access to the webcam
     navigator.mediaDevices.getUserMedia({ video: true })

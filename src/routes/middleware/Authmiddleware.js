@@ -12,7 +12,7 @@ const Authmiddleware = (props) => {
     if (authUser) {
       localStorage.setItem('authUser', authUser);
       localStorage.removeItem('showSuccessToast');
-      toast.success('Login successful!');
+      // toast.success('Login successful!');
 
     }
     else {

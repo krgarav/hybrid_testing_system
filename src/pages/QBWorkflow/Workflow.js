@@ -123,41 +123,21 @@ const Workflow = (props) => {
     }, [])
 
 
-    const removeNode = (node, nodeName) => {
-        if (!node.children) return false;
-        node.children = node.children.filter((child) => {
-            if (child.name === nodeName) return false;
-            return !removeNode(child, nodeName);
-        });
-        return node.children.length === 0;
-    };
-
-    const handleDrop = (targetNodeData) => {
-        if (draggedNode) {
-            const newTreeData = { ...treeData };
-            const targetNode = findNode(newTreeData, targetNodeData.name);
-
-            if (targetNode && draggedNode.name !== targetNode.name) {
-                if (!targetNode.children) targetNode.children = [];
-                targetNode.children.push({ ...draggedNode });
-
-                removeNode(newTreeData, draggedNode.name);
-                setTreeData(newTreeData);
-                setDraggedNode(null);
-            }
-        }
-    };
 
 
 
-    const handleCreate = async () => {
+
+
+
+    const handleCreate = async (tree) => {
         try {
             setLoader(true);
-            const data = await createWorkflowTree(treeData);
+
+            const data = await createWorkflowTree(tree);
 
             if (data?.success) {
                 toast.success(data?.message);
-                setTreeData(null);
+
             }
             else {
                 toast.error(data?.message);
@@ -170,42 +150,46 @@ const Workflow = (props) => {
     }
 
 
-    // const handleSelectUser = selectedOption => {
-    //     setSelectedUser(selectedOption);
-    // };
-
-
-    const findNode = (node, nodeName) => {
-        if (node.name === nodeName) return node;
-        if (node.children) {
-            for (let child of node.children) {
-                const foundNode = findNode(child, nodeName);
-                if (foundNode) return foundNode;
-            }
-        }
-        return null;
-    };
 
     const handleAddNode = () => {
-        if (!selectedUser) return;
+        if (!selectedUser) return; // Ensure a user is selected before proceeding
+        const newNode = { name: selectedUser.name, userId: selectedUser.aspId };
 
-        const newNode = { name: selectedUser.name, id: selectedUser.id };
-
-        if (isFirstNode) {
+        if (!treeData || Object.keys(treeData).length === 0) {
+            // If the tree is empty, add the new node as the root node
             setTreeData(newNode);
+            handleCreate(newNode);
         } else {
-            if (!targetNodeName) return;
+            if (!targetNodeName) return; // Make sure a target node is specified
             const newTreeData = { ...treeData };
-            const targetNode = findNode(newTreeData, targetNodeName);
+
+            const targetNode = findNode(newTreeData, targetNodeName?.value); // Find the target node in the tree
+            console.log("targetNode", targetNode)
             if (targetNode) {
-                if (!targetNode.children) targetNode.children = [];
-                targetNode.children.push(newNode);
-                setTreeData(newTreeData);
+                if (!targetNode.children) targetNode.children = []; // Initialize children array if it doesn't exist
+                targetNode.children.push(newNode); // Add the new node as a child
+                setTreeData(newTreeData); // Update the tree with the new structure
+                handleUpdate(newTreeData);
             }
         }
 
+        // Reset the selected user and target node after the operation
         setSelectedUser(null);
         setTargetNodeName(null);
+    };
+
+    const findNode = (node, nodeName) => {
+        if (node.name === nodeName) return node; // Found the target node
+
+        // If the node has children, search recursively
+        if (node.children) {
+            for (let child of node.children) {
+                const result = findNode(child, nodeName);
+                if (result) return result;
+            }
+        }
+
+        return null; // Return null if no matching node is found
     };
 
     const handleSelectUser = (selectedOption, nodeDatum) => {
@@ -302,41 +286,61 @@ const Workflow = (props) => {
         setEditNodeModal(true);
     }
 
-    function findNodeByName(node, newUser, oldUser) {
 
-        // Check if the current node's name matches the target name
-        if (node.name === oldUser.name) {
-            node.name = newUser.name;
-            node.id = newUser.id;
-            return node;
-        }
-        // If the node has children, search through them
-        if (node.children && node.children.length > 0) {
-            for (let index = 0; index < node.children.length; index++) {
-                let child = node.children[index];
-                const result = findNodeByName(child, newUser, oldUser);
-                node.children[index] = result;  // Update the child with the result
-                console.log("node --> ", node);
-                console.log("result --> ", result);
+
+    const updateNode = (nodeNameToUpdate, updatedData) => {
+        if (!nodeNameToUpdate || !updatedData) return; // Ensure both node name and updated data are provided
+        console.log(nodeNameToUpdate, updatedData);
+        const updateNodeRecursively = (node, nameToUpdate) => {
+            // Check if the current node matches the name to update
+            console.log(node.name)
+            console.log(nameToUpdate.name)
+            if (node.name === nameToUpdate.name) {
+                // Update the node's properties with the new data
+                node.name = updatedData.name || node.name; // Update name if provided
+                node.id = updatedData.id || node.id;       // Update id if provided
+                return true; // Return true to indicate successful update
             }
 
+            // If the node has children, search recursively
+            if (node.children) {
+                for (let child of node.children) {
+                    if (updateNodeRecursively(child, nameToUpdate)) {
+                        return true; // If update was successful, return true
+                    }
+                }
+            }
+
+            return false; // Return false if the node wasn't found
+        };
+
+        // Create a copy of the tree data to avoid direct mutation
+        const newTreeData = { ...treeData };
+        console.log("newTreeData ", newTreeData);
+        // Start the update process from the root
+        const updated = updateNodeRecursively(newTreeData, nodeNameToUpdate);
+
+        if (updated) {
+            // Update the state with the modified tree
+            setTreeData(newTreeData);
+            handleUpdate(newTreeData);
+        } else {
+            console.warn(`Node with name "${nodeNameToUpdate}" not found.`);
         }
-        // If no match is found, return null
-        return node;
-    }
+    };
 
     const handleUpdateNode = async () => {
+        updateNode(modalSelectedOldUser, modalSelectedNewUser);
+        setEditNodeModal(false)
+    }
 
+    const handleUpdate = async (tree) => {
         try {
-
             setLoader(true)
-            let updatedTree = findNodeByName(treeData, modalSelectedNewUser, modalSelectedOldUser);
-            console.log("updatedTree ", updatedTree);
-            const data = await updateWorkflowTree(updatedTree);
+            const data = await updateWorkflowTree(tree);
             if (data?.success) {
                 toast.success(data?.message);
-                getAllWorkflow();
-                setEditNodeModal(false)
+
             } else {
                 toast.error(data?.message)
             }
@@ -347,45 +351,56 @@ const Workflow = (props) => {
         }
     }
 
-    const handleDeleteNode = async (name) => {
+    const handleDeleteNode = (nodeNameToDelete) => {
+        if (!nodeNameToDelete) return; // Ensure a node name is provided
 
-        const deleteNodeRecursively = (node, name) => {
-            // Filter out the node with the specified name
-            node.children = node.children.filter(child => {
-                if (child.name === name) {
-                    return false; // Exclude this node
+        const deleteLeafNodeRecursively = (node, nameToDelete) => {
+            if (!node.children) return false; // If there are no children, return false
+
+            // Find the index of the child node to delete
+            const indexToDelete = node.children.findIndex(child => child.name === nameToDelete);
+
+            if (indexToDelete !== -1) {
+                // Check if the node to delete is a leaf node
+                const nodeToDelete = node.children[indexToDelete];
+                if (!nodeToDelete.children || nodeToDelete.children.length === 0) {
+                    // Node is a leaf; remove it from the children array
+                    node.children.splice(indexToDelete, 1);
+                    return true; // Return true to indicate successful deletion
+                } else {
+                    // toast.warn(`Node "${nameToDelete}" is not a leaf node and cannot be deleted.`);
+                    console.warn(`Node "${nameToDelete}" is not a leaf node and cannot be deleted.`);
+                    return false; // Node is not a leaf, so do not delete
                 }
-                deleteNodeRecursively(child, name); // Continue processing children
-                return true; // Include this node
-            });
+            }
+
+            // If not found, check children recursively
+            for (let child of node.children) {
+                if (deleteLeafNodeRecursively(child, nameToDelete)) {
+                    return true; // If deletion was successful, return true
+                }
+            }
+
+            return false; // Return false if the node wasn't found
         };
 
-        if (treeData) {
-            // Create a copy of the tree to avoid mutating the state directly
-            const updatedTree = { ...treeData };
-            deleteNodeRecursively(updatedTree, name);
-            console.log(updatedTree)
-            setTreeData(updatedTree); // Update state with the new tree
+        // Create a copy of the tree data to avoid direct mutation
+        const newTreeData = { ...treeData };
 
-            try {
+        // Start the deletion process from the root
+        const deleted = deleteLeafNodeRecursively(newTreeData, nodeNameToDelete);
 
-                setLoader(true)
-
-                const data = await updateWorkflowTree(updatedTree);
-                if (data?.success) {
-                    toast.success(data?.message);
-                    getAllWorkflow();
-                    setEditNodeModal(false)
-                } else {
-                    toast.error(data?.message)
-                }
-            } catch (error) {
-                toast.error(error?.response?.data?.message);
-            } finally {
-                setLoader(false);
-            }
+        if (deleted) {
+            // Update the state with the modified tree
+            setTreeData(newTreeData);
+            handleUpdate(newTreeData);
+        } else {
+            toast.warn(`Leaf node with name "${nodeNameToDelete}" not found or is not a leaf node.`);
+            console.warn(`Leaf node with name "${nodeNameToDelete}" not found or is not a leaf node.`);
         }
     };
+
+
     return (
         <React.Fragment>
             {loader ? (
@@ -418,10 +433,10 @@ const Workflow = (props) => {
                                         <div className="me-2">
 
 
-                                            {!isFirstNode && (
+                                            {treeData && (
                                                 <Select
                                                     value={targetNodeName}
-                                                    onChange={(selectedOption) => { setTargetNodeName(selectedOption); console.log(selectedOption) }}
+                                                    onChange={(selectedOption) => { setTargetNodeName(selectedOption) }}
                                                     options={nodes.map(node => ({ value: node, label: node }))}
                                                     classNamePrefix="select2-selection"
                                                     style={{ marginRight: '10px' }}
@@ -433,11 +448,7 @@ const Workflow = (props) => {
                                             {/* <button onClick={handleAddNode}>Add Node</button> */}
                                             <button type="submit" onClick={handleAddNode} className="btn btn-primary w-md">Add Node</button>
                                         </div>
-                                        <div className="me-2">
 
-                                            {/* <button onClick={handleAddNode}>Add Node</button> */}
-                                            <button type="submit" onClick={handleCreate} className="btn btn-primary w-md">Save Tree</button>
-                                        </div>
                                     </div>
                                 </div>
                                 {treeData && (

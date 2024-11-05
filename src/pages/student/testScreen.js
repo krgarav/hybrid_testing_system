@@ -23,7 +23,7 @@ import classes from "./testscreen.module.css"
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import AgoraRTM from 'agora-rtm-sdk';
 import Loader from "components/Loader/Loader";
-
+import "../../css/testScreen.css"
 
 const TestScreen = () => {
   const fullScreenRef = useRef(null);
@@ -37,6 +37,9 @@ const TestScreen = () => {
   const [recorder, setRecorder] = useState(null);
   const [timeFinish, setTimeFinish] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [aiProctoring, setAiProctoring] = useState(false);
+  const [liveProctoring, setLiveProctoring] = useState(false);
+  const [warningCounts, setWarningCounts] = useState(0);
   const socket = useRef(null);
   let isAlertShown = false;
 
@@ -52,7 +55,9 @@ const TestScreen = () => {
 
   useEffect(() => {
     let a = JSON.parse(localStorage.getItem("student"))?.examSet[0];
-    // console.log("time ---->", a[0].time)
+    setAiProctoring(a?.[0].aiProctoring);
+    setLiveProctoring(a?.[0].liveProctoring);
+    setWarningCounts(a?.[0].warningCounts);
     setQuestion(a);
   }, []);
 
@@ -68,10 +73,11 @@ const TestScreen = () => {
   const [modalShow, setModalShow] = useState(false);
   const [startTime, setStartTime] = useState(Date.now()); // To track when the question started
   const [timeSpent, setTimeSpent] = useState([]); // To store time spent on each question
-
+  const [warningCount1, setWarningCount1] = useState(0);
+  const [warningCount2, setWarningCount2] = useState(0);
+  const [warningCount3, setWarningCount3] = useState(0);
   // const [warningCount, setWarningCount] = useState(1);
-  let warningCount1 = 0;
-  let warningCount2 = 0;
+
 
 
 
@@ -248,7 +254,6 @@ const TestScreen = () => {
 
 
 
-
   const handleKeyDown = (event) => {
 
     if (event.key == "Q") {
@@ -276,7 +281,7 @@ const TestScreen = () => {
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'hidden') {
       if (!isAlertShown) {
-        if (warningCount1 + warningCount2 === 2) {
+        if (warningCount1 + warningCount2 + warningCount3 === warningCounts) {
           let a = Object.keys(answers).length;
           let v = Object.keys(visited).length;
           let s = Object.keys(submit).length;
@@ -284,11 +289,11 @@ const TestScreen = () => {
 
           localStorage.removeItem("student");
           navigate(`/finalsubmit/${s}/${v}/${ua}`);
-          warningCount1 = 0;
+          setWarningCount1(0);
         } else {
           alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
           isAlertShown = true;
-          warningCount1++;
+          setWarningCount1(warningCount1 + 1);
         }
       }
     } else {
@@ -297,7 +302,7 @@ const TestScreen = () => {
   };
 
   const handleWindowBlur = () => {
-    if (warningCount1 + warningCount2 === 2) {
+    if (warningCount1 + warningCount2 + warningCount3 === warningCounts) {
       let a = Object.keys(answers).length;
       let v = Object.keys(visited).length;
       let s = Object.keys(submit).length;
@@ -305,13 +310,13 @@ const TestScreen = () => {
 
       localStorage.removeItem("student");
       navigate(`/finalsubmit/${s}/${v}/${ua}`);
-      warningCount2 = 0;
+      setWarningCount2(0);
     } else {
       isAlertShown = false; // Reset flag when window blur event occurs
       if (!isAlertShown) {
         alert('This is your final chance. If you switch windows again, your test will be automatically submitted.');
         isAlertShown = true;
-        warningCount2++;
+        setWarningCount2(warningCount2 + 1);
       }
     }
   };
@@ -324,10 +329,7 @@ const TestScreen = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleWindowBlur);
     };
-  }, []);
-
-
-
+  }, [warningCounts, warningCount1, warningCount2, warningCount3]);
 
 
   useEffect(() => {
@@ -369,24 +371,6 @@ const TestScreen = () => {
   }, []);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   useEffect(() => {
     if (timeFinish) {
       toast.success("Time Finish")
@@ -397,7 +381,7 @@ const TestScreen = () => {
 
 
 
-  // proctoring code 
+  // code for live proctoring 
   const localVideoRef = useRef(null);
   const rtcClient = useRef(null);
   const localStream = useRef(null);
@@ -408,6 +392,7 @@ const TestScreen = () => {
 
 
   useEffect(() => {
+    if (!liveProctoring) return;
     const initAgora = async () => {
       try {
         // Initialize RTC client
@@ -449,15 +434,13 @@ const TestScreen = () => {
         rtmClient.current.logout().catch(error => console.error('Logout failed:', error));
       }
     };
-  }, [roomId]);
+  }, [roomId, liveProctoring]);
 
 
 
 
 
   // code for Ai Proctoring 
-
-
 
   const videoRef = useRef(null); // For video capture, but not for displaying
   const canvasRef = useRef(null);
@@ -469,19 +452,27 @@ const TestScreen = () => {
 
 
   useEffect(() => {
+    if (!aiProctoring) return;
+
     // Initialize socket connection
     socketRef.current = io.connect('https://ai.is10live.com'); // Adjust to your Flask-SocketIO backend
 
-    // Request access to the webcam
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream; // Set the stream to the hidden video element
-        }
-      })
-      .catch((err) => {
-        console.error('Error accessing the camera: ', err);
-      });
+    // Check if mediaDevices is available
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // Request access to the webcam
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream; // Set the stream to the hidden video element
+          }
+        })
+        .catch((err) => {
+          console.error('Error accessing the camera: ', err);
+        });
+    } else {
+      console.error('Media devices are not available in this environment.');
+      return; // Exit if mediaDevices is not available
+    }
 
     // Set up canvas and context after video metadata is loaded
     const videoElement = videoRef.current;
@@ -504,7 +495,6 @@ const TestScreen = () => {
       if (contextRef.current && videoElement) {
         contextRef.current.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
         const frame = canvasElement.toDataURL('image/jpeg').split(',')[1]; // Extract base64 data part
-        // console.log("video_data", frame)
         socketRef.current.emit('video_data', frame); // Send the video frame to the server
       }
     }, 100); // Capture every 200ms (5 frames per second)
@@ -518,17 +508,16 @@ const TestScreen = () => {
 
     // Receive face detection results and draw a bounding box on the canvas
     socketRef.current.on('result', (data) => {
-      console.log(data.result)
-      console.log(data.success)
-      if (data?.result?.No_faces == 1) {
-        setFaceMessage("Warning Your face is not visible in camera");
+      console.log(data.result);
+      console.log(data.success);
+      if (data?.result?.No_faces === 1) {
+        setFaceMessage("Warning: Your face is not visible in the camera");
         setFaceMessageShow(true);
-      }
-      else {
+      } else {
         setFaceMessageShow(false);
-        setFaceMessage("")
+        setFaceMessage("");
       }
-      console.log("current question index ", currentQuestionIndex)
+      console.log("current question index ", currentQuestionIndex);
       if (contextRef.current && canvasElement) {
         contextRef.current.clearRect(0, 0, canvasElement.width, canvasElement.height); // Clear canvas
         if (data.face) {
@@ -548,234 +537,332 @@ const TestScreen = () => {
       clearInterval(captureInterval);
       socketRef.current.disconnect();
     };
-  }, []);
-
-
+  }, [aiProctoring]);
 
 
   useEffect(() => {
     console.log("timeSpent ", timeSpent)
   }, [timeSpent])
 
+
+  useEffect(() => {
+    console.log("currentQuestionIndex ", currentQuestionIndex)
+    console.log(question[currentQuestionIndex])
+  }, [currentQuestionIndex])
+
+
+  // Code for manage full screen
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [canRequestFullscreen, setCanRequestFullscreen] = useState(false);
+
+  useEffect(() => {
+    // Handle fullscreen change event
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        // If user exits fullscreen, show the popup
+        setShowPopup(true);
+      }
+    };
+
+    // Add event listener for fullscreen change
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+
+  // Function to request fullscreen
+  const goFullscreen = () => {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+  };
+
+  // Handle the user click to enter fullscreen
+  const handleUserClick = () => {
+    if (!canRequestFullscreen) {
+      goFullscreen();
+      setCanRequestFullscreen(true);
+    }
+  };
+
+  // Function to handle popup button click
+  const handlePopupResponse = (response) => {
+
+    if (warningCount1 + warningCount2 + warningCount3 === warningCounts) {
+      let a = Object.keys(answers).length;
+      let v = Object.keys(visited).length;
+      let s = Object.keys(submit).length;
+      let ua = question?.length - v;
+
+      localStorage.removeItem("student");
+      navigate(`/finalsubmit/${s}/${v}/${ua}`);
+    } else {
+      setWarningCount3(warningCount3 + 1);
+      if (response === 'yes') {
+        // Re-enter fullscreen mode
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        }
+        setShowPopup(false);
+      } else {
+        // Print "logout" and perform logout actions if needed
+        console.log('logout');
+        // Here, you can add your actual logout logic
+      }
+    }
+  };
+
   return (
     <>
       {loader ? (
         <Loader />
       ) : ("")}
-      <div>
-        {/* Hidden video element for capturing frames */}
-        <video ref={videoRef} style={{ display: 'none' }} autoPlay />
-        <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* Also hiding the canvas */}
-        <div id="messageOverlay" ref={messageOverlayRef} /> {/* Overlay for server messages */}
-      </div>
-      <div class="alert alert-danger text-center mb-0" role="alert" style={{ display: faceMessageShow ? "block" : "none" }}>
-        {faceMessage}
-      </div>
-      <div className="" ref={fullScreenRef} style={{ height: "100vh", backgroundColor: "white" }}>
-        <div className={`container-fluid d-flex justify-content-between  py-3 px-4 ${classes.headbar}`} style={{ backgroundColor: "rgb(129 207 118)" }}  >
-          <div className="">
-            <img src={ios} alt="" height="30" className="auth-logo-dark " />
+      {showPopup && (
+        <>
+          <div className="overlay"></div>
+          <div className="popup">
+            <p>Do not attempt to exit full screen, or you will be terminated.</p>
+            <button onClick={() => handlePopupResponse('yes')}>Continue</button>
+            {/* <button onClick={() => handlePopupResponse('no')}>No</button> */}
           </div>
-          <div className="text-white text-center fw-bold">
-            <h2>Exam Name : {question?.[0]?.examName}</h2>
-          </div>
-          <div className="text-white text-center fw-bold">
+        </>
+      )}
+      <div className={showPopup ? 'blurred-content' : ''} onClick={handleUserClick}>
 
-          </div>
+
+        <div>
+          {/* Hidden video element for capturing frames */}
+          <video ref={videoRef} style={{ display: 'none' }} autoPlay />
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
+          <div id="messageOverlay" ref={messageOverlayRef} />
         </div>
-        <div className="container-fluid bg-white px-4 py-2">
-          <div className="row pt-4 test_screen_main">
-            <div className="col-8 mx-3 shadow animate__animated animate__fadeInLeft test_screen_left">
-              <div className="row d-flex justify-content-center align-item-center pt-3 ">
-                <div className="col d-flex justify-content-center align-item-center fw-bolder">
-                  <FaClipboardQuestion style={{ width: "40px", height: "40px" }} />
-                  <span style={{ marginTop: "10px" }}>
-                    Total Questions : {question?.length}
-                  </span>
-                </div>
-                <div className="col d-flex justify-content-center align-item-center">
-                  <MdTimer style={{ width: "40px", height: "40px" }} />
-                  <div
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      marginTop: "5px",
-                      fontWeight: "bolder",
-                    }}
-                  >
-                    {question?.length > 0 &&
-                      <Timer time={question[0]?.time} setTimeFinish={setTimeFinish}></Timer>}
+
+
+        <div class="alert alert-danger text-center mb-0" role="alert" style={{ display: faceMessageShow ? "block" : "none" }}>
+          {faceMessage}
+        </div>
+        <div className="" ref={fullScreenRef} style={{ height: "100vh", backgroundColor: "white" }}>
+          <div className={`container-fluid d-flex justify-content-between  py-3 px-4 ${classes.headbar}`} style={{ backgroundColor: "rgb(129 207 118)" }}  >
+            <div className="">
+              <img src={ios} alt="" height="30" className="auth-logo-dark " />
+            </div>
+            <div className="text-white text-center fw-bold">
+              <h2>Exam Name : {question?.[0]?.examName}</h2>
+            </div>
+            <div className="text-white text-center fw-bold">
+
+            </div>
+          </div>
+          <div className="container-fluid bg-white px-4 py-2">
+            <div className="row pt-4 test_screen_main">
+              <div className="col-8 mx-3 shadow animate__animated animate__fadeInLeft test_screen_left">
+                <div className="row d-flex justify-content-center align-item-center pt-3 ">
+                  <div className="col d-flex justify-content-center align-item-center fw-bolder">
+                    <FaClipboardQuestion style={{ width: "40px", height: "40px" }} />
+                    <span style={{ marginTop: "10px" }}>
+                      Total Questions : {question?.length}
+                    </span>
                   </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={onFinalSubmitHandler}
-                  className="col-2 fs btn btn-outline-success d-flex justify-content-center align-items-center me-4 fw-bold"
-
-                >
-                  Finish Test
-                  <IoCheckmarkDoneCircleSharp
-                    style={{ width: "20px", height: "20px", margin: "5px" }}
-                  ></IoCheckmarkDoneCircleSharp>
-                </button>
-              </div>
-
-
-              <Modal
-                show={modalShow}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-              >
-                <Modal.Body>
-
-                  <h4>
-                    Are you sure want to submit the paper.
-                  </h4>
-
-
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button type="button" color="primary" onClick={() => setModalShow(false)} className="waves-effect waves-light">No</Button>{" "}
-                  <Button type="button" color="danger" onClick={submigNavigate} className="waves-effect waves-light">Yes</Button>{" "}
-
-                </Modal.Footer>
-              </Modal>
-              <hr></hr>
-              <div className="container">
-                <br />
-                <div className="ms-5">
-                  <h4>
-                    <span className="" key={question?.[currentQuestionIndex]?.description}>
-                      Q {currentQuestionIndex + 1} :
-                    </span>
-                    <span className="">
-                      &nbsp; {question?.[currentQuestionIndex]?.description}
-                    </span>
-                    <div>
-                      {question?.[currentQuestionIndex]?.imagePaths.map((path) => (
-                        <img src={IMAGE_FETCH + path} alt="" />
-                      ))}
-
+                  <div className="col d-flex justify-content-center align-item-center">
+                    <MdTimer style={{ width: "40px", height: "40px" }} />
+                    <div
+                      style={{
+                        height: "40px",
+                        marginTop: "5px",
+                        fontWeight: "bolder",
+                      }}
+                    >
+                      {question?.length > 0 &&
+                        <Timer time={question[0]?.time} setTimeFinish={setTimeFinish}></Timer>}
                     </div>
-                  </h4>
-                  <br />
-                  <div className="row p-2">
-                    {question?.[currentQuestionIndex]?.type === "mcq"
-                      ? question?.[currentQuestionIndex]?.optionNames.map((o, i) => (
-                        <>
-                          {/* <p>{o}</p> */}
-                          <div className="form-check mb-3">
-                            <input
-                              className="form-check-input mt-1"
-                              type="radio"
-                              name="options"
-                              id={i}
-                              value={o}
-                              checked={answer === o}
-                              onChange={(e) => handleAnswerChange(e.target.value)}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={i}
-                            >
-                              {o}
-                            </label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onFinalSubmitHandler}
+                    className="col-2 fs btn btn-outline-success d-flex justify-content-center align-items-center me-4 fw-bold"
 
+                  >
+                    Finish Test
+                    <IoCheckmarkDoneCircleSharp
+                      style={{ width: "20px", height: "20px", margin: "5px" }}
+                    ></IoCheckmarkDoneCircleSharp>
+                  </button>
+                </div>
+
+
+                <Modal
+                  show={modalShow}
+                  size="lg"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+                >
+                  <Modal.Body>
+
+                    <h4>
+                      Are you sure want to submit the paper.
+                    </h4>
+
+
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button type="button" color="primary" onClick={() => setModalShow(false)} className="waves-effect waves-light">No</Button>{" "}
+                    <Button type="button" color="danger" onClick={submigNavigate} className="waves-effect waves-light">Yes</Button>{" "}
+
+                  </Modal.Footer>
+                </Modal>
+                <hr></hr>
+                <div className="container">
+                  <br />
+                  <div className="ms-5">
+                    <h4>
+                      <span className="" key={question?.[currentQuestionIndex]?.description}>
+                        Q {currentQuestionIndex + 1} :
+                      </span>
+                      <span className="">
+                        &nbsp; {question?.[currentQuestionIndex]?.description}
+                      </span>
+                      <div>
+                        {question?.[currentQuestionIndex]?.imagePaths.map((path) => (
+                          <img src={IMAGE_FETCH + path} alt="" />
+                        ))}
+
+                      </div>
+                    </h4>
+                    <br />
+                    <div className="row p-2">
+                      {question?.[currentQuestionIndex]?.type === "mcq"
+                        ? question?.[currentQuestionIndex]?.bilingualQuestions[0]?.options.map((o, i) => (
+                          <>
+                            {/* <p>{o}</p> */}
+                            <div className="form-check mb-3">
+                              <input
+                                className="form-check-input mt-1"
+                                type="radio"
+                                name="options"
+                                id={i}
+                                value={o}
+                                checked={answer === o}
+                                onChange={(e) => handleAnswerChange(e.target.value)}
+                              />
+                              <label
+                                className="form-check-label"
+                                htmlFor={i}
+                              >
+                                {o}
+                              </label>
+
+                            </div>
+                          </>
+
+                        ))
+                        :
+                        <>
+                          <div className="col-md-10">
+                            <textarea id="multiline-input"
+                              name="message"
+                              rows="10" cols="50"
+                              className='form-control'
+                              placeholder="Write Your Answer Here"
+                              value={answer}
+                              onChange={(e) => handleAnswerChange(e.target.value)} >
+
+                            </textarea>
                           </div>
                         </>
 
-                      ))
-                      :
-                      <>
-                        <div className="col-md-10">
-                          <textarea id="multiline-input"
-                            name="message"
-                            rows="10" cols="50"
-                            className='form-control'
-                            placeholder="Write Your Answer Here"
-                            value={answer}
-                            onChange={(e) => handleAnswerChange(e.target.value)} >
+                      }
 
-                          </textarea>
-                        </div>
-                      </>
+                    </div>
+                  </div>
+                </div>
+                <div className="container">
+                  <div className="d-flex justify-content-end my-4">
 
-                    }
+                    {!nextVisible && (
+                      <button
+                        type="button"
+                        className="btn  border-danger mx-2 fw-bold text-danger"
+                        style={{ display: currentQuestionIndex === question?.length - 1 ? "block" : "none" }}
 
+                      >
+                        Submit
+                      </button>
+                    )}
+                    {nextVisible && (
+                      <button
+                        type="button"
+                        className="btn btn-warning mx-2 fw-bold "
+                        style={{ display: currentQuestionIndex === question?.length - 1 ? "block" : "none" }}
+                        onClick={() => {
+                          submitLastQuestion(question?.[currentQuestionIndex]);
+                        }}
+                      >
+                        Submit
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="btn  btn-outline-warning mx-2 text-warning skip_btn"
+                      style={{ display: currentQuestionIndex === question?.length - 1 ? "none" : "block" }}
+
+                      onClick={handleSkipQuestion}
+
+                    >
+                      Skip
+                    </button>
+                    {!nextVisible && (
+                      <button
+                        type="button"
+                        className="btn  border-danger mx-2 fw-bold text-danger"
+                        style={{ display: currentQuestionIndex === question?.length - 1 ? "none" : "block" }}
+                      >
+                        next{" "}
+                        <BsXCircleFill style={{ width: "15px", height: "15px" }} />
+                      </button>
+                    )}
+                    {nextVisible && (
+                      <button
+                        type="button"
+                        className="btn btn-warning mx-2 fw-bold "
+                        style={{ display: currentQuestionIndex === question?.length - 1 ? "none" : "block" }}
+                        onClick={() => {
+                          submitQuestion(question?.[currentQuestionIndex]);
+                        }}
+                      >
+                        next{" "}
+                        <PiFastForwardCircleBold
+                          style={{ width: "30px", height: "30px", color: "white" }}
+                        />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
-              <div className="container">
-                <div className="d-flex justify-content-end my-4">
-
-                  {!nextVisible && (
-                    <button
-                      type="button"
-                      className="btn  border-danger mx-2 fw-bold text-danger"
-                      style={{ display: currentQuestionIndex === question?.length - 1 ? "block" : "none" }}
-
-                    >
-                      Submit
-                    </button>
-                  )}
-                  {nextVisible && (
-                    <button
-                      type="button"
-                      className="btn btn-warning mx-2 fw-bold "
-                      style={{ display: currentQuestionIndex === question?.length - 1 ? "block" : "none" }}
-                      onClick={() => {
-                        submitLastQuestion(question?.[currentQuestionIndex]);
-                      }}
-                    >
-                      Submit
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    className="btn  btn-outline-warning mx-2 text-warning skip_btn"
-                    style={{ display: currentQuestionIndex === question?.length - 1 ? "none" : "block" }}
-
-                    onClick={handleSkipQuestion}
-
-                  >
-                    Skip
-                  </button>
-                  {!nextVisible && (
-                    <button
-                      type="button"
-                      className="btn  border-danger mx-2 fw-bold text-danger"
-                      style={{ display: currentQuestionIndex === question?.length - 1 ? "none" : "block" }}
-                    >
-                      next{" "}
-                      <BsXCircleFill style={{ width: "15px", height: "15px" }} />
-                    </button>
-                  )}
-                  {nextVisible && (
-                    <button
-                      type="button"
-                      className="btn btn-warning mx-2 fw-bold "
-                      style={{ display: currentQuestionIndex === question?.length - 1 ? "none" : "block" }}
-                      onClick={() => {
-                        submitQuestion(question?.[currentQuestionIndex]);
-                      }}
-                    >
-                      next{" "}
-                      <PiFastForwardCircleBold
-                        style={{ width: "30px", height: "30px", color: "white" }}
-                      />
-                    </button>
-                  )}
+              <QuestionSelector visited={visited} submit={submit} question={question} jumpQuestion={jumpQuestion} />
+              {liveProctoring && (
+                <div style={{ height: "200px" }} className="d-flex justify-content-end">
+                  <div ref={localVideoRef} style={{ width: '300px', height: '300px', backgroundColor: 'black', border: "10px solid gray", borderRadius: "1rem", margin: ".5rem" }}></div>
                 </div>
-              </div>
-            </div>
-            <QuestionSelector visited={visited} submit={submit} question={question} jumpQuestion={jumpQuestion} />
-            <div style={{ height: "200px" }} className="d-flex justify-content-end">
-              <div ref={localVideoRef} style={{ width: '300px', height: '300px', backgroundColor: 'black', border: "10px solid gray", borderRadius: "1rem", margin: ".5rem" }}></div>
+              )}
+
             </div>
           </div>
         </div>
-      </div>
+
+      </div >
     </>
 
   );

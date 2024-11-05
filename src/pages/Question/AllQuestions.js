@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Select from "react-select"
 
 //Import Action to copy breadcrumb items from local state to redux state
-import { deleteQuestion, fetchClass, fetchCourse, fetchDifficulty, fetchLanguage, fetchQuestion, fetchSection, fetchSubSection, setBreadcrumbItems, setSuccessFalseQuestion, updateQuestion } from "../../store/actions";
+import { fetchClass, fetchCourse, fetchDifficulty, fetchLanguage, fetchQuestion, fetchSection, fetchSubSection, setBreadcrumbItems, setSuccessFalseQuestion, updateQuestion } from "../../store/actions";
 
 import "../Tables/datatables.scss";
 import { useDispatch } from "react-redux";
@@ -16,11 +16,12 @@ import { HtmlEditor, Image, Inject, Link, QuickToolbar, RichTextEditorComponent,
 import { fetchAllCoursesByClass } from "helpers/course_helper";
 import { fetchAllSectionsByCourse } from "helpers/section_helper";
 import { fetchAllSubSectionsBySection } from "helpers/subSection_helper";
-import { fetchSingleQuestion } from "helpers/question_helper";
+import { deleteQuestion, fetchSingleQuestion } from "helpers/question_helper";
 import { BACKEND_SPRING, IMAGE_FETCH } from "helpers/url_helper";
 import DOMPurify from 'dompurify';
 import { useWindowSize } from 'react-use';
 import Loader from "components/Loader/Loader";
+import { toast } from "react-toastify";
 const AllQuestions = (props) => {
     document.title = "Question Bank | All Questions";
     const [modalShow, setModalShow] = useState(false);
@@ -45,6 +46,7 @@ const AllQuestions = (props) => {
     const [option1, setOption1] = useState("");
     const [option2, setOption2] = useState("");
     const [options1, setOptions1] = useState([]);
+    const [testCheck, setTestCheck] = useState("");
     const [options2, setOptions2] = useState([]);
     const [oldImages1, setOldImages1] = useState([]);
     const [oldImages2, setOldImages2] = useState([]);
@@ -252,42 +254,36 @@ const AllQuestions = (props) => {
         setSection(result?.result[0]?.section);
         setSubSection(result?.result[0]?.subSection);
         setDifficulty(result?.result[0]?.difficulty);
+
         const bilingualQuestions = result?.result[0]?.bilingualQuestions || [];
         const hasSecondQuestion = bilingualQuestions.length > 1;
 
         // Function to set bilingual question data
-        const setBilingualData = (index, setAnswer, setDescription, setLanguage, setQuestionId) => {
+        const setBilingualData = (index, setAnswer, setDescription, setLanguage, setQuestionId, setOptions) => {
             if (bilingualQuestions[index]) {
                 setQuestionId(bilingualQuestions[index].id)
                 setAnswer(bilingualQuestions[index].answer);
                 setDescription(bilingualQuestions[index].description);
                 setLanguage(bilingualQuestions[index].language[0]);
+                setOptions(bilingualQuestions[index].options);
+
+                console.log(bilingualQuestions[index].answer);
+                console.log(bilingualQuestions[index].options[2]);
+                console.log(bilingualQuestions[index].answer == bilingualQuestions[index].options[2])
             }
         };
 
         // Set data for the first and second bilingual questions
-        setBilingualData(0, setAnswer1, setDescription1, setLanguage1, setQuestionId1);
+        setBilingualData(0, setAnswer1, setDescription1, setLanguage1, setQuestionId1, setOptions1);
 
         if (hasSecondQuestion) {
-            setBilingualData(1, setAnswer2, setDescription2, setLanguage2, setQuestionId2);
+            setBilingualData(1, setAnswer2, setDescription2, setLanguage2, setQuestionId2, setOptions2);
             setBiligual(true);
         } else {
             setBiligual(false);
         }
 
-        // Function to set options for bilingual questions
-        const setOptionsData = (index, setOptionsFunc) => {
-            const options = bilingualQuestions[index]?.options?.map(option => option.optionName) || [];
-            setOptionsFunc(options);
-        };
 
-        // Set options if the type is "mcq"
-        if (result?.result[0]?.type === "mcq") {
-            setOptionsData(0, setOptions1);
-            if (hasSecondQuestion) {
-                setOptionsData(1, setOptions2);
-            }
-        }
 
         // Function to generate image HTML
         const generateImagesHTML = (index) => {
@@ -301,6 +297,7 @@ const AllQuestions = (props) => {
         setOldImages2(hasSecondQuestion ? generateImagesHTML(1) : '');
         setModalShow(true);
     }
+
 
 
 
@@ -454,10 +451,24 @@ const AllQuestions = (props) => {
         setLoader(false);
     }, [questions.success]);
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
 
         setLoader(true);
-        dispatch(deleteQuestion(id));
+        try {
+            const data = await deleteQuestion(id);
+            if (data?.success) {
+                toast.success(data?.message);
+                setDeleteModalShow(false);
+                dispatch(fetchQuestion());
+            } else {
+                toast.error(data?.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error?.response?.data?.message || "something went wrong");
+        } finally {
+            setLoader(false);
+        }
     }
 
     const handleSelectClass = selectedOption => {
@@ -535,6 +546,9 @@ const AllQuestions = (props) => {
         setOptions2(newOptions);
     };
 
+    const printOption = () => {
+        console.log(options1);
+    }
 
 
 
@@ -814,9 +828,9 @@ const AllQuestions = (props) => {
                                         Select Answer
                                     </label>
                                     <div className="col-md-10">
+
                                         {options1.map((o, i) => (
                                             <>
-                                                {/* <p>{o}</p> */}
                                                 <div className="form-check mb-3">
                                                     <input
                                                         className="form-check-input mt-1"
@@ -948,7 +962,7 @@ const AllQuestions = (props) => {
                             {type === "mcq" &&
                                 <>
 
-                                    <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                    <Row className="mb-3" >
                                         <label
                                             htmlFor="example-text-input"
                                             className="col-md-2 col-form-label"
@@ -966,7 +980,7 @@ const AllQuestions = (props) => {
                                             <button type='button' className="btn btn-primary me-2" onClick={handleSetOptionsClick2} >{editOptionText2}</button>
                                         </div>
                                     </Row>
-                                    <Row className="mb-3" style={{ width: width <= 998 ? "95%" : "85%" }}>
+                                    <Row className="mb-3" >
                                         <label
                                             htmlFor="example-text-input"
                                             className="col-md-2 col-form-label"

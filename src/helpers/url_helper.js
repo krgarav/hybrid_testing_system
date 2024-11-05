@@ -96,7 +96,7 @@ export const FETCH_FILTER_QUESTIONS = url_online + "/GetFilterQuestions";
 export const ADD_QUESTION_TO_PAPER = url_online + "/AddQuestionToPaper";
 export const DOWNLOAD_QUESTION_PAPER_WITH_ANSWER = url_online + "/DownloadQuestionPaperWithAnswer?paperId=";
 export const DOWNLOAD_QUESTION_PAPER_WITHOUT_ANSWER = url_online + "/DownloadQuestionPaperWithoutAnswer?paperId=";
-
+export const GET_OPERATOR_QUESTION = url_online + "/GetOperatorQuestions";
 
 // QB Workflow
 

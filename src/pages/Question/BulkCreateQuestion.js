@@ -71,9 +71,10 @@ const CreateQuestion = (props) => {
     const [spanDisplay, setSpanDisplay] = useState("none");
     const [auth, setAuth] = useAuth();
     const [language, setLanguage] = useState(null);
+    const [language2, setLanguage2] = useState(null);
     const [difficulty, setDifficulty] = useState(null);
     const [loader, setLoader] = useState(false);
-
+    const [bilingual, setBilingual] = useState(false);
     const dispatch = useDispatch();
     const classes = useSelector(state => state.classesReducer)
     const difficultys = useSelector(state => state.difficultysReducer)
@@ -200,7 +201,13 @@ const CreateQuestion = (props) => {
             formData.append('SubSectionId', subSection.id);
             formData.append('SubSection', JSON.stringify(subSection));
             formData.append('DifficultyId', difficulty.id);
-            formData.append('languageId', language.id);
+
+
+            formData.append('LanguageIds', language.id); // Use 'LanguageIds[]' to indicate an array
+            if (bilingual) {
+                formData.append('LanguageIds', language2.id); // Use 'LanguageIds[]' to indicate an array
+
+            }
             formData.append('Difficulty', JSON.stringify(difficulty));
             formData.append('Type', type);
 
@@ -318,7 +325,7 @@ const CreateQuestion = (props) => {
             link.href = url;
 
             // Specify the filename for the downloaded file
-            link.setAttribute('download', 'questions_file_format.csv');
+            link.setAttribute('download', 'questions_file_format.xlsx');
 
             // Append the link to the body
             document.body.appendChild(link);
@@ -463,12 +470,12 @@ const CreateQuestion = (props) => {
 
                                 </Row>}
 
-                                {languages && <Row className="mb-3">
+                                {languages && <Row className="mb-3" >
                                     <label
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
                                     >
-                                        Language Name
+                                        Primary Language Name
                                     </label>
                                     <div className="col-md-10">
                                         <Select
@@ -484,6 +491,35 @@ const CreateQuestion = (props) => {
                                     </div>
 
                                 </Row>}
+                                {bilingual && languages && <Row className="mb-3" >
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Secondary Language Name
+                                    </label>
+                                    <div className="col-md-10">
+                                        <Select
+
+                                            value={language2}
+                                            onChange={(selectedOption) => { setLanguage2(selectedOption) }}
+                                            options={languages?.languages?.result}
+                                            getOptionLabel={option => option.languageName}
+                                            getOptionValue={option => option.id.toString()}
+                                            classNamePrefix="select2-selection"
+                                        />
+                                        {!language2 && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+
+                                </Row>}
+
+                                {!bilingual &&
+                                    <Row className="mb-3">
+                                        <div className="mt-4 d-flex justify-content-between">
+                                            <button type="button" className="text-info" style={{ fontSize: "2rem", background: "none", border: "none", fontWeight: "bolder", }} onClick={() => setBilingual(true)}><i className="mdi mdi-plus"></i></button>
+                                        </div>
+                                    </Row>
+                                }
 
                                 <Row className="mb-3">
                                     <label htmlFor="example-text-input" className="col-md-2 col-form-label">

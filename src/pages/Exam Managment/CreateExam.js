@@ -33,7 +33,7 @@ import { toast } from "react-toastify";
 import { ExamTypes, createMainExamPaper } from "helpers/questionPaper_helper";
 import { getAllMainExamPapers } from "helpers/center_helper";
 import Loader from "components/Loader/Loader";
-
+import ReactSwitch from "react-switch";
 
 const CreateExam = (props) => {
     document.title = "Exam Managment | Create Exam";
@@ -64,6 +64,9 @@ const CreateExam = (props) => {
     const [totalShifts, setTotalShifts] = useState("");
     const [shiftData, setShiftData] = useState([]);
     const [loader, setLoader] = useState(false);
+    const [aiProctoring, setAiProctoring] = useState(false);
+    const [liveProctoring, setLiveProctoring] = useState(false);
+    const [warningCounts, setWarningCounts] = useState(null);
     // const [allExams, setAllExams] = useState([]);
     const allExams = useSelector(state => state.questionPapersReducer.questionPapers?.result)
 
@@ -103,7 +106,7 @@ const CreateExam = (props) => {
 
             try {
                 setLoader(true);
-                const result = await createMainExamPaper({ paperId, totalSets, onlineExam, offlineExam, shiftData, showResult });
+                const result = await createMainExamPaper({ paperId, totalSets, onlineExam, offlineExam, shiftData, showResult, aiProctoring, liveProctoring, warningCounts });
                 if (result?.success) {
                     setLoader(false);
                     toast.success(result?.message);
@@ -205,6 +208,12 @@ const CreateExam = (props) => {
         }
     };
 
+    const handleAiSwitchChange = (checked) => {
+        setAiProctoring(checked); // `checked` is true or false based on the switch state
+    };
+    const handleLiveSwitchChange = (checked) => {
+        setLiveProctoring(checked); // `checked` is true or false based on the switch state
+    };
     return (
         <React.Fragment>
             {loader ? (
@@ -277,7 +286,59 @@ const CreateExam = (props) => {
                                         {!examType && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
                                     </div>
                                 </Row>
+                                <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Ai Proctoring
+                                    </label>
+                                    <div className="col-md-10">
+                                        <ReactSwitch
+                                            checked={aiProctoring}
+                                            onChange={handleAiSwitchChange}
+                                            onColor="#00d084" // Customize the color as needed
+                                            offColor="#888"
+                                            checkedIcon={false}
+                                            uncheckedIcon={false}
+                                        />
+                                    </div>
+                                </Row>
+                                <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Live Proctoring
+                                    </label>
+                                    <div className="col-md-10">
+                                        <ReactSwitch
+                                            checked={liveProctoring}
+                                            onChange={handleLiveSwitchChange}
+                                            onColor="#00d084" // Customize the color as needed
+                                            offColor="#888"
+                                            checkedIcon={false}
+                                            uncheckedIcon={false}
+                                        />
+                                    </div>
+                                </Row>
 
+                                <Row className="mb-3">
+                                    <label
+                                        htmlFor="example-text-input"
+                                        className="col-md-2 col-form-label"
+                                    >
+                                        Enter Total Warnings
+                                    </label>
+                                    <div className="col-md-10">
+                                        <input type="number"
+                                            className='form-control'
+                                            placeholder="Enter Total Warnings"
+                                            value={warningCounts}
+                                            onChange={(e) => setWarningCounts(e.target.value)} />
+                                        {!warningCounts && <span style={{ color: "red", display: spanDisplay }}>This feild is required</span>}
+                                    </div>
+                                </Row>
                                 <Row className="mb-3">
                                     <label
                                         htmlFor="example-text-input"

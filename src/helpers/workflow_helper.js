@@ -11,4 +11,4 @@ export const fetchAllWorkflowTree = () => get(url.GET_ALL_WORKFLOW_TREE);
 export const fetchSingleWorkflowTree = () => get(url.GET_SINGLE_WORKFLOW_TREE);
 export const getChild = () => get(url.GET_USER_TREE_BY_USER);
 export const fetchQuestionForQc = id => get(url.GET_QUESTION_FOR_QC + id);
-export const returnQuestion = data => post(url.RETURN_QUESTION, data);
+export const returnQuestion = data => put(url.RETURN_QUESTION, data);

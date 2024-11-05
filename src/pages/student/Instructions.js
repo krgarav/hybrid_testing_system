@@ -4,51 +4,45 @@ import { useNavigate } from "react-router-dom";
 import classes from "./instruction.module.css";
 const Instructions = () => {
 
+
+    const [aiProctoring, setAiProctoring] = useState(false);
+    const [liveProctoring, setLiveProctoring] = useState(false);
     const navigate = useNavigate();
+
+
     useEffect(() => {
         const student = localStorage.getItem("student");
         if (!student) {
             navigate("/student-login")
         }
     })
-    const startTestHandler = () => {
-        navigate("/test");
+
+    useEffect(() => {
+        let a = JSON.parse(localStorage.getItem("student"))?.examSet[0];
+        setAiProctoring(a?.[0].aiProctoring);
+        setLiveProctoring(a?.[0].liveProctoring);
+    }, []);
+
+    const startTestHandler = async () => {
+        // Assuming aiProctoring and liveProctoring are defined and hold boolean values
+        if (aiProctoring || liveProctoring) {
+            try {
+                // Check if the camera is accessible
+                await navigator.mediaDevices.getUserMedia({ video: true });
+                // If we reach this point, the camera is connected
+                navigate("/test");
+            } catch (error) {
+                // Handle the case where the camera is not accessible
+                alert("Camera is not connected. Please connect your camera to proceed.");
+            }
+        } else {
+            // Navigate directly if proctoring options are not both enabled
+            navigate("/test");
+        }
     };
 
 
-    // useEffect(() => {
 
-
-    //     let mediaRecorder;
-
-
-
-
-    //     const setupMediaRecorder = () => {
-    //         // Request access to the webcam
-    //         navigator.mediaDevices.getUserMedia({ video: true })
-    //             .then(() => {
-    //                 console.log("")
-    //             })
-    //             .catch(error => {
-    //                 console.log("kdjfkdjfkd----->", error.name)
-    //                 console.error('Error accessing the webcam', error.name);
-    //                 // If permission denied, show alert message and blur/disable the page
-    //                 if (error instanceof DOMException || error.name === 'NotAllowedError') {
-    //                     alert('Please allow access to the camera for continue to the test.');
-    //                     document.body.style.filter = 'blur(5px)';
-    //                     document.body.style.pointerEvents = 'none';
-    //                 }
-    //             });
-    //     };
-
-    //     setupMediaRecorder();
-
-
-
-    //     // Cleanup function
-
-    // }, []);
 
     return (
         <>

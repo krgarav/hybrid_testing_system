@@ -32,7 +32,7 @@ const StudentLogin = props => {
             setLoader(true);
             const { data } = await axios.post(url_online + "/StudentLogin", { email, password });
             setLoader(false);
-            console.log(data);
+            console.log(" fdkjfkdjfkdjfkdj", data);
             if (data?.success) {
                 localStorage.setItem("student", JSON.stringify(data));
                 // setStudent(data);
@@ -44,7 +44,7 @@ const StudentLogin = props => {
             }
         } catch (error) {
             setLoader(false);
-            toast.error(error?.response?.data?.message);
+            toast.error(error?.response?.data?.message || "something went wrong");
             console.log(error?.response?.data);
         }
 

@@ -11,3 +11,5 @@ export const bulkCreateQuestion = data => postWithFormData(url.BULK_CREATE_QUEST
 export const fetchSingleQuestion = id => get(url.FETCH_SINGLE_QUESTION + id);
 
 export const createQuestionPaper = data => postWithFormData(url.CREATE_QUESTIONPAPER, data);
+
+export const fetchOperatorQuestions = () => get(url.GET_OPERATOR_QUESTION);

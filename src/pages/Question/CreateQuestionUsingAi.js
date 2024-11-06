@@ -221,8 +221,8 @@ const CreateQuestionUsingAi = (props) => {
                 setLoader(true);
                 setProgress(0);
                 const { data } = await axios.post(
-                    // "https://ai.is10live.com/generateQuestionsUsingAi",
-                    "http://192.168.1.7:5000/generateQuestionsUsingAi",
+                    "https://hts-python.is10live.com/generateQuestionsUsingAi",
+                    // "http://192.168.1.7:5000/generateQuestionsUsingAi",
                     { className, courseName, sectionName, subSectionName, difficultyName, languageName, languageName1: language2?.languageName, type },
                 );
                 clearInterval(progressInterval);

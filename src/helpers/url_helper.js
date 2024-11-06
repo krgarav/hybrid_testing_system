@@ -1,12 +1,12 @@
 let url = "http://192.168.0.54:82/api/";
-// export let url_online = "https://api1.is10live.com";
-export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
+export let url_online = "https://api1.is10live.com";
+// export let url_online = "https://4wq09l1k-5290.inc1.devtunnels.ms";
 export const BACKEND_SPRING = false;
 
 
 // export const LOGOUT_URL = "http://192.168.1.37:5173/login";
-export const LOGOUT_URL = "http://localhost:5173/login";
-// export const LOGOUT_URL = "https://is10live.com/login";
+// export const LOGOUT_URL = "http://localhost:5173/login";
+export const LOGOUT_URL = "https://is10live.com/login";
 
 export const APP_ID = '885a7b065d604da2b81ab5199b715d33';
 

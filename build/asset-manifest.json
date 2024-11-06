@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.682c88f3.css",
-    "main.js": "/static/js/main.e939a1f9.js",
+    "main.css": "/static/css/main.0f92c3e4.css",
+    "main.js": "/static/js/main.1f2ab987.js",
     "static/media/materialdesignicons-webfont.eot": "/static/media/materialdesignicons-webfont.52adde0de9840940801f.eot",
     "static/media/materialdesignicons-webfont.ttf?v=5.8.55": "/static/media/materialdesignicons-webfont.506bc8215df8660d8f04.ttf",
     "static/media/fa-solid-900.svg": "/static/media/fa-solid-900.371dbce0dd46bd4d2033.svg",
@@ -58,11 +58,11 @@
     "static/media/hts_logo.png": "/static/media/hts_logo.960ae65a1071048c1155.png",
     "static/media/ios.png": "/static/media/ios.3b2a9cd23857d60b670b.png",
     "index.html": "/index.html",
-    "main.682c88f3.css.map": "/static/css/main.682c88f3.css.map",
-    "main.e939a1f9.js.map": "/static/js/main.e939a1f9.js.map"
+    "main.0f92c3e4.css.map": "/static/css/main.0f92c3e4.css.map",
+    "main.1f2ab987.js.map": "/static/js/main.1f2ab987.js.map"
   },
   "entrypoints": [
-    "static/css/main.682c88f3.css",
-    "static/js/main.e939a1f9.js"
+    "static/css/main.0f92c3e4.css",
+    "static/js/main.1f2ab987.js"
   ]
 }

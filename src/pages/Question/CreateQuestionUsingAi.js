@@ -418,48 +418,50 @@ const CreateQuestionUsingAi = (props) => {
 
     // Example data rows
     // Replace with your actual data rows
-    const rows = aiQuestions?.map((row, index) => {
+    console.log(aiQuestions, "rowwwwwwwwww")
+    return;
+    const rows = aiQuestions.length > 0 && aiQuestions?.map((row, index) => {
         // Create a combined description, answer, and options fields
         const descriptionCombined = `${row.description1 || ''} ${row.description || ''}`.trim();
         const answerCombined = `${row.answer1 || ''} ${row.answer || ''}`.trim();
         const optionsCombined = (row.options1 || row.options) ? (row.options1 || []).concat(row.options || []) : [];
+        // console.log(row, "rowwwwwwwwww")
+        // return {
+        //     ...row,
+        //     serialNo: `${index + 1}`, // Single row numbering
+        //     descriptionPrimary: row.description, // Combined English and Hindi description
+        //     descriptionSecondary: row.description1, // Combined English and Hindi description
+        //     ...(type === 'mcq' ? { // Conditionally spread options if type is 'mcq'
+        //         optionPrimary1: row?.options[0],
+        //         optionSecondary1: row.options1[0],
+        //         optionPrimary2: row.options[1],
+        //         optionSecondary2: row.options1[1],
+        //         optionPrimary3: row.options[2],
+        //         optionSecondary3: row.options1[2],
+        //         optionPrimary4: row.options[3],
+        //         optionSecondary4: row.options1[3],
+        //     } : {}),
+        //     answerPrimary: row.answer, // Combined English and Hindi answer
+        //     answerSecondary: row.answer1, // Combined English and Hindi answer
+        //     actions: (
+        //         <div className="d-flex">
+        //             <i style={{ color: "green", fontSize: "1.5rem", cursor: "pointer" }}
+        //                 onClick={(e) => {
+        //                     e.stopPropagation(); // Stop event bubbling to parent elements
+        //                     setDescription(descriptionCombined); // Set combined description
+        //                     setOptions(optionsCombined); // Set combined options
+        //                     setAnswer(answerCombined); // Set combined answer
+        //                     setModalShow(false);
 
-        return {
-            ...row,
-            serialNo: `${index + 1}`, // Single row numbering
-            descriptionPrimary: row.description, // Combined English and Hindi description
-            descriptionSecondary: row.description1, // Combined English and Hindi description
-            ...(type === 'mcq' ? { // Conditionally spread options if type is 'mcq'
-                optionPrimary1: row.options[0],
-                optionSecondary1: row.options1[0],
-                optionPrimary2: row.options[1],
-                optionSecondary2: row.options1[1],
-                optionPrimary3: row.options[2],
-                optionSecondary3: row.options1[2],
-                optionPrimary4: row.options[3],
-                optionSecondary4: row.options1[3],
-            } : {}),
-            answerPrimary: row.answer, // Combined English and Hindi answer
-            answerSecondary: row.answer1, // Combined English and Hindi answer
-            actions: (
-                <div className="d-flex">
-                    <i style={{ color: "green", fontSize: "1.5rem", cursor: "pointer" }}
-                        onClick={(e) => {
-                            e.stopPropagation(); // Stop event bubbling to parent elements
-                            setDescription(descriptionCombined); // Set combined description
-                            setOptions(optionsCombined); // Set combined options
-                            setAnswer(answerCombined); // Set combined answer
-                            setModalShow(false);
-
-                            handleAddQuestionToQb2(row);
-                            removeQuestionAtIndex(index);
-                        }}
-                    >
-                        <MdAddTask />
-                    </i>
-                </div>
-            ),
-        };
+        //                     handleAddQuestionToQb2(row);
+        //                     removeQuestionAtIndex(index);
+        //                 }}
+        //             >
+        //                 <MdAddTask />
+        //             </i>
+        //         </div>
+        //     ),
+        // };
     });
 
 

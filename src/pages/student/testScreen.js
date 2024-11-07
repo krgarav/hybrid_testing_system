@@ -42,7 +42,10 @@ const TestScreen = () => {
   const [warningCounts, setWarningCounts] = useState(0);
   const socket = useRef(null);
   let isAlertShown = false;
-
+  const logo = JSON.parse(localStorage.getItem("student"))?.orgLogo;
+  useEffect(() => {
+    console.log("logo", logo);
+  }, [])
 
 
 
@@ -450,10 +453,7 @@ const TestScreen = () => {
   const [faceMessage, setFaceMessage] = useState("");
   const [faceMessageShow, setFaceMessageShow] = useState(false);
 
-  const logo = JSON.parse(localStorage.getItem("authUser")).orgLogo;
-  useEffect(() => {
-    console.log(logo)
-  }, [])
+
 
   useEffect(() => {
     if (!aiProctoring) return;
@@ -662,9 +662,9 @@ const TestScreen = () => {
           <div className={`container-fluid d-flex justify-content-between  py-3 px-4 ${classes.headbar}`} style={{ backgroundColor: "rgb(129 207 118)" }}  >
             <div className="">
               {!logo ?
-                <img src={ios} alt="" height="30" className="auth-logo-dark " />
+                <img src={ios} alt="" height="40" className="auth-logo-dark " />
                 :
-                <img src={IMAGE_FETCH + logo} alt="" height="30" className="auth-logo-dark " />
+                <img src={IMAGE_FETCH + logo} alt="" height="40" className="auth-logo-dark " />
               }
 
             </div>

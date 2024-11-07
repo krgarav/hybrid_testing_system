@@ -149,11 +149,12 @@ const Header = props => {
               </Link>
 
               <Link to="/" className="logo logo-light" >
-                {/* {!logo ?
+                {/* <img src={ios} alt="" height={logoHeight} style={{ filter: "invert(1)" }} /> */}
+                {!logo ?
                   <img src={ios} alt="" height={logoHeight} style={{ filter: "invert(1)" }} />
                   :
                   <img src={IMAGE_FETCH + logo} alt="" height={logoHeight} />
-                } */}
+                }
               </Link>
             </div>
 

@@ -5,8 +5,8 @@ export const BACKEND_SPRING = false;
 
 
 // export const LOGOUT_URL = "http://192.168.1.37:5173/login";
-// export const LOGOUT_URL = "http://localhost:5173/login";
-export const LOGOUT_URL = "https://is10live.com/login";
+export const LOGOUT_URL = "http://localhost:5173/login";
+// export const LOGOUT_URL = "https://is10live.com/login";
 
 export const APP_ID = '885a7b065d604da2b81ab5199b715d33';
 

@@ -342,12 +342,12 @@ const CreateQuestionUsingAi = (props) => {
             sort: "asc",
             width: 100,
         },
-        {
+        ...(bilingual ? [{
             label: "Question Secondary",
             field: "descriptionSecondary",
             sort: "asc",
             width: 100,
-        },
+        }] : []),
         ...(type === 'mcq' ? [ // Conditionally add options columns if type is 'mcq'
             {
                 label: "Option Primary1",
@@ -355,114 +355,115 @@ const CreateQuestionUsingAi = (props) => {
                 sort: "asc",
                 width: 100,
             },
-            {
+            ...(bilingual ? [{
                 label: "Option Secondary1",
                 field: "optionSecondary1",
                 sort: "asc",
                 width: 100,
-            },
+            }] : []),
             {
                 label: "Option Primary2",
                 field: "optionPrimary2",
                 sort: "asc",
                 width: 100,
             },
-            {
+            ...(bilingual ? [{
                 label: "Option Secondary2",
                 field: "optionSecondary2",
                 sort: "asc",
                 width: 100,
-            },
+            }] : []),
             {
                 label: "Option Primary3",
                 field: "optionPrimary3",
                 sort: "asc",
                 width: 100,
             },
-            {
+            ...(bilingual ? [{
                 label: "Option Secondary3",
                 field: "optionSecondary3",
                 sort: "asc",
                 width: 100,
-            },
+            }] : []),
             {
                 label: "Option Primary4",
                 field: "optionPrimary4",
                 sort: "asc",
                 width: 100,
             },
-            {
+            ...(bilingual ? [{
                 label: "Option Secondary4",
                 field: "optionSecondary4",
                 sort: "asc",
                 width: 100,
-            },
+            }] : [])
         ] : []),
         ...(type !== "essay" ? [
             {
-                label: "AnswerPrimary",
+                label: "Answer Primary",
                 field: "answerPrimary",
                 sort: "asc",
                 width: 100,
             },
-            {
+            ...(bilingual ? [{
                 label: "Answer Secondary",
                 field: "answerSecondary",
                 sort: "asc",
                 width: 100,
-            }
-        ]
-            : []),
-
+            }] : [])
+        ] : []),
     ];
+
 
     // Example data rows
     // Replace with your actual data rows
-    console.log(aiQuestions, "rowwwwwwwwww")
-    return;
-    const rows = aiQuestions.length > 0 && aiQuestions?.map((row, index) => {
+    const rows = aiQuestions?.map((row, index) => {
+        // Check if bilingual is true
+        const isBilingual = bilingual === true;
+
         // Create a combined description, answer, and options fields
         const descriptionCombined = `${row.description1 || ''} ${row.description || ''}`.trim();
         const answerCombined = `${row.answer1 || ''} ${row.answer || ''}`.trim();
         const optionsCombined = (row.options1 || row.options) ? (row.options1 || []).concat(row.options || []) : [];
-        // console.log(row, "rowwwwwwwwww")
-        // return {
-        //     ...row,
-        //     serialNo: `${index + 1}`, // Single row numbering
-        //     descriptionPrimary: row.description, // Combined English and Hindi description
-        //     descriptionSecondary: row.description1, // Combined English and Hindi description
-        //     ...(type === 'mcq' ? { // Conditionally spread options if type is 'mcq'
-        //         optionPrimary1: row?.options[0],
-        //         optionSecondary1: row.options1[0],
-        //         optionPrimary2: row.options[1],
-        //         optionSecondary2: row.options1[1],
-        //         optionPrimary3: row.options[2],
-        //         optionSecondary3: row.options1[2],
-        //         optionPrimary4: row.options[3],
-        //         optionSecondary4: row.options1[3],
-        //     } : {}),
-        //     answerPrimary: row.answer, // Combined English and Hindi answer
-        //     answerSecondary: row.answer1, // Combined English and Hindi answer
-        //     actions: (
-        //         <div className="d-flex">
-        //             <i style={{ color: "green", fontSize: "1.5rem", cursor: "pointer" }}
-        //                 onClick={(e) => {
-        //                     e.stopPropagation(); // Stop event bubbling to parent elements
-        //                     setDescription(descriptionCombined); // Set combined description
-        //                     setOptions(optionsCombined); // Set combined options
-        //                     setAnswer(answerCombined); // Set combined answer
-        //                     setModalShow(false);
 
-        //                     handleAddQuestionToQb2(row);
-        //                     removeQuestionAtIndex(index);
-        //                 }}
-        //             >
-        //                 <MdAddTask />
-        //             </i>
-        //         </div>
-        //     ),
-        // };
+        return {
+            ...row,
+            serialNo: `${index + 1}`, // Single row numbering
+            descriptionPrimary: row.description, // English description
+            descriptionSecondary: isBilingual ? row.description1 : '', // Hindi description if bilingual
+            ...(type === 'mcq' ? { // Conditionally spread options if type is 'mcq'
+                optionPrimary1: row.options[0],
+                optionSecondary1: isBilingual ? row.options1[0] : '', // Only show if bilingual
+                optionPrimary2: row.options[1],
+                optionSecondary2: isBilingual ? row.options1[1] : '', // Only show if bilingual
+                optionPrimary3: row.options[2],
+                optionSecondary3: isBilingual ? row.options1[2] : '', // Only show if bilingual
+                optionPrimary4: row.options[3],
+                optionSecondary4: isBilingual ? row.options1[3] : '', // Only show if bilingual
+            } : {}),
+            answerPrimary: row.answer, // English answer
+            answerSecondary: isBilingual ? row.answer1 : '', // Hindi answer if bilingual
+            actions: (
+                <div className="d-flex">
+                    <i style={{ color: "green", fontSize: "1.5rem", cursor: "pointer" }}
+                        onClick={(e) => {
+                            e.stopPropagation(); // Stop event bubbling to parent elements
+                            setDescription(descriptionCombined); // Set combined description
+                            setOptions(optionsCombined); // Set combined options
+                            setAnswer(answerCombined); // Set combined answer
+                            setModalShow(false);
+
+                            handleAddQuestionToQb2(row);
+                            removeQuestionAtIndex(index);
+                        }}
+                    >
+                        <MdAddTask />
+                    </i>
+                </div>
+            ),
+        };
     });
+
 
 
 
@@ -1611,5 +1612,3 @@ const CreateQuestionUsingAi = (props) => {
 }
 
 export default connect(null, { setBreadcrumbItems })(CreateQuestionUsingAi);
-
-

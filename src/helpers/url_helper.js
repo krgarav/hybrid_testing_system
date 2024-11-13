@@ -8,7 +8,7 @@ export const BACKEND_SPRING = false;
 // export const LOGOUT_URL = "http://localhost:5173/login";
 export const LOGOUT_URL = "https://is10live.com/login";
 
-export const APP_ID = '885a7b065d604da2b81ab5199b715d33';
+export const APP_ID = '3a08a94a266d49768e762769b8a4685d';
 
 //REGISTER
 export const POST_FAKE_REGISTER = "/post-fake-register"
